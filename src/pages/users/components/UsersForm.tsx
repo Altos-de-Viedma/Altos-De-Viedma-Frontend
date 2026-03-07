@@ -26,6 +26,7 @@ export const UsersForm = ( { id }: Props ) => {
     handleSubmit,
     formState: { errors },
     setValue,
+    setError,
     reset
   } = useForm<userInputs>( {
     resolver: zodResolver( userSchema ),
@@ -53,13 +54,22 @@ export const UsersForm = ( { id }: Props ) => {
   }, [ id, user, reset ] );
 
   const onSubmit = async ( data: userInputs ) => {
+    const { confirmPassword, password, ...rest } = data;
+
     if ( id ) {
-      await userUpdate( data, id );
+      const payload = password ? { ...rest, password } : rest;
+      await userUpdate( payload as userInputs, id );
+      onClose();
     } else {
-      await addNewUser( data );
+      if ( !password ) {
+        setError( 'password', { type: 'manual', message: 'La contraseña es obligatoria para nuevos usuarios.' } );
+        return;
+      }
+      const payload = { ...rest, password };
+      await addNewUser( payload as userInputs );
       reset();
+      onClose();
     }
-    onClose();
   };
 
   const handleRolesChange = ( value: string ) => {

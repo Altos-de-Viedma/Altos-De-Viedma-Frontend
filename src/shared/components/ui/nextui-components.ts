@@ -44,7 +44,7 @@ export {
   Tabs,
   Textarea,
   useDisclosure,
-} from '@nextui-org/react';
+} from '@heroui/react';
 
 
-export type { Selection, SelectProps } from '@nextui-org/react';
+export type { Selection, SelectProps } from '@heroui/react';

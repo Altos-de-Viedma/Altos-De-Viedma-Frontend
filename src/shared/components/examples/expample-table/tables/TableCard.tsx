@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from '@heroui/react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { IoSearchOutline } from 'react-icons/io5';
 

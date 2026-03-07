@@ -1,5 +1,5 @@
 import React from 'react';
-import { Checkbox } from '@nextui-org/react';
+import { Checkbox } from '@heroui/react';
 
 
 import { typeAccess, tableHeaders } from './data';

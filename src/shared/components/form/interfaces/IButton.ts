@@ -1,4 +1,4 @@
-import { ButtonProps } from '@nextui-org/react';
+import { ButtonProps } from '@heroui/react';
 
 type VariantType = 'solid' | 'bordered' | 'light' | 'flat' | 'faded' | 'shadow' | 'ghost';
 

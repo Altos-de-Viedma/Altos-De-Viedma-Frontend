@@ -18,7 +18,7 @@ import {
   Selection,
   SortDescriptor,
   ChipProps
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { IoAddOutline, IoArrowBack, IoChevronDownOutline, IoSearchOutline } from 'react-icons/io5';
 import { userData } from './data';
 

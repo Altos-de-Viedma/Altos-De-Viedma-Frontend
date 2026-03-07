@@ -21,7 +21,7 @@ const passwordValidation = z.string().regex(
   message: 'La contraseña debe tener al menos 8 caracteres'
 }).max(20, {
   message: 'La contraseña no debe exceder los 20 caracteres'
-});
+}).or(z.literal('')).optional();
 
 const phoneValidation = z.string().min(1, {
   message: "Por favor ingresa un número de teléfono válido."
@@ -44,7 +44,12 @@ export const userSchema = z.object({
   address:           addressValidation,
   phone:             phoneValidation,
   roles:             rolesValidation
-}).refine((data) => data.password === data.confirmPassword, {
+}).refine((data) => {
+  if (data.password || data.confirmPassword) {
+    return data.password === data.confirmPassword;
+  }
+  return true;
+}, {
   message: "Las contraseñas no coinciden",
   path: ["confirmPassword"],
 });

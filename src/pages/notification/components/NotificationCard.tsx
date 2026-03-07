@@ -1,4 +1,4 @@
-import { Alert, AlertProps, Button } from '@nextui-org/react';
+import { Alert, AlertProps, Button } from '@heroui/react';
 import { FC, ReactNode } from 'react';
 
 interface NotificationCardProps extends Omit<AlertProps, 'children'> {
