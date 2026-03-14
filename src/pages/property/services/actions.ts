@@ -28,3 +28,6 @@ export const updateProperty = ( propertyUpdate: PropertyInputs, id: string ): Pr
 
 export const deleteProperty = ( id: string ): Promise<IProperty> =>
   makeApiCall( 'delete', `${ PROPERTY_ENDPOINT }/${ id }` );
+
+export const setMainProperty = ( id: string ): Promise<IProperty> =>
+  makeApiCall( 'patch', `${ PROPERTY_ENDPOINT }/set-main/${ id }` );

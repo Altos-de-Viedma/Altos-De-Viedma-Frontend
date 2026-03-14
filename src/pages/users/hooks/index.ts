@@ -3,3 +3,4 @@ export * from './useUserAdd';
 export * from './useUserDelete';
 export * from './useUsers';
 export * from './useUserUpdate';
+export * from './useUserActivate';

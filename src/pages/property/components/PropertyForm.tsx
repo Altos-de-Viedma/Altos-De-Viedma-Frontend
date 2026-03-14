@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -20,6 +20,7 @@ export const PropertyForm = ( { id }: Props ) => {
   const { users } = useUsers();
 
   const { property, isLoading } = id ? useProperty( id ) : { property: null, isLoading: false };
+  const [ isMainProperty, setIsMainProperty ] = useState( false );
 
   const {
     register,
@@ -37,17 +38,25 @@ export const PropertyForm = ( { id }: Props ) => {
         address: property.address,
         description: property.description,
         user: property.user.id,
+        isMain: property.isMain,
       } );
       setValue( 'user', property.user.id );
+      setIsMainProperty( property.isMain );
     }
   }, [ id, property, reset, setValue ] );
 
   const onSubmit = async ( data: PropertyInputs ) => {
+    const propertyData = {
+      ...data,
+      isMain: isMainProperty,
+    };
+
     if ( id ) {
-      await propertyUpdate( data, id );
+      await propertyUpdate( propertyData, id );
     } else {
-      await addProperty( data );
+      await addProperty( propertyData );
       reset();
+      setIsMainProperty( false );
     }
     onClose();
   };
@@ -112,6 +121,17 @@ export const PropertyForm = ( { id }: Props ) => {
                     </UI.SelectItem>
                   ) ) || [] }
                 </UI.Select>
+
+                <UI.Checkbox
+                  isSelected={ isMainProperty }
+                  onValueChange={ setIsMainProperty }
+                  color="primary"
+                >
+                  Establecer como propiedad principal
+                </UI.Checkbox>
+                <p className="text-xs text-gray-500 mt-1">
+                  Solo una propiedad puede ser la principal. Al seleccionar esta opción, se quitara la principal de las demas propiedades.
+                </p>
               </UI.ModalBody>
 
               <UI.ModalFooter className="flex justify-center space-x-2">

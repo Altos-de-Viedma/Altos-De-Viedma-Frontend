@@ -6,5 +6,6 @@ export interface IProperty {
   date:        Date;
   address:     string;
   description: string;
+  isMain:      boolean;
   user:        IUser;
 }

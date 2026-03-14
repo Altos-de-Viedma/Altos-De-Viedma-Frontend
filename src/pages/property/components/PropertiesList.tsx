@@ -1,7 +1,8 @@
 import { CustomTable, StatusColorMap, UI, useWhatsApp } from '../../../shared';
-import { useProperties } from '../hooks';
+import { useProperties, useSetMainProperty } from '../hooks';
 import { PropertyForm } from './PropertyForm';
 import { useAuthStore } from '../../auth';
+import { Icons } from '../../../shared';
 
 export const PropertiesList = () => {
 
@@ -11,8 +12,10 @@ export const PropertiesList = () => {
 
   const { properties, isLoading } = useProperties();
   const { generateWhatsAppLink } = useWhatsApp();
+  const { setAsMain } = useSetMainProperty();
 
   const columns = [
+    { name: "Principal", uid: "isMain", sortable: true },
     { name: "Dirección", uid: "address", sortable: true },
     { name: "Descripción", uid: "description", sortable: true },
     { name: "Propietario", uid: "property", sortable: true },
@@ -33,6 +36,21 @@ export const PropertiesList = () => {
 
   const transformedProperties = properties.map( property => ( {
     ...property,
+    isMain: property.isMain ? (
+      <UI.Badge color="primary" variant="flat">
+        Principal
+      </UI.Badge>
+    ) : (
+      <UI.Button
+        size="sm"
+        variant="flat"
+        color="primary"
+        startContent={ <Icons.IoStarOutline size={ 16 } /> }
+        onPress={ () => setAsMain( property.id ) }
+      >
+        Establecer principal
+      </UI.Button>
+    ),
     address: property.address,
     property: `${ property.user.lastName }, ${ property.user.name }`,
     phone: generateWhatsAppLink( property.user.phone ),
@@ -45,7 +63,7 @@ export const PropertiesList = () => {
       data={ transformedProperties }
       columns={ columns }
       statusColorMap={ statusColorMap }
-      initialVisibleColumns={ [ "address", "description", "property", "phone", ...( user?.roles?.includes( 'admin' ) && !user?.roles?.includes( 'security' ) ? [ "actions" ] : [] ) ] }
+      initialVisibleColumns={ [ "isMain", "address", "description", "property", "phone", ...( user?.roles?.includes( 'admin' ) && !user?.roles?.includes( 'security' ) ? [ "actions" ] : [] ) ] }
       addButtonComponent={ user?.roles?.includes( 'admin' ) ? <PropertyForm /> : null }
       title="Propiedades"
     />

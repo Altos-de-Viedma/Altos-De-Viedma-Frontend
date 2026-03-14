@@ -18,6 +18,7 @@ export const propertySchema = z.object( {
   address:     addressValidation,
   description: descriptionValidation,
   user:        userIdValidation,
+  isMain:      z.boolean().optional(),
 } );
 
 export type PropertyInputs = z.infer<typeof propertySchema>;

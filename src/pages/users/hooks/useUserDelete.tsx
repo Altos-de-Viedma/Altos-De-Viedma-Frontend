@@ -1,31 +1,39 @@
-import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 import { deleteUser } from '../services';
 
-
-
-
-
-export const useDeleteUser = ( userId: string ) => {
-
+export const useUserDelete = () => {
 
   const queryClient = useQueryClient();
 
-  const mutation = useMutation( {
-    mutationFn: () => deleteUser( userId )
+  const { mutate, isPending } = useMutation( {
+    mutationFn: ( userId: string ) => deleteUser( userId ),
+    onSuccess: () => {
+      queryClient.invalidateQueries( {
+        queryKey: [ 'users' ],
+      } );
+
+      queryClient.invalidateQueries( {
+        queryKey: [ 'inactive-users' ],
+      } );
+    },
   } );
 
-  queryClient.invalidateQueries( {
-    queryKey: [
-      'users'
-    ],
-  } );
+  const handleDeleteUser = ( id: string, onSuccessCallback?: () => void ) => {
+    mutate( id, {
+      onSuccess: () => {
+        toast.success( 'Usuario bloqueado correctamente' );
+        onSuccessCallback?.();
+      },
+      onError: () => {
+        toast.error( 'No se pudo bloquear el usuario. Por favor, intente nuevamente.' );
+      },
+    } );
+  };
 
-  queryClient.invalidateQueries( {
-    queryKey: [
-      'user'
-    ],
-  } );
-
-  return mutation;
-};  
+  return {
+    deleteUser: handleDeleteUser,
+    isPending,
+  };
+};

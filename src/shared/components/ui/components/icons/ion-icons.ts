@@ -10,6 +10,7 @@ export {
   IoCalendarOutline,
   IoCallOutline,
   IoCameraOutline,
+  IoCheckmarkCircleOutline,
   IoCheckmarkOutline,
   IoChevronBackOutline,
   IoChevronDownOutline,
