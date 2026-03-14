@@ -30,12 +30,23 @@ export const LoginForm: React.FC = () => {
       await loginUser( username, password );
       toast.success( 'Inicio de sesión exitoso' );
       redirectTo( '/home' );
-    } catch ( error ) {
-      setError( 'root', {
-        type: 'manual',
-        message: 'Usuario o clave incorrecto'
-      } );
-      toast.error( 'Usuario o clave incorrecto.' );
+    } catch ( error: any ) {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Usuario o clave incorrecto';
+      
+      // Manejar mensaje específico para usuario bloqueado
+      if ( errorMessage.includes( 'bloqueado' ) ) {
+        setError( 'root', {
+          type: 'manual',
+          message: 'Usuario bloqueado. Contacte al administrador.'
+        } );
+        toast.error( 'Usuario bloqueado. Contacte al administrador.' );
+      } else {
+        setError( 'root', {
+          type: 'manual',
+          message: 'Usuario o clave incorrecto'
+        } );
+        toast.error( 'Usuario o clave incorrecto.' );
+      }
     }
   };
 

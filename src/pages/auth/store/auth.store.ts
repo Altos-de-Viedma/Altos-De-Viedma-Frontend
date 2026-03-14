@@ -35,7 +35,16 @@ const storeApi: StateCreator<AuthState> = (set) => ({
     try {
       const { token, user } = await AuthService.checkStatus();
       set({ status: 'authorized', token, user });
-    } catch (error) {
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || error?.message || '';
+      
+      // Si el usuario está bloqueado, mostrar mensaje específico
+      if ( errorMessage.includes( 'bloqueado' ) ) {
+        console.error( 'Usuario bloqueado. Cerrando sesión.' );
+        // Forzar logout
+        localStorage.removeItem( 'auth-storage' );
+      }
+      
       set({ status: 'unauthorized', token: undefined, user: undefined });
     }
   },
