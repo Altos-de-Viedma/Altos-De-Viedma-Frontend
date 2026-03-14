@@ -95,12 +95,23 @@ export const SelectConBuscador = ({
         value: 'text-default-500 ' + (classNames?.value || ''),
         listbox: 'p-0 ' + (classNames?.listbox || ''),
       }}
+      items={[
+        // Item especial para el buscador
+        { key: 'search-box', label: 'search-box', isSearchBox: true },
+        // Opciones filtradas
+        ...filteredOptions,
+        // Item para mensaje de no resultados
+        ...(filteredOptions.length === 0 ? [{ key: 'no-results', label: 'no-results', isNoResults: true }] : [])
+      ]}
     >
-      {() => (
-          <>
-            {/* Buscador fijo en la parte superior */}
-            <div
+      {(item) => {
+        // Renderizar el buscador
+        if ((item as any).isSearchBox) {
+          return (
+            <SelectItem
+              key="search-box"
               className="sticky top-0 z-50 bg-background p-2 border-b border-default-200 shadow-sm"
+              textValue="Buscar"
               onClick={(e) => e.stopPropagation()}
             >
               <Input
@@ -132,43 +143,50 @@ export const SelectConBuscador = ({
               />
               {searchValue && (
                 <div className="text-xs text-default-400 mt-1 px-1">
-                  Buscando: "<span className="text-primary font-medium">{searchValue}</span>"
-                  {filteredOptions.length} resultado{filteredOptions.length !== 1 ? 's' : ''}
+                  Buscando: "<span className="text-primary font-medium">{searchValue}</span>" - {filteredOptions.length} resultado{filteredOptions.length !== 1 ? 's' : ''}
                 </div>
               )}
-            </div>
+            </SelectItem>
+          );
+        }
 
-            {/* Opciones filtradas */}
-            {filteredOptions.length > 0 ? (
-              filteredOptions.map((option) => (
-                <SelectItem
-                  key={option.key}
-                  textValue={option.label}
-                  className="py-2 hover:bg-default-100"
-                  description={option.description}
-                >
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-small font-medium">{option.label}</span>
-                    {option.description && (
-                      <span className="text-tiny text-default-400">{option.description}</span>
-                    )}
-                  </div>
-                </SelectItem>
-              ))
-            ) : (
-              <div className="py-6 px-3 text-center">
-                <div className="text-2xl mb-2">🔍</div>
-                <p className="text-default-400 text-small">
-                  No se encontraron resultados para
-                </p>
-                <p className="text-primary font-medium text-small">"{searchValue}"</p>
-                <p className="text-default-400 text-tiny mt-2">
-                  Intenta con otra búsqueda
-                </p>
-              </div>
-            )}
-          </>
-        )}
-      </Select>
+        // Renderizar mensaje de no resultados
+        if ((item as any).isNoResults) {
+          return (
+            <SelectItem
+              key="no-results"
+              className="py-6 px-3 text-center cursor-default"
+              textValue="No hay resultados"
+            >
+              <div className="text-2xl mb-2">🔍</div>
+              <p className="text-default-400 text-small">
+                No se encontraron resultados para
+              </p>
+              <p className="text-primary font-medium text-small">"{searchValue}"</p>
+              <p className="text-default-400 text-tiny mt-2">
+                Intenta con otra búsqueda
+              </p>
+            </SelectItem>
+          );
+        }
+
+        // Renderizar opciones normales
+        return (
+          <SelectItem
+            key={item.key}
+            textValue={item.label}
+            className="py-2 hover:bg-default-100"
+            description={item.description}
+          >
+            <div className="flex flex-col gap-0.5">
+              <span className="text-small font-medium">{item.label}</span>
+              {item.description && (
+                <span className="text-tiny text-default-400">{item.description}</span>
+              )}
+            </div>
+          </SelectItem>
+        );
+      }}
+    </Select>
   );
 };
