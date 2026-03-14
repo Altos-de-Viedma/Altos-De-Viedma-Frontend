@@ -83,10 +83,50 @@ export const CustomTable = ( {
     let filteredData = [ ...data ];
 
     if ( hasSearchFilter ) {
-      const searchKey = columns.find( col => col.sortable )?.uid || columns[ 0 ].uid;
-      filteredData = filteredData.filter( ( item ) =>
-        item[ searchKey ].toString().toLowerCase().includes( filterValue.toLowerCase() )
-      );
+      const searchLower = filterValue.toLowerCase().trim();
+      
+      // Búsqueda ultra inteligente en TODOS los campos del objeto
+      filteredData = filteredData.filter( ( item ) => {
+        // Buscar en todas las propiedades del objeto
+        for ( const key in item ) {
+          if ( item.hasOwnProperty( key ) ) {
+            const value = item[ key ];
+            
+            // Ignorar propiedades que son componentes de React o funciones
+            if ( typeof value === 'function' || value?.$$typeof ) continue;
+            
+            // Convertir a string y buscar
+            let stringValue = '';
+            
+            if ( value === null || value === undefined ) {
+              continue;
+            } else if ( typeof value === 'string' ) {
+              stringValue = value.toLowerCase();
+            } else if ( typeof value === 'number' || typeof value === 'boolean' ) {
+              stringValue = String( value ).toLowerCase();
+            } else if ( Array.isArray( value ) ) {
+              // Si es un array, buscar en cada elemento
+              stringValue = value.join( ' ' ).toLowerCase();
+            } else if ( typeof value === 'object' ) {
+              // Si es un objeto (como chips, elementos de React), intentar extraer texto
+              // Para objetos con propiedades children o label
+              if ( value?.props?.children ) {
+                stringValue = String( value.props.children ).toLowerCase();
+              } else if ( value?.label ) {
+                stringValue = String( value.label ).toLowerCase();
+              } else if ( value?.toString ) {
+                stringValue = value.toString().toLowerCase();
+              }
+            }
+            
+            // Si encontramos coincidencia en cualquier campo, retornar true
+            if ( stringValue.includes( searchLower ) ) {
+              return true;
+            }
+          }
+        }
+        return false;
+      } );
     }
 
     if ( statusFilter !== "all" && Array.from( statusFilter as Set<string> ).length !== 0 ) {
@@ -96,7 +136,7 @@ export const CustomTable = ( {
     }
 
     return filteredData;
-  }, [ data, filterValue, columns, statusFilter ] );
+  }, [ data, filterValue, statusFilter ] );
 
   const pages = Math.ceil( filteredItems.length / rowsPerPage );
 
