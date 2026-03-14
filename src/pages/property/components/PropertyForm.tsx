@@ -110,24 +110,23 @@ export const PropertyForm = ( { id }: Props ) => {
                   { ...register( 'description' ) }
                 />
 
-                <UI.Select
+                <UI.SelectConBuscador
                   label="Propietario"
-                  placeholder="Seleccione el propietario"
-                  variant="bordered"
-                  errorMessage={ errors.user?.message }
-                  isInvalid={ !!errors.user }
+                  placeholder="Buscar propietario..."
                   selectedKeys={ watch( 'user' ) ? [ watch( 'user' ) ] : [] }
                   onSelectionChange={ ( keys ) => {
                     const value = Array.from( keys )[ 0 ];
                     setValue( 'user', value as string );
                   } }
-                >
-                  { users?.map( ( user ) => (
-                    <UI.SelectItem key={ user.id } value={ user.id }>
-                      { `${ user.lastName }, ${ user.name }` }
-                    </UI.SelectItem>
-                  ) ) || [] }
-                </UI.Select>
+                  variant="bordered"
+                  errorMessage={ errors.user?.message }
+                  isInvalid={ !!errors.user }
+                  options={ users?.map( ( user ) => ( {
+                    key: user.id,
+                    label: `${ user.lastName }, ${ user.name }`,
+                    description: user.username
+                  } ) ) || [] }
+                />
 
                 <UI.Checkbox
                   isSelected={ isMainProperty }

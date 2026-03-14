@@ -46,4 +46,6 @@ export {
   useDisclosure,
 } from '@heroui/react';
 
+export { SelectConBuscador } from './components/custom/select-con-buscador';
+
 export type { Selection, SelectProps } from '@heroui/react';

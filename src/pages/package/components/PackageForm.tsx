@@ -94,28 +94,23 @@ export const PackageForm = ( { id }: Props ) => {
                   { ...register( 'title' ) }
                 />
 
-                <UI.Select
+                <UI.SelectConBuscador
                   label="Propiedad"
-                  placeholder="Seleccione la propiedad"
-                  variant="bordered"
-                  errorMessage={ errors.propertyId?.message }
-                  isInvalid={ !!errors.propertyId }
+                  placeholder="Buscar propiedad..."
                   selectedKeys={ watch( 'propertyId' ) ? [ watch( 'propertyId' ) ] : [] }
                   onSelectionChange={ ( keys ) => {
                     const value = Array.from( keys )[ 0 ];
                     setValue( 'propertyId', value as string );
                   } }
-                >
-                  { properties?.map( ( property ) => (
-                    <UI.SelectItem
-                      key={ property.id }
-                      value={ property.id }
-                      textValue={ `${ property.address } | ${ property.user.lastName }, ${ property.user.name }` }
-                    >
-                      { property.address } | { property.user.lastName }, { property.user.name }
-                    </UI.SelectItem>
-                  ) ) || [] }
-                </UI.Select>
+                  variant="bordered"
+                  errorMessage={ errors.propertyId?.message }
+                  isInvalid={ !!errors.propertyId }
+                  options={ properties?.map( ( property ) => ( {
+                    key: property.id,
+                    label: property.address,
+                    description: `${ property.user.lastName }, ${ property.user.name }`
+                  } ) ) || [] }
+                />
 
                 <UI.Textarea
                   label="Descripción"

@@ -204,24 +204,23 @@ export const VisitorForm = ( { id }: Props ) => {
                   { ...register( 'vehiclePlate' ) }
                 />
 
-                <UI.Select
+                <UI.SelectConBuscador
                   label="Propiedad"
-                  placeholder="Seleccione la propiedad"
-                  variant="bordered"
-                  errorMessage={ errors.property?.message }
-                  isInvalid={ !!errors.property }
+                  placeholder="Buscar propiedad..."
                   selectedKeys={ watch( 'property' ) ? [ watch( 'property' ) ] : [] }
                   onSelectionChange={ ( keys ) => {
                     const value = Array.from( keys )[ 0 ];
                     setValue( 'property', value as string );
                   } }
-                >
-                  { properties?.map( ( property ) => (
-                    <UI.SelectItem key={ property.id } value={ property.id }>
-                      { property.address }
-                    </UI.SelectItem>
-                  ) ) || [] }
-                </UI.Select>
+                  variant="bordered"
+                  errorMessage={ errors.property?.message }
+                  isInvalid={ !!errors.property }
+                  options={ properties?.map( ( property ) => ( {
+                    key: property.id,
+                    label: property.address,
+                    description: `${ property.user.lastName }, ${ property.user.name }`
+                  } ) ) || [] }
+                />
 
                 <UI.Input
                   type="datetime-local"

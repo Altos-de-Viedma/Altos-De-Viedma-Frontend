@@ -3,7 +3,6 @@ import { toast } from 'react-toastify';
 
 import { AuthService } from '../services';
 import { useAuthStore } from '../store';
-import { User } from '../interfaces';
 
 export const useAuthStatus = () => {
 

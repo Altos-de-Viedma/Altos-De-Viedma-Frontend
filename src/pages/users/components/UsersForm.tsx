@@ -222,34 +222,33 @@ export const UsersForm = ( { id }: Props ) => {
                   { ...register( 'address' ) }
                 />
 
-                <UI.Select
+                <UI.SelectConBuscador
                   label="Seleccione los roles del usuario"
+                  placeholder="Buscar roles..."
+                  selectedKeys={ watch( 'roles' ) || [] }
+                  onSelectionChange={ ( keys ) => handleRolesChange( Array.from( keys ).join( ',' ) ) }
                   selectionMode="multiple"
                   variant="bordered"
                   errorMessage={ errors.roles?.message }
                   isInvalid={ !!errors.roles }
-                  selectedKeys={ watch( 'roles' ) || [] }
-                  onSelectionChange={ ( keys ) => handleRolesChange( Array.from( keys ).join( ',' ) ) }
-                >
-                  <UI.SelectItem
-                    key="admin"
-                    startContent={ useInputIcon( { icon: 'IoLockOpenOutline', size: 16 } ) }
-                  >
-                    Administrador
-                  </UI.SelectItem>
-                  <UI.SelectItem
-                    key="user"
-                    startContent={ useInputIcon( { icon: 'IoHomeOutline', size: 16 } ) }
-                  >
-                    Propietario
-                  </UI.SelectItem>
-                  <UI.SelectItem
-                    key="security"
-                    startContent={ useInputIcon( { icon: 'IoShieldHalfOutline', size: 16 } ) }
-                  >
-                    Seguridad
-                  </UI.SelectItem>
-                </UI.Select>
+                  options={ [
+                    {
+                      key: "admin",
+                      label: "Administrador",
+                      description: "Acceso completo al sistema"
+                    },
+                    {
+                      key: "user",
+                      label: "Propietario",
+                      description: "Gestión de propiedades y visitantes"
+                    },
+                    {
+                      key: "security",
+                      label: "Seguridad",
+                      description: "Control de acceso y emergencias"
+                    }
+                  ] }
+                />
               </UI.ModalBody>
 
               <UI.ModalFooter className="flex justify-center space-x-2">

@@ -63,7 +63,7 @@ export const SelectForm = <T extends FieldValues>( {
         };
 
         return (
-          <UI.Select
+          <UI.SelectConBuscador
             label={ label }
             placeholder={ placeholder }
             selectedKeys={ field.value ? ( Array.isArray( field.value ) ? field.value : Array.from( field.value as Set<string> ) ) : [] }
@@ -73,27 +73,12 @@ export const SelectForm = <T extends FieldValues>( {
             isInvalid={ !!errors[ name ] }
             errorMessage={ errors[ name ]?.message as string }
             className="max-w-xs"
-          >
-            { allOptions.map( ( option ) => {
-              if ( option.isSeparator ) {
-                return (
-                  <UI.SelectItem key={ option.key } textValue="Separator" className="h-px bg-gray-300 my-2">
-                    <span className="sr-only">Separator</span>
-                  </UI.SelectItem>
-                );
-              }
-              return (
-                <UI.SelectItem
-                  key={ option.key }
-                  value={ option.key }
-                  textValue={ option.label }
-                  className={ option.isAction ? "font-semibold text-primary" : "" }
-                >
-                  { option.label }
-                </UI.SelectItem>
-              );
-            } ) }
-          </UI.Select>
+            options={ allOptions.map( ( { isAction, ...rest } ) => ( {
+              ...rest,
+              description: rest.description || ( isAction ? 'Acción múltiple' : undefined )
+            } ) ).filter( opt => !opt.isSeparator ) }
+            defaultSelectedKeys={ defaultSelectedKeys }
+          />
         );
       } }
     />
