@@ -8,7 +8,7 @@ import { updateUser } from '../services';
 export const useUserUpdate = () => {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<IUser, Error, { user: userInputs; id: string; }>( {
+  const mutation = useMutation<IUser, Error, { user: Partial<userInputs> & { password?: string }; id: string; }>( {
     mutationFn: ( { user, id } ) => updateUser( user, id ),
 
     onSuccess: ( data ) => {
@@ -30,7 +30,7 @@ export const useUserUpdate = () => {
     }
   } );
 
-  const userUpdate = async ( user: userInputs, id: string ): Promise<IUser> => {
+  const userUpdate = async ( user: Partial<userInputs> & { password?: string }, id: string ): Promise<IUser> => {
     const result = await mutation.mutateAsync( { user, id } );
     return result;
   };

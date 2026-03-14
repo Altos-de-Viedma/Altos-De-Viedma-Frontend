@@ -21,7 +21,7 @@ const passwordValidation = z.string().regex(
   message: 'La contraseña debe tener al menos 8 caracteres'
 }).max(20, {
   message: 'La contraseña no debe exceder los 20 caracteres'
-}).or(z.literal('')).optional();
+});
 
 const phoneValidation = z.string().min(1, {
   message: "Por favor ingresa un número de teléfono válido."
@@ -35,10 +35,26 @@ const rolesValidation = z.array(z.string()).min(1, {
   message: "Debe haber al menos un rol."
 });
 
-export const userSchema = z.object({
+// Schema para crear usuario (password requerida)
+export const createUserSchema = z.object({
   username:          usernameValidation,
   password:          passwordValidation,
   confirmPassword:   passwordValidation,
+  name:              nameValidation,
+  lastName:          lastNameValidation,
+  address:           addressValidation,
+  phone:             phoneValidation,
+  roles:             rolesValidation
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Las contraseñas no coinciden",
+  path: ["confirmPassword"],
+});
+
+// Schema para editar usuario (password opcional)
+export const updateUserSchema = z.object({
+  username:          usernameValidation,
+  password:          passwordValidation.optional(),
+  confirmPassword:   passwordValidation.optional(),
   name:              nameValidation,
   lastName:          lastNameValidation,
   address:           addressValidation,
@@ -54,4 +70,15 @@ export const userSchema = z.object({
   path: ["confirmPassword"],
 });
 
-export interface userInputs extends z.infer<typeof userSchema> {}
+// Schema solo para cambiar contraseña
+export const changePasswordSchema = z.object({
+  password:          passwordValidation,
+  confirmPassword:   passwordValidation,
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Las contraseñas no coinciden",
+  path: ["confirmPassword"],
+});
+
+export interface userInputs extends z.infer<typeof createUserSchema> {}
+export interface updateInputs extends z.infer<typeof updateUserSchema> {}
+export interface changePasswordInputs extends z.infer<typeof changePasswordSchema> {}

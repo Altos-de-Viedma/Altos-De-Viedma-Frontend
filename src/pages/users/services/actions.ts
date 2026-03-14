@@ -24,8 +24,10 @@ export const createUser = ( newUser: userInputs ): Promise<IUser> => {
   return makeApiCall( 'post', `${ USERS_ENDPOINT }/register`, newUserBody );
 };
 
-export const updateUser = ( userUpdate: userInputs, id: string ): Promise<IUser> =>
-  makeApiCall( 'patch', `${ USERS_ENDPOINT }/${ id }`, userUpdate );
+export const updateUser = ( userUpdate: Partial<userInputs> & { password?: string }, id: string ): Promise<IUser> => {
+  const { confirmPassword, ...updateBody } = userUpdate;
+  return makeApiCall( 'patch', `${ USERS_ENDPOINT }/${ id }`, updateBody );
+};
 
 export const deleteUser = ( id: string ): Promise<IUser> =>
   makeApiCall( 'delete', `${ USERS_ENDPOINT }/${ id }` );

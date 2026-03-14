@@ -3,9 +3,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Icons, UI, useDisclosure } from '../../../shared';
-import { userInputs, userSchema } from '../validators';
+import { userInputs, updateInputs, createUserSchema, updateUserSchema } from '../validators';
 import { useStringToArray, useInputIcon } from '../../../shared';
 import { useUser, useUserAdd, useUserUpdate } from '../hooks';
+import { ChangePasswordModal } from './ChangePasswordModal';
 
 
 
@@ -21,6 +22,8 @@ export const UsersForm = ( { id }: Props ) => {
 
   const { user, isLoading } = id ? useUser( id ) : { user: null, isLoading: false };
 
+  const isEditing = !!id;
+
   const {
     register,
     handleSubmit,
@@ -28,12 +31,13 @@ export const UsersForm = ( { id }: Props ) => {
     setValue,
     setError,
     reset
-  } = useForm<userInputs>( {
-    resolver: zodResolver( userSchema ),
+  } = useForm<userInputs | updateInputs>( {
+    resolver: zodResolver( isEditing ? updateUserSchema : createUserSchema ),
   } );
 
   const [ isVisible, setIsVisible ] = useState( false );
   const [ isConfirmVisible, setIsConfirmVisible ] = useState( false );
+  const [ isPasswordModalOpen, setIsPasswordModalOpen ] = useState( false );
 
   const toggleVisibility = () => setIsVisible( !isVisible );
   const toggleConfirmVisibility = () => setIsConfirmVisible( !isConfirmVisible );
@@ -48,17 +52,16 @@ export const UsersForm = ( { id }: Props ) => {
         address: user.address,
         roles: user.roles,
       } );
-
-      // console.log( user );
     }
   }, [ id, user, reset ] );
 
-  const onSubmit = async ( data: userInputs ) => {
+  const onSubmit = async ( data: userInputs | updateInputs ) => {
     const { confirmPassword, password, ...rest } = data;
 
     if ( id ) {
+      // Al editar, solo enviar password si se proporcionó
       const payload = password ? { ...rest, password } : rest;
-      await userUpdate( payload as userInputs, id );
+      await userUpdate( payload as updateInputs, id );
       onClose();
     } else {
       if ( !password ) {
@@ -117,45 +120,62 @@ export const UsersForm = ( { id }: Props ) => {
                   { ...register( 'username' ) }
                 />
 
-                <UI.Input
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={ toggleVisibility }
-                    >
-                      { isVisible ? useInputIcon( { icon: 'IoEyeOutline' } ) : useInputIcon( { icon: 'IoEyeOffOutline' } ) }
-                    </button>
-                  }
-                  label="Contraseña"
-                  placeholder="Ingrese la contraseña"
-                  variant="bordered"
-                  errorMessage={ errors.password?.message }
-                  isInvalid={ !!errors.password }
-                  type={ isVisible ? 'text' : 'password' }
-                  { ...register( 'password' ) }
-                />
+                { !isEditing && (
+                  <>
+                    <UI.Input
+                      endContent={
+                        <button
+                          aria-label="toggle password visibility"
+                          className="focus:outline-none"
+                          type="button"
+                          onClick={ toggleVisibility }
+                        >
+                          { isVisible ? useInputIcon( { icon: 'IoEyeOutline' } ) : useInputIcon( { icon: 'IoEyeOffOutline' } ) }
+                        </button>
+                      }
+                      label="Contraseña"
+                      placeholder="Ingrese la contraseña"
+                      variant="bordered"
+                      errorMessage={ errors.password?.message }
+                      isInvalid={ !!errors.password }
+                      type={ isVisible ? 'text' : 'password' }
+                      { ...register( 'password' ) }
+                    />
 
-                <UI.Input
-                  endContent={
-                    <button
-                      aria-label="toggle confirm password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={ toggleConfirmVisibility }
+                    <UI.Input
+                      endContent={
+                        <button
+                          aria-label="toggle confirm password visibility"
+                          className="focus:outline-none"
+                          type="button"
+                          onClick={ toggleConfirmVisibility }
+                        >
+                          { isConfirmVisible ? useInputIcon( { icon: 'IoEyeOutline' } ) : useInputIcon( { icon: 'IoEyeOffOutline' } ) }
+                        </button>
+                      }
+                      label="Confirmar Contraseña"
+                      placeholder="Confirme la contraseña"
+                      variant="bordered"
+                      errorMessage={ errors.confirmPassword?.message }
+                      isInvalid={ !!errors.confirmPassword }
+                      type={ isConfirmVisible ? 'text' : 'password' }
+                      { ...register( 'confirmPassword' ) }
+                    />
+                  </>
+                ) }
+
+                { isEditing && (
+                  <div className="flex justify-center py-2">
+                    <UI.Button
+                      variant="light"
+                      color="primary"
+                      startContent={ <Icons.IoKeyOutline size={ 20 } /> }
+                      onPress={ () => setIsPasswordModalOpen( true ) }
                     >
-                      { isConfirmVisible ? useInputIcon( { icon: 'IoEyeOutline' } ) : useInputIcon( { icon: 'IoEyeOffOutline' } ) }
-                    </button>
-                  }
-                  label="Confirmar Contraseña"
-                  placeholder="Confirme la contraseña"
-                  variant="bordered"
-                  errorMessage={ errors.confirmPassword?.message }
-                  isInvalid={ !!errors.confirmPassword }
-                  type={ isConfirmVisible ? 'text' : 'password' }
-                  { ...register( 'confirmPassword' ) }
-                />
+                      Cambiar contraseña
+                    </UI.Button>
+                  </div>
+                ) }
 
                 <UI.Input
                   endContent={ useInputIcon( { icon: 'IoPersonOutline' } ) }
@@ -255,6 +275,12 @@ export const UsersForm = ( { id }: Props ) => {
           ) }
         </UI.ModalContent>
       </UI.Modal>
+
+      <ChangePasswordModal
+        isOpen={ isPasswordModalOpen }
+        onClose={ () => setIsPasswordModalOpen( false ) }
+        userId={ id }
+      />
     </div>
   );
 };
