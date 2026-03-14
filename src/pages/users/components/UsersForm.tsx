@@ -30,7 +30,8 @@ export const UsersForm = ( { id }: Props ) => {
     formState: { errors },
     setValue,
     setError,
-    reset
+    reset,
+    watch
   } = useForm<userInputs | updateInputs>( {
     resolver: zodResolver( isEditing ? updateUserSchema : createUserSchema ),
   } );
@@ -227,8 +228,8 @@ export const UsersForm = ( { id }: Props ) => {
                   variant="bordered"
                   errorMessage={ errors.roles?.message }
                   isInvalid={ !!errors.roles }
-                  onChange={ ( e ) => handleRolesChange( e.target.value ) }
-                  defaultSelectedKeys={ user?.roles }
+                  selectedKeys={ watch( 'roles' ) || [] }
+                  onSelectionChange={ ( keys ) => handleRolesChange( Array.from( keys ).join( ',' ) ) }
                 >
                   <UI.SelectItem
                     key="admin"

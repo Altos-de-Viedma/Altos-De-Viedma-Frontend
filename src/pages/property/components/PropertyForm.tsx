@@ -27,7 +27,8 @@ export const PropertyForm = ( { id }: Props ) => {
     handleSubmit,
     formState: { errors },
     reset,
-    setValue
+    setValue,
+    watch
   } = useForm<PropertyInputs>( {
     resolver: zodResolver( propertySchema ),
   } );
@@ -115,7 +116,11 @@ export const PropertyForm = ( { id }: Props ) => {
                   variant="bordered"
                   errorMessage={ errors.user?.message }
                   isInvalid={ !!errors.user }
-                  { ...register( 'user' ) }
+                  selectedKeys={ watch( 'user' ) ? [ watch( 'user' ) ] : [] }
+                  onSelectionChange={ ( keys ) => {
+                    const value = Array.from( keys )[ 0 ];
+                    setValue( 'user', value as string );
+                  } }
                 >
                   { users?.map( ( user ) => (
                     <UI.SelectItem key={ user.id } value={ user.id }>

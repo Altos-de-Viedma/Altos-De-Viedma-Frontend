@@ -46,5 +46,4 @@ export {
   useDisclosure,
 } from '@heroui/react';
 
-
 export type { Selection, SelectProps } from '@heroui/react';

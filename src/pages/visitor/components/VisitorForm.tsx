@@ -26,7 +26,8 @@ export const VisitorForm = ( { id }: Props ) => {
     handleSubmit,
     formState: { errors },
     reset,
-    setValue
+    setValue,
+    watch
   } = useForm<VisitorInputs>( {
     resolver: zodResolver( visitorSchema ),
     defaultValues: {
@@ -209,7 +210,11 @@ export const VisitorForm = ( { id }: Props ) => {
                   variant="bordered"
                   errorMessage={ errors.property?.message }
                   isInvalid={ !!errors.property }
-                  { ...register( 'property' ) }
+                  selectedKeys={ watch( 'property' ) ? [ watch( 'property' ) ] : [] }
+                  onSelectionChange={ ( keys ) => {
+                    const value = Array.from( keys )[ 0 ];
+                    setValue( 'property', value as string );
+                  } }
                 >
                   { properties?.map( ( property ) => (
                     <UI.SelectItem key={ property.id } value={ property.id }>

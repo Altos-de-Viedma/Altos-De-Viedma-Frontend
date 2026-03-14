@@ -27,7 +27,9 @@ export const PackageForm = ( { id }: Props ) => {
     register,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
+    setValue,
+    watch
   } = useForm<PackageInputs>( {
     resolver: zodResolver( packageSchema ),
   } );
@@ -98,7 +100,11 @@ export const PackageForm = ( { id }: Props ) => {
                   variant="bordered"
                   errorMessage={ errors.propertyId?.message }
                   isInvalid={ !!errors.propertyId }
-                  { ...register( 'propertyId' ) }
+                  selectedKeys={ watch( 'propertyId' ) ? [ watch( 'propertyId' ) ] : [] }
+                  onSelectionChange={ ( keys ) => {
+                    const value = Array.from( keys )[ 0 ];
+                    setValue( 'propertyId', value as string );
+                  } }
                 >
                   { properties?.map( ( property ) => (
                     <UI.SelectItem

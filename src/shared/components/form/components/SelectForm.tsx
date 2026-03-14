@@ -7,6 +7,7 @@ import type { ControlledSelectProps } from '../interfaces';
 interface ExtendedOption {
   key: string;
   label: string;
+  description?: string;
   isAction?: boolean;
   isSeparator?: boolean;
 }
@@ -65,7 +66,7 @@ export const SelectForm = <T extends FieldValues>( {
           <UI.Select
             label={ label }
             placeholder={ placeholder }
-            selectedKeys={ field.value ? new Set( field.value ) : new Set() }
+            selectedKeys={ field.value ? ( Array.isArray( field.value ) ? field.value : Array.from( field.value as Set<string> ) ) : [] }
             onSelectionChange={ handleSelectionChange }
             size={ size as any }
             selectionMode={ selectionMode }
