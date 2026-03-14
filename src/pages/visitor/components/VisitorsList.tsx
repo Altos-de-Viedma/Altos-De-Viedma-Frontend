@@ -12,7 +12,7 @@ export const VisitorsList = () => {
   const { formatDate } = useDate();
   const { generateWhatsAppLink } = useWhatsApp();
   const { visitors, isLoading } = useVisitors();
-  const { completedVisit } = useVisitCompleted();
+  const { completedVisit, isPending: isCompletingVisit } = useVisitCompleted();
   const [ selected, setSelected ] = useState<string | number>( "pending" );
   const { user } = useAuthStore( ( state ) => ( { user: state.user } ) );
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -210,10 +210,10 @@ export const VisitorsList = () => {
                 </div>
               </UI.ModalBody>
               <UI.ModalFooter className="flex justify-center flex-row space-x-2 items-center">
-                <UI.Button color="danger" variant="light" onPress={ onClose } startContent={ <Icons.IoArrowBackOutline size={ 24 } /> }>
+                <UI.Button color="danger" variant="light" onPress={ onClose } isDisabled={ isCompletingVisit } startContent={ <Icons.IoArrowBackOutline size={ 24 } /> }>
                   Cancelar
                 </UI.Button>
-                <UI.Button color="primary" onPress={ handleConfirm } startContent={ <Icons.IoCheckmarkOutline size={ 24 } /> }>
+                <UI.Button color="primary" onPress={ handleConfirm } isLoading={ isCompletingVisit } startContent={ !isCompletingVisit && <Icons.IoCheckmarkOutline size={ 24 } /> }>
                   Confirmar
                 </UI.Button>
               </UI.ModalFooter>

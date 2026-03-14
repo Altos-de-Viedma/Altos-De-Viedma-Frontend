@@ -17,8 +17,8 @@ interface Props {
 export const PackageForm = ( { id }: Props ) => {
 
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const { addPackage } = useAddPackage();
-  const { packageUpdate } = usePackageUpdate();
+  const { addPackage, isPending: isAddingPackage } = useAddPackage();
+  const { packageUpdate, isPending: isUpdatingPackage } = usePackageUpdate();
   const { properties } = useProperties();
 
   const { pkg, isLoading } = id ? usePackage( id ) : { pkg: null, isLoading: false };
@@ -52,6 +52,8 @@ export const PackageForm = ( { id }: Props ) => {
     }
     onClose();
   };
+
+  const isPending = isAddingPackage || isUpdatingPackage;
 
   if ( id && isLoading ) {
     return <UI.Spinner />;
@@ -134,6 +136,7 @@ export const PackageForm = ( { id }: Props ) => {
                   color="danger"
                   variant="light"
                   onPress={ onClose }
+                  isDisabled={ isPending }
                   startContent={ <Icons.IoCloseOutline size={ 24 } /> }
                 >
                   Cancelar
@@ -142,7 +145,8 @@ export const PackageForm = ( { id }: Props ) => {
                 <UI.Button
                   color="primary"
                   type="submit"
-                  startContent={ <Icons.IoSaveOutline size={ 24 } /> }
+                  isLoading={ isPending }
+                  startContent={ !isPending && <Icons.IoSaveOutline size={ 24 } /> }
                 >
                   Guardar
                 </UI.Button>

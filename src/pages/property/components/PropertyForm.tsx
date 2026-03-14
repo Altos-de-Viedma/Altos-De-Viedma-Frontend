@@ -15,8 +15,8 @@ interface Props {
 export const PropertyForm = ( { id }: Props ) => {
 
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const { addProperty } = useAddProperty();
-  const { propertyUpdate } = usePropertyUpdate();
+  const { addProperty, isPending: isAddingProperty } = useAddProperty();
+  const { propertyUpdate, isPending: isUpdatingProperty } = usePropertyUpdate();
   const { users } = useUsers();
 
   const { property, isLoading } = id ? useProperty( id ) : { property: null, isLoading: false };
@@ -60,6 +60,8 @@ export const PropertyForm = ( { id }: Props ) => {
     }
     onClose();
   };
+
+  const isPending = isAddingProperty || isUpdatingProperty;
 
   if ( id && isLoading ) {
     return <UI.Spinner />;
@@ -139,6 +141,7 @@ export const PropertyForm = ( { id }: Props ) => {
                   color="danger"
                   variant="light"
                   onPress={ onClose }
+                  isDisabled={ isPending }
                   startContent={ <Icons.IoCloseOutline size={ 24 } /> }
                 >
                   Cancelar
@@ -147,7 +150,8 @@ export const PropertyForm = ( { id }: Props ) => {
                 <UI.Button
                   color="primary"
                   type="submit"
-                  startContent={ <Icons.IoSaveOutline size={ 24 } /> }
+                  isLoading={ isPending }
+                  startContent={ !isPending && <Icons.IoSaveOutline size={ 24 } /> }
                 >
                   Guardar
                 </UI.Button>

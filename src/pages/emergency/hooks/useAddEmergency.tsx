@@ -10,7 +10,7 @@ export const useAddEmergency = () => {
 
   const queryClient = useQueryClient();
 
-  const { mutate, isError, error } = useMutation<IEmergency, Error, EmergencyInputs>( {
+  const { mutate, isError, error, isPending } = useMutation<IEmergency, Error, EmergencyInputs>( {
 
     mutationFn: createEmergency,
 
@@ -47,5 +47,6 @@ export const useAddEmergency = () => {
     addEmergency,
     isError,
     error,
+    isPending,
   };
 };

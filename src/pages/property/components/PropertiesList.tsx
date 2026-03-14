@@ -12,7 +12,7 @@ export const PropertiesList = () => {
 
   const { properties, isLoading } = useProperties();
   const { generateWhatsAppLink } = useWhatsApp();
-  const { setAsMain } = useSetMainProperty();
+  const { setAsMain, isPending: isSettingMain } = useSetMainProperty();
 
   const columns = [
     { name: "Principal", uid: "isMain", sortable: true },
@@ -45,7 +45,8 @@ export const PropertiesList = () => {
         size="sm"
         variant="flat"
         color="primary"
-        startContent={ <Icons.IoStarOutline size={ 16 } /> }
+        startContent={ !isSettingMain && <Icons.IoStarOutline size={ 16 } /> }
+        isLoading={ isSettingMain }
         onPress={ () => setAsMain( property.id ) }
       >
         Establecer principal

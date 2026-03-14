@@ -1,12 +1,13 @@
   import { Icons, UI } from '../../';
 
-  
+
   interface Props {
     handleConfirm: () => void;
     handleClose: () => void;
+    isPending?: boolean;
   }
 
-  export const CustomFormFooter = ( { handleConfirm, handleClose }: Props ) => {
+  export const CustomFormFooter = ( { handleConfirm, handleClose, isPending = false }: Props ) => {
 
     return (
       <div className='flex justify-between w-full'>
@@ -15,6 +16,7 @@
           className="text-md"
           color='danger'
           onClick={ handleClose }
+          isDisabled={ isPending }
           startContent={ <Icons.IoArrowBackOutline /> }
           variant='bordered'
         >
@@ -25,7 +27,8 @@
           className="text-md"
           color='primary'
           onClick={ handleConfirm }
-          startContent={ <Icons.IoSaveOutline size={ 24 } /> }
+          isLoading={ isPending }
+          startContent={ !isPending && <Icons.IoSaveOutline size={ 24 } /> }
           type='button'
         >
           Guardar

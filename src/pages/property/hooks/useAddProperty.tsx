@@ -12,7 +12,7 @@ export const useAddProperty = () => {
 
   const queryClient = useQueryClient();
 
-  const { mutate, isError, error } = useMutation<IProperty, Error, PropertyInputs>( {
+  const { mutate, isError, error, isPending } = useMutation<IProperty, Error, PropertyInputs>( {
 
     mutationFn: createProperty,
 
@@ -49,5 +49,6 @@ export const useAddProperty = () => {
     addProperty,
     isError,
     error,
+    isPending,
   };
 };

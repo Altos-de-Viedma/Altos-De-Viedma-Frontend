@@ -20,6 +20,9 @@ export const EmergencyList = () => {
   const markAsSeenMutation = useMarkAsSeenEmergency();
   const { generateWhatsAppLink } = useWhatsApp();
 
+  const isEndingEmergency = endEmergencyMutation.isPending;
+  const isMarkingAsSeen = markAsSeenMutation.isPending;
+
   useEffect( () => {
     const interval = setInterval( () => {
       refetch();
@@ -68,7 +71,8 @@ export const EmergencyList = () => {
             color="secondary"
             variant="light"
             onPress={ () => markAsSeenMutation.mutate( emergency.id ) }
-            startContent={ <Icons.IoEyeOutline size={ 18 } /> }
+            isLoading={ isMarkingAsSeen }
+            startContent={ !isMarkingAsSeen && <Icons.IoEyeOutline size={ 18 } /> }
           >
             Marcar como visto
           </UI.Button>
@@ -219,10 +223,10 @@ export const EmergencyList = () => {
                 </div>
               </UI.ModalBody>
               <UI.ModalFooter className="flex justify-center flex-row space-x-2 items-center">
-                <UI.Button color="danger" variant="light" onPress={ onClose } startContent={ <Icons.IoArrowBackOutline size={ 24 } /> }>
+                <UI.Button color="danger" variant="light" onPress={ onClose } isDisabled={ isEndingEmergency } startContent={ <Icons.IoArrowBackOutline size={ 24 } /> }>
                   Cancelar
                 </UI.Button>
-                <UI.Button color="primary" onPress={ handleConfirm } startContent={ <Icons.IoCheckmarkOutline size={ 24 } /> }>
+                <UI.Button color="primary" onPress={ handleConfirm } isLoading={ isEndingEmergency } startContent={ !isEndingEmergency && <Icons.IoCheckmarkOutline size={ 24 } /> }>
                   Confirmar
                 </UI.Button>
               </UI.ModalFooter>

@@ -12,7 +12,7 @@ export const useAddPackage = () => {
 
   const queryClient = useQueryClient();
 
-  const { mutate, isError, error } = useMutation<IPackage, Error, PackageInputs>( {
+  const { mutate, isError, error, isPending } = useMutation<IPackage, Error, PackageInputs>( {
 
     mutationFn: createPackage,
 
@@ -49,5 +49,6 @@ export const useAddPackage = () => {
     addPackage,
     isError,
     error,
+    isPending,
   };
 };

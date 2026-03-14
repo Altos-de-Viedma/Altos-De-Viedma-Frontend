@@ -10,7 +10,7 @@ export const useSetMainProperty = () => {
 
   const queryClient = useQueryClient();
 
-  const { mutate, isError, error } = useMutation<IProperty, Error, string>( {
+  const { mutate, isError, error, isPending } = useMutation<IProperty, Error, string>( {
 
     mutationFn: setMainProperty,
 
@@ -47,5 +47,6 @@ export const useSetMainProperty = () => {
     setAsMain,
     isError,
     error,
+    isPending,
   };
 };

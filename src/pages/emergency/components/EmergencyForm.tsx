@@ -12,8 +12,8 @@ interface Props {
 
 export const EmergencyForm = ( { id }: Props ) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const { addEmergency } = useAddEmergency();
-  const { emergencyUpdate } = useEmergencieUpdate();
+  const { addEmergency, isPending: isAddingEmergency } = useAddEmergency();
+  const { emergencyUpdate, isPending: isUpdatingEmergency } = useEmergencieUpdate();
 
   const {
     register,
@@ -40,6 +40,8 @@ export const EmergencyForm = ( { id }: Props ) => {
     }
     onClose();
   };
+
+  const isPending = isAddingEmergency || isUpdatingEmergency;
 
   return (
     <div>
@@ -88,6 +90,7 @@ export const EmergencyForm = ( { id }: Props ) => {
                   color="danger"
                   variant="light"
                   onPress={ onClose }
+                  isDisabled={ isPending }
                   startContent={ <Icons.IoCloseOutline size={ 24 } /> }
                 >
                   Cancelar
@@ -96,7 +99,8 @@ export const EmergencyForm = ( { id }: Props ) => {
                 <UI.Button
                   color="primary"
                   type="submit"
-                  startContent={ <Icons.IoSaveOutline size={ 24 } /> }
+                  isLoading={ isPending }
+                  startContent={ !isPending && <Icons.IoSaveOutline size={ 24 } /> }
                 >
                   Guardar
                 </UI.Button>

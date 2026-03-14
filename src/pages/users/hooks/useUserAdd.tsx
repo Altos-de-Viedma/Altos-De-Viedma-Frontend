@@ -11,7 +11,7 @@ export const useUserAdd = () => {
 
   const queryClient = useQueryClient();
 
-  const { mutate, isError, error } = useMutation<IUser, Error, userInputs>( {
+  const { mutate, isError, error, isPending } = useMutation<IUser, Error, userInputs>( {
 
     mutationFn: createUser,
 
@@ -24,7 +24,7 @@ export const useUserAdd = () => {
       queryClient.invalidateQueries( {
         queryKey: [ 'user' ],
       } );
-      
+
     },
 
 
@@ -49,5 +49,6 @@ export const useUserAdd = () => {
     addNewUser,
     isError,
     error,
+    isPending,
   };
 };

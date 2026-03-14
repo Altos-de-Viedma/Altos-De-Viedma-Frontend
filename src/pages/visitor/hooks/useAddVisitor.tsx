@@ -11,7 +11,7 @@ export const useAddVisitor = () => {
 
   const queryClient = useQueryClient();
 
-  const { mutate, isError, error } = useMutation<IVisitor, Error, VisitorInputs>( {
+  const { mutate, isError, error, isPending } = useMutation<IVisitor, Error, VisitorInputs>( {
 
     mutationFn: createVisitor,
 
@@ -48,5 +48,6 @@ export const useAddVisitor = () => {
     addVisitor,
     isError,
     error,
+    isPending,
   };
 };

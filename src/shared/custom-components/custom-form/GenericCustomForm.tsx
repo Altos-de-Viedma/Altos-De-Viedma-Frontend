@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { CustomFormFooter, CustomHeaderForm, CustomOpenForm } from './components';
 import { CustomModal } from '../custom-modal';
@@ -16,15 +16,22 @@ export const GenericCustomForm = ( { id, config, onSubmit }: IGenericCustomFormP
     resolver: zodResolver( config.schema )
   } );
 
+  const [ isSubmitting, setIsSubmitting ] = useState( false );
+
   const handleClose = () => {
     reset();
     onClose();
   };
 
-  const handleFormSubmit = ( data: unknown ) => {
-    onSubmit( data );
-    reset();
-    onClose();
+  const handleFormSubmit = async ( data: unknown ) => {
+    setIsSubmitting( true );
+    try {
+      await onSubmit( data );
+      reset();
+      onClose();
+    } finally {
+      setIsSubmitting( false );
+    }
   };
 
   const renderField = useRenderField( register, errors, control );
@@ -65,6 +72,7 @@ export const GenericCustomForm = ( { id, config, onSubmit }: IGenericCustomFormP
           <CustomFormFooter
             handleClose={ handleClose }
             handleConfirm={ handleSubmit( handleFormSubmit ) }
+            isPending={ isSubmitting }
           />
         }
       />

@@ -15,8 +15,8 @@ export const VisitorForm = ( { id }: Props ) => {
   const [ isUploading, setIsUploading ] = useState( false );
   const [ previewImage, setPreviewImage ] = useState( 'https://i.imgur.com/O7WbIax.png' );
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const { addVisitor } = useAddVisitor();
-  const { visitorUpdate } = useVisitorUpdate();
+  const { addVisitor, isPending: isAddingVisitor } = useAddVisitor();
+  const { visitorUpdate, isPending: isUpdatingVisitor } = useVisitorUpdate();
   const { properties } = useProperties();
 
   const { visitor, isLoading } = id ? useVisitor( id ) : { visitor: null, isLoading: false };
@@ -114,6 +114,8 @@ export const VisitorForm = ( { id }: Props ) => {
       onClose();
     }
   };
+
+  const isPending = isAddingVisitor || isUpdatingVisitor;
 
   if ( id && isLoading ) {
     return <UI.Spinner />;
@@ -241,6 +243,7 @@ export const VisitorForm = ( { id }: Props ) => {
                   color="danger"
                   variant="light"
                   onPress={ onClose }
+                  isDisabled={ isPending || isUploading }
                   startContent={ <Icons.IoCloseOutline size={ 24 } /> }
                 >
                   Cancelar
@@ -250,7 +253,8 @@ export const VisitorForm = ( { id }: Props ) => {
                   <UI.Button
                     color="primary"
                     onPress={ handleReenterVisit }
-                    startContent={ <Icons.IoSaveOutline size={ 24 } /> }
+                    isLoading={ isPending }
+                    startContent={ !isPending && <Icons.IoSaveOutline size={ 24 } /> }
                   >
                     Reingresar visita
                   </UI.Button>
@@ -258,8 +262,8 @@ export const VisitorForm = ( { id }: Props ) => {
                   <UI.Button
                     color="primary"
                     type="submit"
-                    isDisabled={ isUploading }
-                    startContent={ <Icons.IoSaveOutline size={ 24 } /> }
+                    isLoading={ isPending || isUploading }
+                    startContent={ (!isPending && !isUploading) && <Icons.IoSaveOutline size={ 24 } /> }
                   >
                     Guardar
                   </UI.Button>

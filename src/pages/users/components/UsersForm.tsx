@@ -16,8 +16,8 @@ interface Props {
 export const UsersForm = ( { id }: Props ) => {
 
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const { addNewUser } = useUserAdd();
-  const { userUpdate } = useUserUpdate();
+  const { addNewUser, isPending: isAdding } = useUserAdd();
+  const { userUpdate, isPending: isUpdating } = useUserUpdate();
 
   const { user, isLoading } = id ? useUser( id ) : { user: null, isLoading: false };
 
@@ -76,6 +76,8 @@ export const UsersForm = ( { id }: Props ) => {
     const rolesArray = useStringToArray( value );
     setValue( 'roles', rolesArray );
   };
+
+  const isPending = isAdding || isUpdating;
 
   if ( id && isLoading ) {
     return <UI.Spinner />;
@@ -234,6 +236,7 @@ export const UsersForm = ( { id }: Props ) => {
                   color="danger"
                   variant="light"
                   onPress={ onClose }
+                  isDisabled={ isPending }
                   startContent={ <Icons.IoCloseOutline size={ 24 } /> }
                 >
                   Cancelar
@@ -242,7 +245,8 @@ export const UsersForm = ( { id }: Props ) => {
                 <UI.Button
                   color="primary"
                   type="submit"
-                  startContent={ <Icons.IoSaveOutline size={ 24 } /> }
+                  isLoading={ isPending }
+                  startContent={ !isPending && <Icons.IoSaveOutline size={ 24 } /> }
                 >
                   Guardar
                 </UI.Button>
