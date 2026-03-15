@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { Select, SelectItem, Input } from '@heroui/react';
 import { IoSearchOutline, IoCloseOutline } from 'react-icons/io5';
 
@@ -47,6 +47,17 @@ export const SelectConBuscador = ({
   classNames,
 }: SelectConBuscadorProps) => {
   const [searchValue, setSearchValue] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Focar el input cuando se abre el dropdown
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    }
+  }, [isOpen]);
 
   // Búsqueda ultra inteligente en todas las propiedades
   const filteredOptions = useMemo(() => {
@@ -113,6 +124,12 @@ export const SelectConBuscador = ({
         listbox: 'p-0 ' + (classNames?.listbox || ''),
       }}
       items={items}
+      onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open) {
+          setSearchValue('');
+        }
+      }}
     >
       {(item) => {
         // Renderizar el buscador
@@ -124,6 +141,7 @@ export const SelectConBuscador = ({
               textValue="Buscar"
             >
               <Input
+                ref={inputRef}
                 autoFocus
                 size="sm"
                 placeholder="🔍 Escribe para buscar..."
