@@ -107,8 +107,8 @@ export const PackageForm = ( { id }: Props ) => {
                   isInvalid={ !!errors.propertyId }
                   options={ properties?.map( ( property ) => ( {
                     key: property.id,
-                    label: property.address,
-                    description: `${ property.user.lastName }, ${ property.user.name }`
+                    label: property.isMain ? `🏠 ${ property.address }` : property.address,
+                    description: `${ property.user.lastName }, ${ property.user.name }${ property.isMain ? ' • Principal' : '' }`
                   } ) ) || [] }
                 />
 

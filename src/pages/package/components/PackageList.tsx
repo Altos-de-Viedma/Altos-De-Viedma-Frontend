@@ -49,7 +49,7 @@ export const PackageList = () => {
     arrivalDate: formatDate( pkg.arrivalDate ),
     user: `${ pkg.user.lastName }, ${ pkg.user.name }`,
     phone: generateWhatsAppLink( pkg.user.phone ),
-    property: pkg.property.address,
+    property: pkg.property.isMain ? `🏠 ${ pkg.property.address }` : pkg.property.address,
     receivedStatus: pkg.received
       ? <UI.Chip color="success" startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> } variant="flat">Recibido</UI.Chip>
       : <UI.Chip color="secondary" startContent={ <Icons.IoAlertCircleOutline size={ 18 } /> } variant="flat">No recibido</UI.Chip>,

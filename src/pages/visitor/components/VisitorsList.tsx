@@ -54,7 +54,7 @@ export const VisitorsList = () => {
     date: formatDate( visitor.date.toString() ),
     profilePicture: <UI.Avatar className="w-10 h-10 text-tiny" src={ visitor.profilePicture } />,
     dateAndTimeOfVisit: formatDate( visitor.dateAndTimeOfVisit ),
-    property: visitor.property.address,
+    property: visitor.property.isMain ? `🏠 ${ visitor.property.address }` : visitor.property.address,
     phone: generateWhatsAppLink( visitor.phone ),
     visitCompleted: visitor.visitCompleted
       ? <UI.Chip color="success" startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> } variant="flat">Finalizada</UI.Chip>

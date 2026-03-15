@@ -37,7 +37,7 @@ export const PropertiesList = () => {
   const transformedProperties = properties.map( property => ( {
     ...property,
     isMain: property.isMain ? (
-      <UI.Badge color="primary" variant="flat">
+      <UI.Badge color="primary" variant="flat" startContent="🏠">
         Principal
       </UI.Badge>
     ) : (
@@ -52,7 +52,7 @@ export const PropertiesList = () => {
         Establecer principal
       </UI.Button>
     ),
-    address: property.address,
+    address: property.isMain ? `🏠 ${ property.address }` : property.address,
     property: `${ property.user.lastName }, ${ property.user.name }`,
     phone: generateWhatsAppLink( property.user.phone ),
     description: property.description,
