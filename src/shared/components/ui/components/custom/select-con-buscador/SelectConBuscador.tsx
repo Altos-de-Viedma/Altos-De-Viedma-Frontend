@@ -74,67 +74,6 @@ export const SelectConBuscador = ({
     [onSelectionChange]
   );
 
-  // Componente del buscador
-  const SearchBox = () => (
-    <div
-      className="sticky top-0 z-50 bg-background p-2 border-b border-default-200 shadow-sm"
-      onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-      }}
-      onMouseDown={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-      }}
-    >
-      <Input
-        autoFocus
-        size="sm"
-        placeholder="🔍 Escribe para buscar..."
-        startContent={<IoSearchOutline className="text-default-400" />}
-        endContent={
-          searchValue ? (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                setSearchValue('');
-              }}
-              onMouseDown={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-              className="text-default-400 hover:text-default-600"
-              type="button"
-            >
-              <IoCloseOutline size={16} />
-            </button>
-          ) : null
-        }
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-        }}
-        onMouseDown={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-        }}
-        className="w-full"
-        classNames={{
-          input: 'text-small',
-          inputWrapper: 'h-[40px] bg-default-100 hover:bg-default-200 transition-colors',
-        }}
-      />
-      {searchValue && (
-        <div className="text-xs text-default-400 mt-1 px-1">
-          Buscando: "<span className="text-primary font-medium">{searchValue}</span>" - {filteredOptions.length} resultado{filteredOptions.length !== 1 ? 's' : ''}
-        </div>
-      )}
-    </div>
-  );
-
   return (
     <Select
       label={label}
@@ -156,44 +95,99 @@ export const SelectConBuscador = ({
         value: 'text-default-500 ' + (classNames?.value || ''),
         listbox: 'p-0 ' + (classNames?.listbox || ''),
       }}
-      listboxProps={{
-        children: () => (
-          <>
-            <SearchBox />
-            {filteredOptions.length > 0 ? (
-              filteredOptions.map((option) => (
-                <SelectItem
-                  key={option.key}
-                  textValue={option.label}
-                  className="py-2 hover:bg-default-100"
-                  description={option.description}
-                >
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-small font-medium">{option.label}</span>
-                    {option.description && (
-                      <span className="text-tiny text-default-400">{option.description}</span>
-                    )}
-                  </div>
-                </SelectItem>
-              ))
-            ) : (
-              <div className="py-6 px-3 text-center">
-                <div className="text-2xl mb-2">🔍</div>
-                <p className="text-default-400 text-small">
-                  No se encontraron resultados para
-                </p>
-                <p className="text-primary font-medium text-small">"{searchValue}"</p>
-                <p className="text-default-400 text-tiny mt-2">
-                  Intenta con otra búsqueda
-                </p>
+    >
+      {() => (
+        <>
+          {/* Buscador */}
+          <div
+            className="sticky top-0 z-50 bg-background p-2 border-b border-default-200 shadow-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+            }}
+            onMouseDown={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+            }}
+          >
+            <Input
+              autoFocus
+              size="sm"
+              placeholder="🔍 Escribe para buscar..."
+              startContent={<IoSearchOutline className="text-default-400" />}
+              endContent={
+                searchValue ? (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setSearchValue('');
+                    }}
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
+                    className="text-default-400 hover:text-default-600"
+                    type="button"
+                  >
+                    <IoCloseOutline size={16} />
+                  </button>
+                ) : null
+              }
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+              onMouseDown={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+              className="w-full"
+              classNames={{
+                input: 'text-small',
+                inputWrapper: 'h-[40px] bg-default-100 hover:bg-default-200 transition-colors',
+              }}
+            />
+            {searchValue && (
+              <div className="text-xs text-default-400 mt-1 px-1">
+                Buscando: "<span className="text-primary font-medium">{searchValue}</span>" - {filteredOptions.length} resultado{filteredOptions.length !== 1 ? 's' : ''}
               </div>
             )}
-          </>
-        ),
-      }}
-      items={filteredOptions}
-    >
-      {() => null}
+          </div>
+
+          {/* Opciones filtradas */}
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map((option) => (
+              <SelectItem
+                key={option.key}
+                textValue={option.label}
+                className="py-2 hover:bg-default-100"
+                description={option.description}
+              >
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-small font-medium">{option.label}</span>
+                  {option.description && (
+                    <span className="text-tiny text-default-400">{option.description}</span>
+                  )}
+                </div>
+              </SelectItem>
+            ))
+          ) : (
+            <div className="py-6 px-3 text-center">
+              <div className="text-2xl mb-2">🔍</div>
+              <p className="text-default-400 text-small">
+                No se encontraron resultados para
+              </p>
+              <p className="text-primary font-medium text-small">"{searchValue}"</p>
+              <p className="text-default-400 text-tiny mt-2">
+                Intenta con otra búsqueda
+              </p>
+            </div>
+          )}
+        </>
+      )}
     </Select>
   );
 };
