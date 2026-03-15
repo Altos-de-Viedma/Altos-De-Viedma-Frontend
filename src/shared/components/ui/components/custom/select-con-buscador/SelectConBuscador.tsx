@@ -120,10 +120,35 @@ export const SelectConBuscador = ({
           return (
             <SelectItem
               key="search-box"
-              className="pointer-events-none sticky top-0 z-50 bg-background p-2 border-b border-default-200 shadow-sm"
+              className="sticky top-0 z-50 bg-background p-2 border-b border-default-200 shadow-sm"
               textValue="Buscar"
             >
-              <div
+              <Input
+                autoFocus
+                size="sm"
+                placeholder="🔍 Escribe para buscar..."
+                startContent={<IoSearchOutline className="text-default-400" />}
+                endContent={
+                  searchValue ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setSearchValue('');
+                      }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                      }}
+                      className="text-default-400 hover:text-default-600"
+                      type="button"
+                    >
+                      <IoCloseOutline size={16} />
+                    </button>
+                  ) : null
+                }
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
@@ -132,53 +157,17 @@ export const SelectConBuscador = ({
                   e.stopPropagation();
                   e.preventDefault();
                 }}
-              >
-                <Input
-                  autoFocus
-                  size="sm"
-                  placeholder="🔍 Escribe para buscar..."
-                  startContent={<IoSearchOutline className="text-default-400" />}
-                  endContent={
-                    searchValue ? (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          setSearchValue('');
-                        }}
-                        onMouseDown={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                        }}
-                        className="text-default-400 hover:text-default-600"
-                        type="button"
-                      >
-                        <IoCloseOutline size={16} />
-                      </button>
-                    ) : null
-                  }
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                  }}
-                  onMouseDown={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                  }}
-                  className="w-full"
-                  classNames={{
-                    input: 'text-small',
-                    inputWrapper: 'h-[40px] bg-default-100 hover:bg-default-200 transition-colors',
-                  }}
-                />
-                {searchValue && (
-                  <div className="text-xs text-default-400 mt-1 px-1">
-                    Buscando: "<span className="text-primary font-medium">{searchValue}</span>" - {filteredOptions.length} resultado{filteredOptions.length !== 1 ? 's' : ''}
-                  </div>
-                )}
-              </div>
+                className="w-full"
+                classNames={{
+                  input: 'text-small pointer-events-auto',
+                  inputWrapper: 'h-[40px] bg-default-100 hover:bg-default-200 transition-colors pointer-events-auto',
+                }}
+              />
+              {searchValue && (
+                <div className="text-xs text-default-400 mt-1 px-1">
+                  Buscando: "<span className="text-primary font-medium">{searchValue}</span>" - {filteredOptions.length} resultado{filteredOptions.length !== 1 ? 's' : ''}
+                </div>
+              )}
             </SelectItem>
           );
         }
