@@ -37,8 +37,8 @@ export const PropertiesList = () => {
   const transformedProperties = properties.map( property => ( {
     ...property,
     isMain: property.isMain ? (
-      <UI.Badge color="primary" variant="flat" startContent="🏠">
-        Principal
+      <UI.Badge color="primary" variant="flat">
+        🏠 Principal
       </UI.Badge>
     ) : (
       <UI.Button

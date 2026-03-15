@@ -1,8 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
-
-envsubst < /usr/share/nginx/html/.env > /usr/share/nginx/html/.env.tmp
-mv /usr/share/nginx/html/.env.tmp /usr/share/nginx/html/.env
-
+# Reemplaza las variables de entorno en los archivos JS compilados
+for file in /usr/share/nginx/html/assets/*.js; do
+    if [ -f "$file" ]; then
+        sed -i "s|__VITE_BACKEND_BASE_URL__|${VITE_BACKEND_BASE_URL}|g" "$file"
+    fi
+done
 
 exec "$@"

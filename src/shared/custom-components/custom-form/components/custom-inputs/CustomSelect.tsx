@@ -35,7 +35,7 @@ export const CustomSelect = ( {
       { ...props }
     >
       { options.map( ( { key, label } ) => (
-        <UI.SelectItem key={ key } value={ key }>{ label }</UI.SelectItem>
+        <UI.SelectItem key={ key }>{ label }</UI.SelectItem>
       ) ) }
     </UI.Select>
   );
