@@ -74,6 +74,23 @@ export const SelectConBuscador = ({
     [onSelectionChange]
   );
 
+  // Crear items con el buscador incluido
+  const items = useMemo(() => {
+    const allItems = [
+      // Item especial para el buscador (no seleccionable)
+      { key: '___searchBox___', label: '___SearchBox___', isSearchBox: true },
+      // Opciones filtradas
+      ...filteredOptions,
+    ];
+    
+    // Si no hay resultados, agregar item de no resultados
+    if (filteredOptions.length === 0 && searchValue.trim()) {
+      allItems.push({ key: '___NoResults___', label: '___NoResults___', isNoResults: true });
+    }
+    
+    return allItems;
+  }, [filteredOptions, searchValue]);
+
   return (
     <Select
       label={label}
@@ -95,47 +112,15 @@ export const SelectConBuscador = ({
         value: 'text-default-500 ' + (classNames?.value || ''),
         listbox: 'p-0 ' + (classNames?.listbox || ''),
       }}
+      items={items}
     >
-      {() => (
-        <>
-          {/* Buscador */}
-          <div
-            className="sticky top-0 z-50 bg-background p-2 border-b border-default-200 shadow-sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-            }}
-            onMouseDown={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-            }}
-          >
-            <Input
-              autoFocus
-              size="sm"
-              placeholder="🔍 Escribe para buscar..."
-              startContent={<IoSearchOutline className="text-default-400" />}
-              endContent={
-                searchValue ? (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      setSearchValue('');
-                    }}
-                    onMouseDown={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                    }}
-                    className="text-default-400 hover:text-default-600"
-                    type="button"
-                  >
-                    <IoCloseOutline size={16} />
-                  </button>
-                ) : null
-              }
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+      {(item) => {
+        // Renderizar el buscador
+        if ((item as any).isSearchBox) {
+          return (
+            <div
+              key="search-box"
+              className="sticky top-0 z-50 bg-background p-2 border-b border-default-200 shadow-sm"
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
@@ -144,38 +129,63 @@ export const SelectConBuscador = ({
                 e.stopPropagation();
                 e.preventDefault();
               }}
-              className="w-full"
-              classNames={{
-                input: 'text-small',
-                inputWrapper: 'h-[40px] bg-default-100 hover:bg-default-200 transition-colors',
-              }}
-            />
-            {searchValue && (
-              <div className="text-xs text-default-400 mt-1 px-1">
-                Buscando: "<span className="text-primary font-medium">{searchValue}</span>" - {filteredOptions.length} resultado{filteredOptions.length !== 1 ? 's' : ''}
-              </div>
-            )}
-          </div>
-
-          {/* Opciones filtradas */}
-          {filteredOptions.length > 0 ? (
-            filteredOptions.map((option) => (
-              <SelectItem
-                key={option.key}
-                textValue={option.label}
-                className="py-2 hover:bg-default-100"
-                description={option.description}
-              >
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-small font-medium">{option.label}</span>
-                  {option.description && (
-                    <span className="text-tiny text-default-400">{option.description}</span>
-                  )}
+            >
+              <Input
+                autoFocus
+                size="sm"
+                placeholder="🔍 Escribe para buscar..."
+                startContent={<IoSearchOutline className="text-default-400" />}
+                endContent={
+                  searchValue ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setSearchValue('');
+                      }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                      }}
+                      className="text-default-400 hover:text-default-600"
+                      type="button"
+                    >
+                      <IoCloseOutline size={16} />
+                    </button>
+                  ) : null
+                }
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+                className="w-full"
+                classNames={{
+                  input: 'text-small',
+                  inputWrapper: 'h-[40px] bg-default-100 hover:bg-default-200 transition-colors',
+                }}
+              />
+              {searchValue && (
+                <div className="text-xs text-default-400 mt-1 px-1">
+                  Buscando: "<span className="text-primary font-medium">{searchValue}</span>" - {filteredOptions.length} resultado{filteredOptions.length !== 1 ? 's' : ''}
                 </div>
-              </SelectItem>
-            ))
-          ) : (
-            <div className="py-6 px-3 text-center">
+              )}
+            </div>
+          );
+        }
+
+        // Renderizar mensaje de no resultados
+        if ((item as any).isNoResults) {
+          return (
+            <div
+              key="no-results"
+              className="py-6 px-3 text-center cursor-default"
+            >
               <div className="text-2xl mb-2">🔍</div>
               <p className="text-default-400 text-small">
                 No se encontraron resultados para
@@ -185,9 +195,26 @@ export const SelectConBuscador = ({
                 Intenta con otra búsqueda
               </p>
             </div>
-          )}
-        </>
-      )}
+          );
+        }
+
+        // Renderizar opciones normales
+        return (
+          <SelectItem
+            key={item.key}
+            textValue={item.label}
+            className="py-2 hover:bg-default-100"
+            description={item.description}
+          >
+            <div className="flex flex-col gap-0.5">
+              <span className="text-small font-medium">{item.label}</span>
+              {item.description && (
+                <span className="text-tiny text-default-400">{item.description}</span>
+              )}
+            </div>
+          </SelectItem>
+        );
+      }}
     </Select>
   );
 };
