@@ -1,12 +1,19 @@
+import { ReactNode } from 'react';
+
 export interface CustomModalProps {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
 
-  isOpen:             boolean;
+  headerContent?: ReactNode;
+  bodyContent: ReactNode;
+  footerContent?: ReactNode;
 
-  bodyContent:        React.ReactNode;
-  footerContent:      React.ReactNode;
-  headerContent:      React.ReactNode;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | 'full';
+  backdrop?: 'transparent' | 'opaque' | 'blur';
+  isDismissable?: boolean;
+  hideCloseButton?: boolean;
+  className?: string;
 
-  onClose:            () => void;
-  onConfirm:          () => void;
-  onOpenChange:       (open: boolean) => void;
+  onClose?: () => void;
+  onConfirm?: () => void;
 }

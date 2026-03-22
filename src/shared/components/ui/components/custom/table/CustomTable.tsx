@@ -14,13 +14,19 @@ import {
   TableCell,
   TableColumn,
   TableHeader,
-  TableRow
+  TableRow,
+  Button,
+  Spinner
 } from "@heroui/react";
 import {
   IoChevronDownOutline,
-  IoSearchOutline
+  IoSearchOutline,
+  IoFunnelOutline,
+  IoGridOutline,
+  IoRefreshOutline
 } from 'react-icons/io5';
 import { ReactNode, useCallback, useMemo, useState } from "react";
+import { motion } from 'framer-motion';
 
 export type StatusColorMap = {
   [ key: string ]: ChipProps[ "color" ];
@@ -29,7 +35,7 @@ export type StatusColorMap = {
 export interface CustomTableProps {
   data: any[];
   columns: Column[];
-  renderCustomCell?: ( item: any, columnKey: string ) => ReactNode;
+  renderCustomCell?: (item: any, columnKey: string) => ReactNode;
   statusColorMap?: StatusColorMap;
   initialVisibleColumns?: string[];
   pageSize?: number;
@@ -37,6 +43,10 @@ export interface CustomTableProps {
   addButtonComponent?: ReactNode;
   selectionMode?: "none" | "single" | "multiple";
   isStriped?: boolean;
+  isLoading?: boolean;
+  onRefresh?: () => void;
+  emptyContent?: ReactNode;
+  className?: string;
 }
 
 interface Column {
@@ -45,7 +55,7 @@ interface Column {
   sortable?: boolean;
 }
 
-export const CustomTable = ( {
+export const CustomTable = ({
   data,
   columns,
   renderCustomCell,
@@ -55,20 +65,24 @@ export const CustomTable = ( {
   title = "Tabla",
   addButtonComponent,
   selectionMode = "single",
-  isStriped = false
-}: CustomTableProps ) => {
-  const [ filterValue, setFilterValue ] = useState( "" );
-  const [ selectedKeys, setSelectedKeys ] = useState<Selection>( new Set( [] ) );
-  const [ visibleColumns, setVisibleColumns ] = useState<Selection>(
-    new Set( initialVisibleColumns.length ? initialVisibleColumns : columns.map( c => c.uid ) )
+  isStriped = false,
+  isLoading = false,
+  onRefresh,
+  emptyContent,
+  className = ""
+}: CustomTableProps) => {
+  const [filterValue, setFilterValue] = useState("");
+  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
+  const [visibleColumns, setVisibleColumns] = useState<Selection>(
+    new Set(initialVisibleColumns.length ? initialVisibleColumns : columns.map(c => c.uid))
   );
-  const [ statusFilter, setStatusFilter ] = useState<Selection>( "all" );
-  const [ rowsPerPage, setRowsPerPage ] = useState( pageSize );
-  const [ sortDescriptor, setSortDescriptor ] = useState<SortDescriptor>( {
-    column: columns[ 0 ].uid,
+  const [statusFilter, setStatusFilter] = useState<Selection>("all");
+  const [rowsPerPage, setRowsPerPage] = useState(pageSize);
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+    column: columns[0].uid,
     direction: "ascending",
-  } );
-  const [ page, setPage ] = useState( 1 );
+  });
+  const [page, setPage] = useState(1);
 
   const hasSearchFilter = Boolean( filterValue );
 
@@ -206,177 +220,379 @@ export const CustomTable = ( {
     setPage( 1 );
   }, [] );
 
-  const topContent = useMemo( () => (
-    <div className="flex flex-col gap-4">
+  const topContent = useMemo(() => (
+    <motion.div
+      className="flex flex-col gap-4"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+    >
       <div className="flex justify-between gap-3 items-end">
-        <Input
-          isClearable
+        <motion.div
           className="w-full sm:max-w-[44%]"
-          placeholder={ `Buscar ${ title }...` }
-          startContent={ <IoSearchOutline /> }
-          value={ filterValue }
-          onClear={ onClear }
-          onValueChange={ onSearchChange }
-        />
+          whileHover={{ scale: 1.02 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+        >
+          <Input
+            isClearable
+            className="w-full"
+            placeholder={`Buscar ${title}...`}
+            startContent={<IoSearchOutline className="text-foreground/50" />}
+            value={filterValue}
+            onClear={onClear}
+            onValueChange={onSearchChange}
+            classNames={{
+              base: "glass-effect",
+              input: "text-foreground",
+              inputWrapper: "border border-gray-200/50 dark:border-gray-700/50 hover:border-primary-500/50 transition-colors duration-300"
+            }}
+          />
+        </motion.div>
+
         <div className="flex gap-3">
-          { statusFilter !== "all" && (
+          {onRefresh && (
+            <motion.div
+              whileHover={{ scale: 1.05, rotate: 180 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+            >
+              <Button
+                isIconOnly
+                variant="light"
+                onPress={onRefresh}
+                isLoading={isLoading}
+                className="btn-hover-lift"
+                aria-label="Actualizar datos"
+              >
+                <IoRefreshOutline size={18} />
+              </Button>
+            </motion.div>
+          )}
+
+          {statusFilter !== "all" && (
             <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
-                <button className="bg-default-100 text-default-700 border-default-200 hover:bg-default-200 px-4 py-2 rounded-md text-sm flex items-center">
-                  Estado
-                  <IoChevronDownOutline className="text-small ml-2" />
-                </button>
+              <DropdownTrigger>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    variant="flat"
+                    startContent={<IoFunnelOutline size={16} />}
+                    endContent={<IoChevronDownOutline size={16} />}
+                    className="hidden sm:flex glass-effect border border-gray-200/50 dark:border-gray-700/50 hover:border-primary-500/50 transition-all duration-300"
+                  >
+                    Estado
+                  </Button>
+                </motion.div>
               </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
                 aria-label="Estado de filtro"
-                closeOnSelect={ false }
-                selectedKeys={ statusFilter }
+                closeOnSelect={false}
+                selectedKeys={statusFilter}
                 selectionMode="multiple"
-                onSelectionChange={ setStatusFilter }
+                onSelectionChange={setStatusFilter}
+                classNames={{
+                  base: "glass-effect border border-gray-200/50 dark:border-gray-700/50 shadow-large"
+                }}
               >
-                { Array.from( new Set( data.map( item => item.status ) ) ).map( ( status ) => (
-                  <DropdownItem key={ status } className="capitalize">
-                    { status }
+                {Array.from(new Set(data.map(item => item.status))).map((status) => (
+                  <DropdownItem key={status} className="capitalize hover:bg-primary-500/10 transition-colors">
+                    {status}
                   </DropdownItem>
-                ) ) }
+                ))}
               </DropdownMenu>
             </Dropdown>
-          ) }
+          )}
+
           <Dropdown>
-            <DropdownTrigger className="hidden sm:flex">
-              <button className="bg-default-100 text-default-700 border-default-200 hover:bg-default-200 px-4 py-2 rounded-md text-sm flex items-center">
-                Columnas
-                <IoChevronDownOutline className="text-small ml-2" />
-              </button>
+            <DropdownTrigger>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button
+                  variant="flat"
+                  startContent={<IoGridOutline size={16} />}
+                  endContent={<IoChevronDownOutline size={16} />}
+                  className="hidden sm:flex glass-effect border border-gray-200/50 dark:border-gray-700/50 hover:border-primary-500/50 transition-all duration-300"
+                >
+                  Columnas
+                </Button>
+              </motion.div>
             </DropdownTrigger>
             <DropdownMenu
               disallowEmptySelection
               aria-label="Columnas de la tabla"
-              closeOnSelect={ false }
-              selectedKeys={ visibleColumns }
+              closeOnSelect={false}
+              selectedKeys={visibleColumns}
               selectionMode="multiple"
-              onSelectionChange={ setVisibleColumns }
+              onSelectionChange={setVisibleColumns}
+              classNames={{
+                base: "glass-effect border border-gray-200/50 dark:border-gray-700/50 shadow-large"
+              }}
             >
-              { columns.map( ( column ) => (
-                <DropdownItem key={ column.uid } className="capitalize">
-                  { column.name }
+              {columns.map((column) => (
+                <DropdownItem key={column.uid} className="capitalize hover:bg-primary-500/10 transition-colors">
+                  {column.name}
                 </DropdownItem>
-              ) ) }
+              ))}
             </DropdownMenu>
           </Dropdown>
-          { addButtonComponent }
+
+          {addButtonComponent && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              {addButtonComponent}
+            </motion.div>
+          )}
         </div>
       </div>
-      <div className="flex justify-between items-center">
-        <span className="text-default-400 text-small">
-          Total { data.length } elementos
+
+      <motion.div
+        className="flex justify-between items-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+      >
+        <span className="text-foreground/60 text-sm font-medium">
+          Total {data.length} elementos
+          {filteredItems.length !== data.length && (
+            <span className="text-primary-500 ml-2">
+              ({filteredItems.length} filtrados)
+            </span>
+          )}
         </span>
-        <label className="flex items-center text-default-400 text-small">
+
+        <label className="flex items-center text-foreground/60 text-sm gap-2">
           Elementos por página:
           <select
-            className="bg-transparent outline-none text-default-400 text-small"
-            onChange={ ( e ) => {
-              setRowsPerPage( Number( e.target.value ) );
-              setPage( 1 );
-            } }
+            className="bg-background border border-gray-200/50 dark:border-gray-700/50 rounded-lg px-2 py-1 text-foreground text-sm focus:border-primary-500 focus:outline-none transition-colors"
+            value={rowsPerPage}
+            onChange={(e) => {
+              setRowsPerPage(Number(e.target.value));
+              setPage(1);
+            }}
           >
             <option value="5">5</option>
             <option value="10">10</option>
             <option value="15">15</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
           </select>
         </label>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   ), [
     filterValue,
     visibleColumns,
     onSearchChange,
     onClear,
     data.length,
+    filteredItems.length,
     columns,
     addButtonComponent,
     title,
     statusFilter,
-  ] );
+    onRefresh,
+    isLoading,
+    rowsPerPage,
+  ]);
 
-  const bottomContent = useMemo( () => (
-    <div className="py-2 px-2 flex justify-between items-center">
-      { selectionMode !== "none" && (
-        <span className="w-[30%] text-small text-default-400">
-          { selectedKeys === "all"
+  const bottomContent = useMemo(() => (
+    <motion.div
+      className="py-4 px-2 flex justify-between items-center"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+    >
+      {selectionMode !== "none" && (
+        <motion.span
+          className="w-[30%] text-sm text-foreground/60 font-medium"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          {selectedKeys === "all"
             ? "Todos los elementos seleccionados"
-            : `${ selectedKeys.size } de ${ filteredItems.length } seleccionados` }
-        </span>
-      ) }
-      <Pagination
-        isCompact
-        showControls
-        showShadow
-        color="primary"
-        page={ page }
-        total={ pages }
-        onChange={ setPage }
-      />
+            : `${selectedKeys.size} de ${filteredItems.length} seleccionados`}
+        </motion.span>
+      )}
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        <Pagination
+          isCompact
+          showControls
+          showShadow
+          color="primary"
+          page={page}
+          total={pages}
+          onChange={setPage}
+          classNames={{
+            wrapper: "gap-0 overflow-visible h-8 rounded-lg border border-gray-200/50 dark:border-gray-700/50 shadow-medium",
+            item: "w-8 h-8 text-sm rounded-none bg-transparent hover:bg-primary-500/10 transition-colors",
+            cursor: "bg-primary-500 shadow-lg text-white font-medium",
+            prev: "hover:bg-primary-500/10 transition-colors",
+            next: "hover:bg-primary-500/10 transition-colors",
+          }}
+        />
+      </motion.div>
+
       <div className="hidden sm:flex w-[30%] justify-end gap-2">
-        <button
-          className="bg-default-100 text-default-700 border-default-200 hover:bg-default-200 px-4 py-2 rounded-md text-sm"
-          disabled={ pages === 1 }
-          onClick={ () => page > 1 && setPage( page - 1 ) }
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-          Anterior
-        </button>
-        <button
-          className="bg-default-100 text-default-700 border-default-200 hover:bg-default-200 px-4 py-2 rounded-md text-sm"
-          disabled={ pages === 1 }
-          onClick={ () => page < pages && setPage( page + 1 ) }
+          <Button
+            size="sm"
+            variant="flat"
+            isDisabled={page === 1}
+            onPress={() => page > 1 && setPage(page - 1)}
+            className="glass-effect border border-gray-200/50 dark:border-gray-700/50 hover:border-primary-500/50 transition-all duration-300"
+          >
+            Anterior
+          </Button>
+        </motion.div>
+
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-          Siguiente
-        </button>
+          <Button
+            size="sm"
+            variant="flat"
+            isDisabled={page === pages}
+            onPress={() => page < pages && setPage(page + 1)}
+            className="glass-effect border border-gray-200/50 dark:border-gray-700/50 hover:border-primary-500/50 transition-all duration-300"
+          >
+            Siguiente
+          </Button>
+        </motion.div>
       </div>
-    </div>
-  ), [ selectedKeys, filteredItems.length, page, pages, selectionMode ] );
+    </motion.div>
+  ), [selectedKeys, filteredItems.length, page, pages, selectionMode]);
 
   return (
-    <Table
-      aria-label={ `Tabla de ${ title }` }
-      isHeaderSticky
-      bottomContent={ bottomContent }
-      bottomContentPlacement="outside"
-      classNames={ {
-        wrapper: "max-h-[382px]",
-      } }
-      selectedKeys={ selectedKeys }
-      selectionMode={ selectionMode }
-      sortDescriptor={ sortDescriptor }
-      topContent={ topContent }
-      topContentPlacement="outside"
-      onSelectionChange={ setSelectedKeys }
-      onSortChange={ setSortDescriptor }
-      isStriped={ isStriped }
+    <motion.div
+      className={`w-full ${className}`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
     >
-      <TableHeader columns={ headerColumns }>
-        { ( column ) => (
-          <TableColumn
-            key={ column.uid }
-            align={ column.uid === "actions" ? "center" : "start" }
-            allowsSorting={ column.sortable }
-          >
-            { column.name }
-          </TableColumn>
-        ) }
-      </TableHeader>
-      <TableBody emptyContent={ `No se encontraron elementos en ${ title }` } items={ items }>
-        { ( item ) => (
-          <TableRow key={ ( item as any ).id || Math.random() }>
-            { headerColumns.map( ( column ) => (
-              <TableCell key={ column.uid }>
-                { defaultRenderCell( item, column.uid ) }
-              </TableCell>
-            ) ) }
-          </TableRow>
-        ) }
-      </TableBody>
-    </Table>
+      <Table
+        aria-label={`Tabla de ${title}`}
+        isHeaderSticky
+        bottomContent={bottomContent}
+        bottomContentPlacement="outside"
+        classNames={{
+          wrapper: "max-h-[500px] glass-effect border border-gray-200/50 dark:border-gray-700/50 shadow-large rounded-2xl overflow-hidden",
+          th: "bg-gray-50/80 dark:bg-gray-800/80 text-foreground font-semibold first:rounded-tl-2xl last:rounded-tr-2xl border-b border-gray-200/50 dark:border-gray-700/50",
+          td: "border-b border-gray-200/30 dark:border-gray-700/30 group-hover:bg-primary-50/50 dark:group-hover:bg-primary-950/20 transition-colors duration-200",
+          tbody: "[&>tr:last-child>td]:border-b-0",
+          tr: "hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-all duration-200 cursor-pointer",
+        }}
+        selectedKeys={selectedKeys}
+        selectionMode={selectionMode}
+        sortDescriptor={sortDescriptor}
+        topContent={topContent}
+        topContentPlacement="outside"
+        onSelectionChange={setSelectedKeys}
+        onSortChange={setSortDescriptor}
+        isStriped={isStriped}
+      >
+        <TableHeader columns={headerColumns}>
+          {(column) => (
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "actions" ? "center" : "start"}
+              allowsSorting={column.sortable}
+              className="text-foreground/80 font-semibold"
+            >
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="flex items-center gap-2"
+              >
+                {column.name}
+                {column.sortable && (
+                  <motion.div
+                    animate={{
+                      rotate: sortDescriptor.column === column.uid && sortDescriptor.direction === "descending" ? 180 : 0
+                    }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <IoChevronDownOutline size={14} className="text-foreground/50" />
+                  </motion.div>
+                )}
+              </motion.div>
+            </TableColumn>
+          )}
+        </TableHeader>
+
+        <TableBody
+          emptyContent={
+            <motion.div
+              className="flex flex-col items-center justify-center py-12"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              {isLoading ? (
+                <div className="flex flex-col items-center gap-4">
+                  <Spinner size="lg" color="primary" />
+                  <p className="text-foreground/60">Cargando datos...</p>
+                </div>
+              ) : (
+                emptyContent || (
+                  <div className="flex flex-col items-center gap-4 text-foreground/60">
+                    <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                      <IoSearchOutline size={24} />
+                    </div>
+                    <div className="text-center">
+                      <p className="font-medium">No se encontraron elementos</p>
+                      <p className="text-sm text-foreground/40">
+                        {filterValue ? `No hay resultados para "${filterValue}"` : `No hay datos en ${title}`}
+                      </p>
+                    </div>
+                  </div>
+                )
+              )}
+            </motion.div>
+          }
+          items={items}
+          isLoading={isLoading}
+          loadingContent={
+            <div className="flex justify-center py-8">
+              <Spinner size="lg" color="primary" />
+            </div>
+          }
+        >
+          {(item) => (
+            <TableRow key={(item as any).id || Math.random()}>
+              {headerColumns.map((column) => (
+                <TableCell key={column.uid}>
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: Math.random() * 0.1 }}
+                  >
+                    {defaultRenderCell(item, column.uid)}
+                  </motion.div>
+                </TableCell>
+              ))}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </motion.div>
   );
 };

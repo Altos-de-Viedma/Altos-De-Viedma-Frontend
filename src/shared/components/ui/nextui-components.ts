@@ -11,6 +11,7 @@ export {
   Checkbox,
   Chip,
   cn,
+  Divider,
   Dropdown,
   DropdownItem,
   DropdownMenu,
