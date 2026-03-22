@@ -1,6 +1,5 @@
 import { ElementType } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 
 import { UI } from '../../../shared';
 import { BadgeIcon } from './BadgeIcon';
@@ -22,88 +21,51 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
   const getCardColor = () => {
     switch (type) {
       case 'emergencies':
-        return 'from-red-500/10 to-red-600/5 border-red-500/20 hover:border-red-500/40';
+        return 'border-red-200 hover:border-red-300 bg-red-50/50 hover:bg-red-50';
       case 'packages':
-        return 'from-blue-500/10 to-blue-600/5 border-blue-500/20 hover:border-blue-500/40';
+        return 'border-blue-200 hover:border-blue-300 bg-blue-50/50 hover:bg-blue-50';
       case 'visitors':
-        return 'from-green-500/10 to-green-600/5 border-green-500/20 hover:border-green-500/40';
+        return 'border-green-200 hover:border-green-300 bg-green-50/50 hover:bg-green-50';
       default:
-        return 'from-primary-500/10 to-primary-600/5 border-primary-500/20 hover:border-primary-500/40';
+        return 'border-gray-200 hover:border-gray-300 bg-gray-50/50 hover:bg-gray-50';
     }
   };
 
   const getIconColor = () => {
     switch (type) {
       case 'emergencies':
-        return 'text-red-500';
+        return 'text-red-600';
       case 'packages':
-        return 'text-blue-500';
+        return 'text-blue-600';
       case 'visitors':
-        return 'text-green-500';
+        return 'text-green-600';
       default:
-        return 'text-primary-500';
+        return 'text-gray-600';
     }
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
-      whileHover={{ y: -8, scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className="group"
+    <UI.Card
+      isPressable
+      className={`
+        w-44 h-44 sm:w-48 sm:h-48 lg:w-52 lg:h-52
+        cursor-pointer border-2 transition-colors duration-200
+        ${getCardColor()}
+        shadow-sm hover:shadow-md
+      `}
+      onPress={() => handleNavigate(route)}
     >
-      <UI.Card
-        isPressable
-        className={`
-          w-44 h-44 sm:w-48 sm:h-48 lg:w-52 lg:h-52
-          cursor-pointer border-2 transition-all duration-300 ease-bounce-apple
-          bg-gradient-to-br ${getCardColor()}
-          shadow-soft hover:shadow-large
-          backdrop-blur-sm
-          relative overflow-hidden
-        `}
-        onPress={() => handleNavigate(route)}
-      >
-        {/* Animated background gradient */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          initial={false}
-        />
+      <UI.CardBody className="flex flex-col justify-center items-center p-6">
+        <div className="mb-4">
+          <div className={`${getIconColor()}`}>
+            <BadgeIcon Icon={Icon} type={type} />
+          </div>
+        </div>
 
-        {/* Shimmer effect on hover */}
-        <motion.div
-          className="absolute inset-0 shimmer-effect opacity-0 group-hover:opacity-100"
-          initial={false}
-        />
-
-        <UI.CardBody className="flex flex-col justify-center items-center p-6 relative z-10">
-          <motion.div
-            className="mb-4"
-            whileHover={{ rotate: 5, scale: 1.1 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-          >
-            <div className={`${getIconColor()} transition-colors duration-300`}>
-              <BadgeIcon Icon={Icon} type={type} />
-            </div>
-          </motion.div>
-
-          <motion.h3
-            className="font-semibold text-lg text-center text-foreground group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300"
-            initial={{ opacity: 0.8 }}
-            whileHover={{ opacity: 1 }}
-          >
-            {title}
-          </motion.h3>
-        </UI.CardBody>
-
-        {/* Bottom accent line */}
-        <motion.div
-          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary-500 to-primary-400 w-0 group-hover:w-full transition-all duration-500 ease-out"
-          initial={{ width: 0 }}
-        />
-      </UI.Card>
-    </motion.div>
+        <h3 className="font-semibold text-lg text-center text-foreground">
+          {title}
+        </h3>
+      </UI.CardBody>
+    </UI.Card>
   );
 };
