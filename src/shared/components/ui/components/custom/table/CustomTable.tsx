@@ -26,10 +26,9 @@ import {
   IoRefreshOutline
 } from 'react-icons/io5';
 import { ReactNode, useCallback, useMemo, useState } from "react";
-import { motion } from 'framer-motion';
 
 export type StatusColorMap = {
-  [ key: string ]: ChipProps[ "color" ];
+  [key: string]: ChipProps["color"];
 };
 
 export interface CustomTableProps {
@@ -84,207 +83,152 @@ export const CustomTable = ({
   });
   const [page, setPage] = useState(1);
 
-  const hasSearchFilter = Boolean( filterValue );
+  const hasSearchFilter = Boolean(filterValue);
 
-  const headerColumns = useMemo( () => {
-    if ( visibleColumns === "all" ) return columns;
-    return columns.filter( ( column ) =>
-      Array.from( visibleColumns as Set<string> ).includes( column.uid )
+  const headerColumns = useMemo(() => {
+    if (visibleColumns === "all") return columns;
+    return columns.filter((column) =>
+      Array.from(visibleColumns as Set<string>).includes(column.uid)
     );
-  }, [ visibleColumns, columns ] );
+  }, [visibleColumns, columns]);
 
-  const filteredItems = useMemo( () => {
-    let filteredData = [ ...data ];
+  const filteredItems = useMemo(() => {
+    let filteredData = [...data];
 
-    if ( hasSearchFilter ) {
+    if (hasSearchFilter) {
       const searchLower = filterValue.toLowerCase().trim();
-      
-      // Búsqueda ultra inteligente en TODOS los campos del objeto
-      filteredData = filteredData.filter( ( item ) => {
-        // Buscar en todas las propiedades del objeto
-        for ( const key in item ) {
-          if ( item.hasOwnProperty( key ) ) {
-            const value = item[ key ];
-            
-            // Ignorar propiedades que son componentes de React o funciones
-            if ( typeof value === 'function' || value?.$$typeof ) continue;
-            
-            // Convertir a string y buscar
-            let stringValue = '';
-            
-            if ( value === null || value === undefined ) {
-              continue;
-            } else if ( typeof value === 'string' ) {
-              stringValue = value.toLowerCase();
-            } else if ( typeof value === 'number' || typeof value === 'boolean' ) {
-              stringValue = String( value ).toLowerCase();
-            } else if ( Array.isArray( value ) ) {
-              // Si es un array, buscar en cada elemento
-              stringValue = value.join( ' ' ).toLowerCase();
-            } else if ( typeof value === 'object' ) {
-              // Si es un objeto (como chips, elementos de React), intentar extraer texto
-              // Para objetos con propiedades children o label
-              if ( value?.props?.children ) {
-                stringValue = String( value.props.children ).toLowerCase();
-              } else if ( value?.label ) {
-                stringValue = String( value.label ).toLowerCase();
-              } else if ( value?.toString ) {
-                stringValue = value.toString().toLowerCase();
-              }
-            }
-            
-            // Si encontramos coincidencia en cualquier campo, retornar true
-            if ( stringValue.includes( searchLower ) ) {
-              return true;
-            }
-          }
-        }
-        return false;
-      } );
+      filteredData = filteredData.filter((item) => {
+        return Object.values(item).some((value) => {
+          if (value === null || value === undefined) return false;
+          const stringValue = String(value).toLowerCase();
+          return stringValue.includes(searchLower);
+        });
+      });
     }
 
-    if ( statusFilter !== "all" && Array.from( statusFilter as Set<string> ).length !== 0 ) {
-      filteredData = filteredData.filter( ( item ) =>
-        ( statusFilter as Set<string> ).has( item.status )
+    if (statusFilter !== "all" && Array.from(statusFilter).length !== Object.keys(statusColorMap).length) {
+      filteredData = filteredData.filter((item) =>
+        Array.from(statusFilter).includes(item.status)
       );
     }
 
     return filteredData;
-  }, [ data, filterValue, statusFilter ] );
+  }, [data, filterValue, statusFilter, hasSearchFilter, statusColorMap]);
 
-  const pages = Math.ceil( filteredItems.length / rowsPerPage );
+  const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
-  const sortedItems = useMemo( () => {
-    return [ ...filteredItems ].sort( ( a, b ) => {
-      const first = a[ sortDescriptor.column as keyof typeof a ];
-      const second = b[ sortDescriptor.column as keyof typeof b ];
+  const items = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
 
-      let cmp = 0;
+    return filteredItems.slice(start, end);
+  }, [page, filteredItems, rowsPerPage]);
 
-      if ( first !== undefined && second !== undefined ) {
-        if ( typeof first === 'string' && typeof second === 'string' ) {
-          cmp = first.localeCompare( second );
-        } else if ( typeof first === 'number' && typeof second === 'number' ) {
-          cmp = first - second;
-        } else {
-          // Si no son strings ni números, convertimos a string para comparar
-          cmp = String( first ).localeCompare( String( second ) );
-        }
-      }
+  const sortedItems = useMemo(() => {
+    return [...items].sort((a: any, b: any) => {
+      const first = a[sortDescriptor.column as keyof any] as number;
+      const second = b[sortDescriptor.column as keyof any] as number;
+      const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
-    } );
-  }, [ sortDescriptor, filteredItems ] );
+    });
+  }, [sortDescriptor, items]);
 
-  const items = useMemo( () => {
-    const start = ( page - 1 ) * rowsPerPage;
-    const end = start + rowsPerPage;
-    return sortedItems.slice( start, end );
-  }, [ page, sortedItems, rowsPerPage ] );
+  const defaultRenderCell = useCallback((item: any, columnKey: string) => {
+    const cellValue = item[columnKey];
 
-  const defaultRenderCell = useCallback( ( item: any, columnKey: string ) => {
-    const cellValue = item[ columnKey ];
-
-    if ( renderCustomCell ) {
-      const customCell = renderCustomCell( item, columnKey );
-      if ( customCell ) return customCell;
+    if (renderCustomCell) {
+      const customCell = renderCustomCell(item, columnKey);
+      if (customCell !== undefined) return customCell;
     }
 
-    if ( statusColorMap[ item.status ] ) {
-      return (
-        <Chip
-          className="capitalize"
-          color={ statusColorMap[ item.status ] }
-          size="sm"
-          variant="flat"
-        >
-          { cellValue }
-        </Chip>
-      );
+    switch (columnKey) {
+      case "status":
+        return (
+          <Chip className="capitalize" color={statusColorMap[item.status]} size="sm" variant="flat">
+            {cellValue}
+          </Chip>
+        );
+      default:
+        return cellValue;
     }
+  }, [renderCustomCell, statusColorMap]);
 
-    return cellValue;
-  }, [ statusColorMap, renderCustomCell ] );
+  const onNextPage = useCallback(() => {
+    if (page < pages) {
+      setPage(page + 1);
+    }
+  }, [page, pages]);
 
-  const onSearchChange = useCallback( ( value: string ) => {
-    if ( value ) {
-      setFilterValue( value );
-      setPage( 1 );
+  const onPreviousPage = useCallback(() => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  }, [page]);
+
+  const onRowsPerPageChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setRowsPerPage(Number(e.target.value));
+    setPage(1);
+  }, []);
+
+  const onSearchChange = useCallback((value?: string) => {
+    if (value) {
+      setFilterValue(value);
+      setPage(1);
     } else {
-      setFilterValue( "" );
+      setFilterValue("");
     }
-  }, [] );
+  }, []);
 
-  const onClear = useCallback( () => {
-    setFilterValue( "" );
-    setPage( 1 );
-  }, [] );
+  const onClear = useCallback(() => {
+    setFilterValue("");
+    setPage(1);
+  }, []);
 
   const topContent = useMemo(() => (
-    <motion.div
-      className="flex flex-col gap-4"
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
-    >
+    <div className="flex flex-col gap-4">
       <div className="flex justify-between gap-3 items-end">
-        <motion.div
-          className="w-full sm:max-w-[44%]"
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-        >
+        <div className="w-full sm:max-w-[44%]">
           <Input
             isClearable
             className="w-full"
             placeholder={`Buscar ${title}...`}
             startContent={<IoSearchOutline className="text-foreground/50" />}
             value={filterValue}
-            onClear={onClear}
+            onClear={() => onClear()}
             onValueChange={onSearchChange}
             classNames={{
-              base: "glass-effect",
+              base: "bg-white dark:bg-gray-800",
               input: "text-foreground",
-              inputWrapper: "border border-gray-200/50 dark:border-gray-700/50 hover:border-primary-500/50 transition-colors duration-300"
+              inputWrapper: "border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
             }}
           />
-        </motion.div>
+        </div>
 
         <div className="flex gap-3">
           {onRefresh && (
-            <motion.div
-              whileHover={{ scale: 1.05, rotate: 180 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+            <Button
+              isIconOnly
+              variant="light"
+              onPress={onRefresh}
+              isLoading={isLoading}
+              aria-label="Actualizar datos"
             >
-              <Button
-                isIconOnly
-                variant="light"
-                onPress={onRefresh}
-                isLoading={isLoading}
-                className="btn-hover-lift"
-                aria-label="Actualizar datos"
-              >
-                <IoRefreshOutline size={18} />
-              </Button>
-            </motion.div>
+              <IoRefreshOutline size={18} />
+            </Button>
           )}
 
           {statusFilter !== "all" && (
             <Dropdown>
               <DropdownTrigger>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <Button
+                  variant="flat"
+                  startContent={<IoFunnelOutline size={16} />}
+                  endContent={<IoChevronDownOutline size={16} />}
+                  className="hidden sm:flex bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
                 >
-                  <Button
-                    variant="flat"
-                    startContent={<IoFunnelOutline size={16} />}
-                    endContent={<IoChevronDownOutline size={16} />}
-                    className="hidden sm:flex glass-effect border border-gray-200/50 dark:border-gray-700/50 hover:border-primary-500/50 transition-all duration-300"
-                  >
-                    Estado
-                  </Button>
-                </motion.div>
+                  Estado
+                </Button>
               </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
@@ -294,33 +238,29 @@ export const CustomTable = ({
                 selectionMode="multiple"
                 onSelectionChange={setStatusFilter}
                 classNames={{
-                  base: "glass-effect border border-gray-200/50 dark:border-gray-700/50 shadow-large"
+                  base: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg"
                 }}
               >
-                {Array.from(new Set(data.map(item => item.status))).map((status) => (
-                  <DropdownItem key={status} className="capitalize hover:bg-primary-500/10 transition-colors">
-                    {status}
-                  </DropdownItem>
-                ))}
+                <DropdownItem key="active" className="capitalize">
+                  Activo
+                </DropdownItem>
+                <DropdownItem key="inactive" className="capitalize">
+                  Inactivo
+                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           )}
 
           <Dropdown>
             <DropdownTrigger>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <Button
+                variant="flat"
+                startContent={<IoGridOutline size={16} />}
+                endContent={<IoChevronDownOutline size={16} />}
+                className="hidden sm:flex bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
               >
-                <Button
-                  variant="flat"
-                  startContent={<IoGridOutline size={16} />}
-                  endContent={<IoChevronDownOutline size={16} />}
-                  className="hidden sm:flex glass-effect border border-gray-200/50 dark:border-gray-700/50 hover:border-primary-500/50 transition-all duration-300"
-                >
-                  Columnas
-                </Button>
-              </motion.div>
+                Columnas
+              </Button>
             </DropdownTrigger>
             <DropdownMenu
               disallowEmptySelection
@@ -330,11 +270,11 @@ export const CustomTable = ({
               selectionMode="multiple"
               onSelectionChange={setVisibleColumns}
               classNames={{
-                base: "glass-effect border border-gray-200/50 dark:border-gray-700/50 shadow-large"
+                base: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg"
               }}
             >
               {columns.map((column) => (
-                <DropdownItem key={column.uid} className="capitalize hover:bg-primary-500/10 transition-colors">
+                <DropdownItem key={column.uid} className="capitalize">
                   {column.name}
                 </DropdownItem>
               ))}
@@ -342,23 +282,14 @@ export const CustomTable = ({
           </Dropdown>
 
           {addButtonComponent && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-            >
+            <div>
               {addButtonComponent}
-            </motion.div>
+            </div>
           )}
         </div>
       </div>
 
-      <motion.div
-        className="flex justify-between items-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-      >
+      <div className="flex justify-between items-center">
         <span className="text-foreground/60 text-sm font-medium">
           Total {data.length} elementos
           {filteredItems.length !== data.length && (
@@ -367,16 +298,12 @@ export const CustomTable = ({
             </span>
           )}
         </span>
-
-        <label className="flex items-center text-foreground/60 text-sm gap-2">
-          Elementos por página:
+        <label className="flex items-center text-foreground/60 text-sm">
+          Filas por página:
           <select
-            className="bg-background border border-gray-200/50 dark:border-gray-700/50 rounded-lg px-2 py-1 text-foreground text-sm focus:border-primary-500 focus:outline-none transition-colors"
+            className="bg-transparent outline-none text-foreground/60 text-sm ml-2"
             value={rowsPerPage}
-            onChange={(e) => {
-              setRowsPerPage(Number(e.target.value));
-              setPage(1);
-            }}
+            onChange={onRowsPerPageChange}
           >
             <option value="5">5</option>
             <option value="10">10</option>
@@ -385,8 +312,8 @@ export const CustomTable = ({
             <option value="50">50</option>
           </select>
         </label>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   ), [
     filterValue,
     visibleColumns,
@@ -401,33 +328,20 @@ export const CustomTable = ({
     onRefresh,
     isLoading,
     rowsPerPage,
+    onRowsPerPageChange,
   ]);
 
   const bottomContent = useMemo(() => (
-    <motion.div
-      className="py-4 px-2 flex justify-between items-center"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
-    >
+    <div className="py-4 px-2 flex justify-between items-center">
       {selectionMode !== "none" && (
-        <motion.span
-          className="w-[30%] text-sm text-foreground/60 font-medium"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+        <span className="w-[30%] text-sm text-foreground/60 font-medium">
           {selectedKeys === "all"
             ? "Todos los elementos seleccionados"
             : `${selectedKeys.size} de ${filteredItems.length} seleccionados`}
-        </motion.span>
+        </span>
       )}
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.2 }}
-      >
+      <div>
         <Pagination
           isCompact
           showControls
@@ -437,67 +351,50 @@ export const CustomTable = ({
           total={pages}
           onChange={setPage}
           classNames={{
-            wrapper: "gap-0 overflow-visible h-8 rounded-lg border border-gray-200/50 dark:border-gray-700/50 shadow-medium",
-            item: "w-8 h-8 text-sm rounded-none bg-transparent hover:bg-primary-500/10 transition-colors",
+            wrapper: "gap-0 overflow-visible h-8 rounded border border-divider",
+            item: "w-8 h-8 text-small rounded-none bg-transparent",
             cursor: "bg-primary-500 shadow-lg text-white font-medium",
-            prev: "hover:bg-primary-500/10 transition-colors",
-            next: "hover:bg-primary-500/10 transition-colors",
+            prev: "hover:bg-primary-500/10",
+            next: "hover:bg-primary-500/10",
           }}
         />
-      </motion.div>
+      </div>
 
       <div className="hidden sm:flex w-[30%] justify-end gap-2">
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+        <Button
+          size="sm"
+          variant="flat"
+          isDisabled={page === 1}
+          onPress={onPreviousPage}
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
         >
-          <Button
-            size="sm"
-            variant="flat"
-            isDisabled={page === 1}
-            onPress={() => page > 1 && setPage(page - 1)}
-            className="glass-effect border border-gray-200/50 dark:border-gray-700/50 hover:border-primary-500/50 transition-all duration-300"
-          >
-            Anterior
-          </Button>
-        </motion.div>
+          Anterior
+        </Button>
 
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+        <Button
+          size="sm"
+          variant="flat"
+          isDisabled={page === pages}
+          onPress={onNextPage}
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
         >
-          <Button
-            size="sm"
-            variant="flat"
-            isDisabled={page === pages}
-            onPress={() => page < pages && setPage(page + 1)}
-            className="glass-effect border border-gray-200/50 dark:border-gray-700/50 hover:border-primary-500/50 transition-all duration-300"
-          >
-            Siguiente
-          </Button>
-        </motion.div>
+          Siguiente
+        </Button>
       </div>
-    </motion.div>
-  ), [selectedKeys, filteredItems.length, page, pages, selectionMode]);
+    </div>
+  ), [selectedKeys, filteredItems.length, page, pages, selectionMode, onPreviousPage, onNextPage]);
 
   return (
-    <motion.div
-      className={`w-full ${className}`}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-    >
+    <div className={`w-full ${className}`}>
       <Table
         aria-label={`Tabla de ${title}`}
         isHeaderSticky
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
         classNames={{
-          wrapper: "max-h-[500px] glass-effect border border-gray-200/50 dark:border-gray-700/50 shadow-large rounded-2xl overflow-hidden",
-          th: "bg-gray-50/80 dark:bg-gray-800/80 text-foreground font-semibold first:rounded-tl-2xl last:rounded-tr-2xl border-b border-gray-200/50 dark:border-gray-700/50",
-          td: "border-b border-gray-200/30 dark:border-gray-700/30 group-hover:bg-primary-50/50 dark:group-hover:bg-primary-950/20 transition-colors duration-200",
-          tbody: "[&>tr:last-child>td]:border-b-0",
-          tr: "hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-all duration-200 cursor-pointer",
+          wrapper: "max-h-[500px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm rounded-lg overflow-hidden",
+          th: "bg-gray-50 dark:bg-gray-700 text-foreground font-semibold border-b border-gray-200 dark:border-gray-600",
+          td: "border-b border-gray-100 dark:border-gray-700",
         }}
         selectedKeys={selectedKeys}
         selectionMode={selectionMode}
@@ -516,36 +413,21 @@ export const CustomTable = ({
               allowsSorting={column.sortable}
               className="text-foreground/80 font-semibold"
             >
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="flex items-center gap-2"
-              >
+              <div className="flex items-center gap-2">
                 {column.name}
                 {column.sortable && (
-                  <motion.div
-                    animate={{
-                      rotate: sortDescriptor.column === column.uid && sortDescriptor.direction === "descending" ? 180 : 0
-                    }}
-                    transition={{ duration: 0.2 }}
-                  >
+                  <div>
                     <IoChevronDownOutline size={14} className="text-foreground/50" />
-                  </motion.div>
+                  </div>
                 )}
-              </motion.div>
+              </div>
             </TableColumn>
           )}
         </TableHeader>
 
         <TableBody
           emptyContent={
-            <motion.div
-              className="flex flex-col items-center justify-center py-12"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-            >
+            <div className="flex flex-col items-center justify-center py-12">
               {isLoading ? (
                 <div className="flex flex-col items-center gap-4">
                   <Spinner size="lg" color="primary" />
@@ -554,21 +436,20 @@ export const CustomTable = ({
               ) : (
                 emptyContent || (
                   <div className="flex flex-col items-center gap-4 text-foreground/60">
-                    <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                      <IoSearchOutline size={24} />
-                    </div>
                     <div className="text-center">
-                      <p className="font-medium">No se encontraron elementos</p>
-                      <p className="text-sm text-foreground/40">
-                        {filterValue ? `No hay resultados para "${filterValue}"` : `No hay datos en ${title}`}
+                      <p className="text-lg font-medium">No hay datos disponibles</p>
+                      <p className="text-sm">
+                        {hasSearchFilter
+                          ? "No se encontraron resultados para tu búsqueda"
+                          : `No hay ${title} para mostrar`}
                       </p>
                     </div>
                   </div>
                 )
               )}
-            </motion.div>
+            </div>
           }
-          items={items}
+          items={sortedItems}
           isLoading={isLoading}
           loadingContent={
             <div className="flex justify-center py-8">
@@ -580,19 +461,15 @@ export const CustomTable = ({
             <TableRow key={(item as any).id || Math.random()}>
               {headerColumns.map((column) => (
                 <TableCell key={column.uid}>
-                  <motion.div
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: Math.random() * 0.1 }}
-                  >
+                  <div>
                     {defaultRenderCell(item, column.uid)}
-                  </motion.div>
+                  </div>
                 </TableCell>
               ))}
             </TableRow>
           )}
         </TableBody>
       </Table>
-    </motion.div>
+    </div>
   );
 };
