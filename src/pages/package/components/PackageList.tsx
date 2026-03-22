@@ -96,7 +96,17 @@ export const PackageList = () => {
 
   return (
     <div className="flex w-full flex-col">
-      <UI.Tabs aria-label="Options" color="primary" variant="bordered" selectedKey={ selected } onSelectionChange={ setSelected }>
+      <UI.Tabs
+        aria-label="Options"
+        selectedKey={ selected }
+        onSelectionChange={ setSelected }
+        classNames={{
+          tabList: "gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg",
+          cursor: "bg-white dark:bg-gray-700 shadow-sm",
+          tab: "px-4 py-2 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white",
+          tabContent: "group-data-[selected=true]:text-gray-900 dark:group-data-[selected=true]:text-white"
+        }}
+      >
         <UI.Tab
           key="pending"
           title={

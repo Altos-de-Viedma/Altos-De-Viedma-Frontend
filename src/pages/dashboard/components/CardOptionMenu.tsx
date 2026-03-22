@@ -21,26 +21,26 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
   const getCardColor = () => {
     switch (type) {
       case 'emergencies':
-        return 'border-red-200 hover:border-red-300 bg-red-50/50 hover:bg-red-50';
+        return 'border-red-300 hover:border-red-400 bg-red-50 hover:bg-red-100 dark:border-red-600 dark:hover:border-red-500 dark:bg-red-900/20 dark:hover:bg-red-900/30';
       case 'packages':
-        return 'border-blue-200 hover:border-blue-300 bg-blue-50/50 hover:bg-blue-50';
+        return 'border-blue-300 hover:border-blue-400 bg-blue-50 hover:bg-blue-100 dark:border-blue-600 dark:hover:border-blue-500 dark:bg-blue-900/20 dark:hover:bg-blue-900/30';
       case 'visitors':
-        return 'border-green-200 hover:border-green-300 bg-green-50/50 hover:bg-green-50';
+        return 'border-green-300 hover:border-green-400 bg-green-50 hover:bg-green-100 dark:border-green-600 dark:hover:border-green-500 dark:bg-green-900/20 dark:hover:bg-green-900/30';
       default:
-        return 'border-gray-200 hover:border-gray-300 bg-gray-50/50 hover:bg-gray-50';
+        return 'border-gray-300 hover:border-gray-400 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800/50 dark:hover:bg-gray-700/50';
     }
   };
 
   const getIconColor = () => {
     switch (type) {
       case 'emergencies':
-        return 'text-red-600';
+        return 'text-red-600 dark:text-red-400';
       case 'packages':
-        return 'text-blue-600';
+        return 'text-blue-600 dark:text-blue-400';
       case 'visitors':
-        return 'text-green-600';
+        return 'text-green-600 dark:text-green-400';
       default:
-        return 'text-gray-600';
+        return 'text-gray-600 dark:text-gray-300';
     }
   };
 
@@ -62,7 +62,7 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
           </div>
         </div>
 
-        <h3 className="font-semibold text-lg text-center text-foreground">
+        <h3 className="font-semibold text-lg text-center text-gray-800 dark:text-gray-200">
           {title}
         </h3>
       </UI.CardBody>
