@@ -421,24 +421,10 @@ export const CustomTable = ({
               key={column.uid}
               align={column.uid === "profilePicture" || column.uid === "actions" ? "center" : "start"}
               allowsSorting={column.sortable}
-              className="text-foreground font-medium group hover:text-foreground transition-colors"
+              className="text-foreground font-medium hover:text-foreground transition-colors cursor-pointer"
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center">
                 <span className="truncate">{column.name}</span>
-                {column.sortable && (
-                  <IoChevronDownOutline
-                    size={14}
-                    className={`text-foreground/30 transition-all duration-200 ${
-                      sortDescriptor.column === column.uid
-                        ? 'opacity-100 text-primary-500'
-                        : 'opacity-0 group-hover:opacity-60'
-                    } ${
-                      sortDescriptor.column === column.uid && sortDescriptor.direction === 'ascending'
-                        ? 'rotate-180'
-                        : ''
-                    }`}
-                  />
-                )}
               </div>
             </TableColumn>
           )}
