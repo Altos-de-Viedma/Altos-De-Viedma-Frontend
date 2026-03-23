@@ -168,22 +168,24 @@ export const UserModal = ({ user, children }: Props) => {
                 </div>
               </UI.ModalBody>
 
-              <UI.ModalFooter className="border-t border-gray-200 dark:border-gray-700">
+              <UI.ModalFooter className="border-t border-gray-200 dark:border-gray-700 flex justify-center gap-4 py-6">
                 <UI.Button
-                  color="primary"
-                  variant="light"
+                  color="danger"
+                  variant="bordered"
                   onPress={onClose}
                   startContent={<Icons.IoCloseOutline size={18} />}
+                  className="min-w-32 font-medium"
                 >
                   Cerrar
                 </UI.Button>
                 <UI.Button
-                  color="primary"
                   as="a"
                   href={`https://web.whatsapp.com/send?phone=${user.phone}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   startContent={<Icons.IoLogoWhatsapp size={18} />}
+                  className="min-w-48 bg-green-500 hover:bg-green-600 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+                  variant="solid"
                 >
                   Contactar por WhatsApp
                 </UI.Button>
