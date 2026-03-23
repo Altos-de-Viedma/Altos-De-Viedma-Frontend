@@ -7,3 +7,5 @@ export * from './generic-page/GenericPage';
 export * from './message-card/MessageCard';
 export * from './responsive';
 export * from './ui';
+export * from './UserTooltip';
+export * from './UserModal';

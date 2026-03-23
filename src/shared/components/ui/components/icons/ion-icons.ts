@@ -43,6 +43,7 @@ export {
   IoLockClosedOutline,
   IoLockOpenOutline,
   IoLogOutOutline,
+  IoLogoWhatsapp,
   IoManOutline,
   IoMegaphoneOutline,
   IoMenuOutline,

@@ -24,7 +24,7 @@ export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
   const lastNotifiedCount = useRef<number>(-1);
 
   // Real-time data connection
-  const realTimeData = useRealTimeData({
+  useRealTimeData({
     enabled: true,
   });
 

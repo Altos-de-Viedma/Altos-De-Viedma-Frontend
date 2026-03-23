@@ -1,6 +1,6 @@
 import React from "react";
 
-import { CustomTable, Icons, StatusColorMap, UI, useWhatsApp, useDisclosure, IconContainer } from '../../../shared';
+import { CustomTable, Icons, StatusColorMap, UI, useWhatsApp, useDisclosure, IconContainer, UserModal } from '../../../shared';
 import { PackageForm } from './PackageForm';
 import { usePackages, useMarkAsReceived } from '../hooks';
 import { useAuthStore } from '../../auth';
@@ -65,7 +65,11 @@ export const PackageList = () => {
     ...pkg,
     date: formatDate( pkg.date ),
     arrivalDate: formatDate( pkg.arrivalDate ),
-    user: `${ pkg.user.lastName }, ${ pkg.user.name }`,
+    user: (
+      <UserModal user={pkg.user}>
+        {`${ pkg.user.lastName }, ${ pkg.user.name }`}
+      </UserModal>
+    ),
     phone: generateWhatsAppLink( pkg.user.phone ),
     property: pkg.property.isMain ? `🏠 ${ pkg.property.address }` : pkg.property.address,
     receivedStatus: pkg.received

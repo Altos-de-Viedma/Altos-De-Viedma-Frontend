@@ -44,6 +44,7 @@ export {
   TableRow,
   Tabs,
   Textarea,
+  Tooltip,
   useDisclosure,
 } from '@heroui/react';
 

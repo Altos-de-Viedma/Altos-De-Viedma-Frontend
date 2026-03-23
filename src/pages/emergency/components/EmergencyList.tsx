@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { CustomTable, Icons, StatusColorMap, UI, useDisclosure, IconContainer, useWhatsApp } from '../../../shared';
+import { CustomTable, Icons, StatusColorMap, UI, useDisclosure, IconContainer, useWhatsApp, UserModal } from '../../../shared';
 import { EmergencyForm } from './EmergencyForm';
 import { useEmergencies, useEndEmergency, useMarkAsSeenEmergency } from '../hooks';
 import { useAuthStore } from '../../auth';
@@ -70,7 +70,11 @@ export const EmergencyList = () => {
   const transformedEmergencies = emergencies.map( emergency => ( {
     ...emergency,
     date: formatDate( emergency.date ),
-    user: `${ emergency.user.lastName }, ${ emergency.user.name }`,
+    user: (
+      <UserModal user={emergency.user}>
+        {`${ emergency.user.lastName }, ${ emergency.user.name }`}
+      </UserModal>
+    ),
     phone: generateWhatsAppLink( emergency.user.phone ),
     status: emergency.emergencyEnded
       ? <UI.Chip color="success" startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> } variant="flat">Finalizada</UI.Chip>

@@ -3,11 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { UI } from '../../../shared';
 import { BadgeIcon } from './BadgeIcon';
-import { useNotificationSound } from '../../../hooks/useNotificationSound';
-import { useSeenNotifications } from '../../../hooks/useSeenNotifications';
-import { useEmergencies } from '../../emergency';
-import { usePackages } from '../../package';
-import { useVisitors } from '../../visitor';
 
 interface Props {
   title: string;
@@ -19,20 +14,6 @@ interface Props {
 export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
   const navigate = useNavigate();
   const [badgeCount, setBadgeCount] = useState(0);
-
-  // Data hooks
-  const { emergencies } = useEmergencies();
-  const { packages } = usePackages();
-  const { visitors } = useVisitors();
-
-  // Seen notifications hook
-  const { markAsSeen, isNotificationSeen } = useSeenNotifications();
-
-  // Notification sound hook
-  const { stopSound } = useNotificationSound({
-    isActive: badgeCount > 0,
-    type: type || 'packages', // Default fallback
-  });
 
   const handleNavigate = (route: string) => {
     navigate(route);

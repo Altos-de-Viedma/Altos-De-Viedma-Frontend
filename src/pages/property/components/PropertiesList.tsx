@@ -1,4 +1,4 @@
-import { CustomTable, StatusColorMap, UI, useWhatsApp } from '../../../shared';
+import { CustomTable, StatusColorMap, UI, useWhatsApp, UserModal } from '../../../shared';
 import { useProperties, useSetMainProperty } from '../hooks';
 import { PropertyForm } from './PropertyForm';
 import { useAuthStore } from '../../auth';
@@ -53,7 +53,11 @@ export const PropertiesList = () => {
       </UI.Button>
     ),
     address: property.isMain ? `🏠 ${ property.address }` : property.address,
-    property: `${ property.user.lastName }, ${ property.user.name }`,
+    property: (
+      <UserModal user={property.user}>
+        {`${ property.user.lastName }, ${ property.user.name }`}
+      </UserModal>
+    ),
     phone: generateWhatsAppLink( property.user.phone ),
     description: property.description,
     ...( user?.roles?.includes( 'admin' ) && !user?.roles?.includes( 'security' ) && { actions: <PropertyForm id={ property.id } /> } )

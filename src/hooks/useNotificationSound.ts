@@ -63,7 +63,7 @@ export const useNotificationSound = ({ isActive, type }: UseNotificationSoundPro
     // Create oscillators for each frequency (chord)
     const oscillators: OscillatorNode[] = [];
 
-    config.frequencies.forEach((frequency, index) => {
+    config.frequencies.forEach((frequency) => {
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
 
