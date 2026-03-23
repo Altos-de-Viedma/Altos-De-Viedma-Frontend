@@ -393,8 +393,8 @@ export const CustomTable = ({
         bottomContentPlacement="outside"
         classNames={{
           wrapper: "max-h-[500px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm rounded-lg overflow-hidden",
-          th: "bg-gray-50 dark:bg-gray-700 text-foreground font-semibold border-b border-gray-200 dark:border-gray-600",
-          td: "border-b border-gray-100 dark:border-gray-700",
+          th: "bg-gray-50 dark:bg-gray-700 text-foreground font-semibold border-b border-gray-200 dark:border-gray-600 text-center py-3 px-4",
+          td: "border-b border-gray-100 dark:border-gray-700 text-center py-3 px-4",
         }}
         selectedKeys={selectedKeys}
         selectionMode={selectionMode}
@@ -409,16 +409,14 @@ export const CustomTable = ({
           {(column) => (
             <TableColumn
               key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
+              align="center"
               allowsSorting={column.sortable}
               className="text-foreground/80 font-semibold"
             >
-              <div className="flex items-center gap-2">
-                {column.name}
+              <div className="flex items-center justify-center gap-2 min-h-[2.5rem]">
+                <span className="text-center">{column.name}</span>
                 {column.sortable && (
-                  <div>
-                    <IoChevronDownOutline size={14} className="text-foreground/50" />
-                  </div>
+                  <IoChevronDownOutline size={14} className="text-foreground/50" />
                 )}
               </div>
             </TableColumn>
@@ -461,7 +459,7 @@ export const CustomTable = ({
             <TableRow key={(item as any).id || Math.random()}>
               {headerColumns.map((column) => (
                 <TableCell key={column.uid}>
-                  <div>
+                  <div className="flex items-center justify-center min-h-[2.5rem]">
                     {defaultRenderCell(item, column.uid)}
                   </div>
                 </TableCell>
