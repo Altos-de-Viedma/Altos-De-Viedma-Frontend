@@ -127,7 +127,9 @@ export const VisitorForm = ( { id }: Props ) => {
       <UI.Button
         startContent={ id ? '' : <Icons.IoAddOutline size={ 24 } /> }
         onPress={ onOpen }
-        variant="light"
+        color="primary"
+        variant="solid"
+        className="bg-primary-600 hover:bg-primary-700 text-white font-medium"
       >
         { id ? <><Icons.IoPencilOutline size={ 24 } /> Editar</> : 'Nuevo' }
       </UI.Button>
@@ -150,10 +152,12 @@ export const VisitorForm = ( { id }: Props ) => {
                   />
                   <div className="flex flex-row gap-2">
                     <UI.Button
-                      variant="light"
+                      variant="solid"
+                      color="primary"
                       isDisabled={ isUploading }
                       startContent={ isUploading ? <UI.Spinner size="sm" /> : <Icons.IoCameraOutline size={ 20 } /> }
                       onPress={ handleGallerySelect }
+                      className="bg-primary-600 hover:bg-primary-700 text-white"
                     >
                       { isUploading ? 'Subiendo...' : 'Cámara' }
                     </UI.Button>
@@ -245,10 +249,11 @@ export const VisitorForm = ( { id }: Props ) => {
               <UI.ModalFooter className="flex justify-center space-x-2">
                 <UI.Button
                   color="danger"
-                  variant="light"
+                  variant="solid"
                   onPress={ onClose }
                   isDisabled={ isPending || isUploading }
                   startContent={ <Icons.IoCloseOutline size={ 24 } /> }
+                  className="bg-red-600 hover:bg-red-700 text-white font-medium"
                 >
                   Cancelar
                 </UI.Button>
@@ -256,18 +261,22 @@ export const VisitorForm = ( { id }: Props ) => {
                 { id && visitor?.visitCompleted ? (
                   <UI.Button
                     color="primary"
+                    variant="solid"
                     onPress={ handleReenterVisit }
                     isLoading={ isPending }
                     startContent={ !isPending && <Icons.IoSaveOutline size={ 24 } /> }
+                    className="bg-primary-600 hover:bg-primary-700 text-white font-medium"
                   >
                     Reingresar visita
                   </UI.Button>
                 ) : (
                   <UI.Button
                     color="primary"
+                    variant="solid"
                     type="submit"
                     isLoading={ isPending || isUploading }
                     startContent={ (!isPending && !isUploading) && <Icons.IoSaveOutline size={ 24 } /> }
+                    className="bg-primary-600 hover:bg-primary-700 text-white font-medium"
                   >
                     Guardar
                   </UI.Button>

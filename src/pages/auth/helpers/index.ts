@@ -1,1 +1,1 @@
-export * from './useParticles';
+// Auth helpers index - currently empty

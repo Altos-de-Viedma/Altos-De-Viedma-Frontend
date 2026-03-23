@@ -4,7 +4,6 @@ export * from './auth/components/login-form/LoginForm';
 export * from './auth/components/login-form/LoginFormInput';
 export * from './auth/components/revovery-account/RecoverAccount';
 export * from './auth/components/revovery-account/RecoverAccountFormInput';
-export * from './auth/helpers/useParticles';
 export * from './auth/hooks/useAuthStatus';
 export * from './auth/interfaces/auth-status.interface';
 export * from './auth/interfaces/LoginInputs';

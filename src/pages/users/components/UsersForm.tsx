@@ -89,7 +89,7 @@ export const UsersForm = ( { id }: Props ) => {
 
   return (
     <div>
-      <UI.Button startContent={ id ? '' : <Icons.IoAddOutline size={ 24 } /> } onPress={ onOpen } variant="light">
+      <UI.Button startContent={ id ? '' : <Icons.IoAddOutline size={ 24 } /> } onPress={ onOpen } color="primary" variant="solid" className="bg-primary-600 hover:bg-primary-700 text-white font-medium">
         { id ? <><Icons.IoPencilOutline size={ 24 } /> Editar</> : 'Nuevo' }
       </UI.Button>
 
@@ -168,10 +168,11 @@ export const UsersForm = ( { id }: Props ) => {
                 { isEditing && (
                   <div className="flex justify-center py-2">
                     <UI.Button
-                      variant="light"
+                      variant="solid"
                       color="primary"
                       startContent={ <Icons.IoKeyOutline size={ 20 } /> }
                       onPress={ () => setIsPasswordModalOpen( true ) }
+                      className="bg-primary-600 hover:bg-primary-700 text-white font-medium"
                     >
                       Cambiar contraseña
                     </UI.Button>
@@ -254,19 +255,22 @@ export const UsersForm = ( { id }: Props ) => {
               <UI.ModalFooter className="flex justify-center space-x-2">
                 <UI.Button
                   color="danger"
-                  variant="light"
+                  variant="solid"
                   onPress={ onClose }
                   isDisabled={ isPending }
                   startContent={ <Icons.IoCloseOutline size={ 24 } /> }
+                  className="bg-red-600 hover:bg-red-700 text-white font-medium"
                 >
                   Cancelar
                 </UI.Button>
 
                 <UI.Button
                   color="primary"
+                  variant="solid"
                   type="submit"
                   isLoading={ isPending }
                   startContent={ !isPending && <Icons.IoSaveOutline size={ 24 } /> }
+                  className="bg-primary-600 hover:bg-primary-700 text-white font-medium"
                 >
                   Guardar
                 </UI.Button>

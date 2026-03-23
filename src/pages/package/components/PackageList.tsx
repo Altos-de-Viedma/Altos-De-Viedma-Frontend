@@ -5,6 +5,7 @@ import { PackageForm } from './PackageForm';
 import { usePackages, useMarkAsReceived } from '../hooks';
 import { useAuthStore } from '../../auth';
 import { formatDate } from '../helper';
+import { useSeenNotifications } from '../../../hooks/useSeenNotifications';
 
 
 export const PackageList = () => {
@@ -16,6 +17,23 @@ export const PackageList = () => {
   const { user } = useAuthStore( ( state ) => ( { user: state.user } ) );
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [ packageToMark, setPackageToMark ] = React.useState<any | null>( null );
+  const { markAsSeen } = useSeenNotifications();
+
+  // Handle marking package as received - integrate with notification system
+  const handleMarkAsReceived = async () => {
+    if ( packageToMark ) {
+      try {
+        // Mark as received in the backend
+        await markAsReceived( packageToMark.id );
+        // Also mark as seen in the notification system (removes notification)
+        markAsSeen('packages', packageToMark.id);
+        onClose();
+        setPackageToMark( null );
+      } catch (error) {
+        console.error('Error marking package as received:', error);
+      }
+    }
+  };
 
   if ( !user ) return null;
 
@@ -87,11 +105,7 @@ export const PackageList = () => {
   const addButtonComponent = user?.roles?.includes( 'security' ) ? null : <PackageForm />;
 
   const handleConfirm = () => {
-    if ( packageToMark ) {
-      markAsReceived( packageToMark.id );
-      onClose();
-      setPackageToMark( null );
-    }
+    handleMarkAsReceived();
   };
 
   return (

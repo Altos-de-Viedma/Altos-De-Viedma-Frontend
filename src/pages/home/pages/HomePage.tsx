@@ -35,7 +35,7 @@ export const HomePage: React.FC = () => {
     >
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-4 lg:gap-2 xl:gap-1.5">
             {filteredCardOptions.map((option, index) => (
               <CardOptionMenu
                 key={index}

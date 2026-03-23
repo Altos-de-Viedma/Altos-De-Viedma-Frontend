@@ -12,6 +12,7 @@ import { queryClient } from './api';
 import { router } from './router/routerConfig';
 import { useThemeStore } from './store';
 import { useRealTimeData } from './hooks/useRealTimeData';
+import { ErrorBoundary } from './shared';
 
 // Componente separado para manejar la conexión en tiempo real
 const RealTimeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -38,34 +39,52 @@ const RealTimeProvider: React.FC<{ children: React.ReactNode }> = ({ children })
 const App = () => {
   const { darkMode } = useThemeStore();
 
+  // Apply theme to document element
+  React.useEffect(() => {
+    const root = document.documentElement;
+    if (darkMode === 'dark') {
+      root.classList.add('dark');
+      root.classList.remove('light');
+    } else {
+      root.classList.add('light');
+      root.classList.remove('dark');
+    }
+  }, [darkMode]);
+
   return (
     <React.StrictMode>
-      <HeroUIProvider>
-        <QueryClientProvider client={queryClient}>
-          <RealTimeProvider>
-            <main
-              className={`w-full ${darkMode === 'dark' ? 'dark' : ''} text-foreground bg-background transition-theme duration-500 ease-in-out min-h-screen`}
-            >
-              <RouterProvider router={router} />
-              <ToastContainer
-                position="bottom-right"
-                autoClose={4000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme={darkMode === 'dark' ? 'dark' : 'light'}
-                className="toast-container"
-                toastClassName="glass-effect border border-gray-200/50 dark:border-gray-700/50 shadow-large"
-              />
-            </main>
-          </RealTimeProvider>
-          <ReactQueryDevtools />
-        </QueryClientProvider>
-      </HeroUIProvider>
+      <ErrorBoundary>
+        <HeroUIProvider>
+          <QueryClientProvider client={queryClient}>
+            <ErrorBoundary>
+              <RealTimeProvider>
+                <main
+                  className={`w-full ${darkMode === 'dark' ? 'dark' : 'light'} text-foreground bg-background transition-colors duration-300 ease-in-out min-h-screen`}
+                >
+                  <ErrorBoundary>
+                    <RouterProvider router={router} />
+                  </ErrorBoundary>
+                  <ToastContainer
+                    position="bottom-right"
+                    autoClose={4000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme={darkMode === 'dark' ? 'dark' : 'light'}
+                    className="toast-container"
+                    toastClassName="glass-effect border border-gray-200/50 dark:border-gray-700/50 shadow-large"
+                  />
+                </main>
+              </RealTimeProvider>
+            </ErrorBoundary>
+            <ReactQueryDevtools />
+          </QueryClientProvider>
+        </HeroUIProvider>
+      </ErrorBoundary>
     </React.StrictMode>
   );
 };

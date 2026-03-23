@@ -6,18 +6,21 @@ import { useEmergencies } from '../../emergency';
 import { usePackages } from '../../package';
 import { useVisitors } from '../../visitor';
 import { useRealTimeData } from '../../../hooks/useRealTimeData';
+import { useSeenNotifications } from '../../../hooks/useSeenNotifications';
 
 interface Props {
   Icon: ElementType;
   type?: 'emergencies' | 'packages' | 'visitors';
+  onBadgeCountChange?: (count: number) => void;
 }
 
-export const BadgeIcon = ({ Icon, type }: Props) => {
+export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
   const { emergencies, refetch: refetchEmergencies } = useEmergencies();
   const { packages, refetch: refetchPackages } = usePackages();
   const { visitors, refetch: refetchVisitors } = useVisitors();
   const [previousCount, setPreviousCount] = useState(0);
   const [hasNewItems, setHasNewItems] = useState(false);
+  const { isNotificationSeen } = useSeenNotifications();
 
   // Real-time data connection
   const realTimeData = useRealTimeData({
@@ -36,19 +39,37 @@ export const BadgeIcon = ({ Icon, type }: Props) => {
   }, [type, refetchEmergencies, refetchPackages, refetchVisitors]);
 
   const getBadgeContent = () => {
+    if (!type) return 0;
+
+    let activeItems: any[] = [];
+
     switch (type) {
       case 'emergencies':
-        return emergencies.filter(e => !e.emergencyEnded).length;
+        activeItems = emergencies.filter(e => !e.emergencyEnded);
+        break;
       case 'packages':
-        return packages.filter(p => !p.received).length;
+        activeItems = packages.filter(p => !p.received);
+        break;
       case 'visitors':
-        return visitors.filter(v => !v.visitCompleted).length;
+        activeItems = visitors.filter(v => !v.visitCompleted);
+        break;
       default:
         return 0;
     }
+
+    // Filter out seen notifications
+    const unseenItems = activeItems.filter(item => !isNotificationSeen(type, item.id));
+    return unseenItems.length;
   };
 
   const badgeContent = getBadgeContent();
+
+  // Notify parent component of badge count changes
+  useEffect(() => {
+    if (onBadgeCountChange) {
+      onBadgeCountChange(badgeContent);
+    }
+  }, [badgeContent, onBadgeCountChange]);
 
   // Detect new items for animation
   useEffect(() => {
@@ -98,7 +119,12 @@ export const BadgeIcon = ({ Icon, type }: Props) => {
               color={getBadgeColor() as any}
               size="lg"
               classNames={{
-                badge: `${hasNewItems ? 'animate-pulse' : ''} shadow-medium font-bold`,
+                badge: `${hasNewItems ? 'animate-pulse' : ''} shadow-lg font-bold text-white ${
+                  type === 'emergencies' ? 'bg-red-600 border-2 border-red-700' :
+                  type === 'packages' ? 'bg-blue-600 border-2 border-blue-700' :
+                  type === 'visitors' ? 'bg-green-600 border-2 border-green-700' :
+                  'bg-primary-600 border-2 border-primary-700'
+                }`,
               }}
             >
               <motion.div
@@ -119,31 +145,6 @@ export const BadgeIcon = ({ Icon, type }: Props) => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Real-time connection indicator */}
-      {type && (
-        <motion.div
-          className={`absolute -top-1 -right-1 w-3 h-3 rounded-full ${
-            realTimeData.isConnected
-              ? 'bg-green-500'
-              : 'bg-gray-400'
-          }`}
-          animate={{
-            scale: realTimeData.isConnected ? [1, 1.2, 1] : 1,
-            opacity: realTimeData.isConnected ? [0.7, 1, 0.7] : 0.5,
-          }}
-          transition={{
-            duration: 2,
-            repeat: realTimeData.isConnected ? Infinity : 0,
-            ease: 'easeInOut',
-          }}
-          title={
-            realTimeData.isConnected
-              ? 'Conectado en tiempo real'
-              : 'Sin conexión en tiempo real'
-          }
-        />
-      )}
     </motion.div>
   );
 };

@@ -51,6 +51,41 @@
   .professional-gradient-dark {
     background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   }
+
+  /* Glass effect for modals */
+  .glass-effect {
+    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl;
+  }
+
+  /* Button hover effects */
+  .btn-hover-lift {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .btn-hover-lift:hover {
+    @apply transform -translate-y-0.5 shadow-lg;
+  }
+
+  /* Theme transition */
+  .transition-theme {
+    @apply transition-colors duration-300 ease-in-out;
+  }
+
+  /* Prevent scrolls in dashboard cards */
+  .dashboard-card {
+    overflow: hidden !important;
+  }
+
+  .dashboard-card * {
+    overflow: hidden !important;
+  }
+
+  /* Ensure no scrollbars appear in any card content */
+  .card-no-scroll {
+    overflow: hidden !important;
+    max-height: 100% !important;
+    max-width: 100% !important;
+  }
 }
 
 /* Loading dots - simplified */

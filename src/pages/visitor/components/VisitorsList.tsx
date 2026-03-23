@@ -5,6 +5,7 @@ import { useDate } from '../helper';
 import { useVisitCompleted, useVisitors } from '../hooks';
 import { VisitorForm } from './VisitorForm';
 import { useAuthStore } from '../../auth';
+import { useSeenNotifications } from '../../../hooks/useSeenNotifications';
 
 
 
@@ -17,6 +18,23 @@ export const VisitorsList = () => {
   const { user } = useAuthStore( ( state ) => ( { user: state.user } ) );
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [ visitorToComplete, setVisitorToComplete ] = useState<IVisitor | null>( null );
+  const { markAsSeen } = useSeenNotifications();
+
+  // Handle completing visit - integrate with notification system
+  const handleCompleteVisit = async () => {
+    if ( visitorToComplete ) {
+      try {
+        // Complete the visit in the backend
+        await completedVisit( visitorToComplete.id );
+        // Also mark as seen in the notification system (removes notification)
+        markAsSeen('visitors', visitorToComplete.id);
+        onClose();
+        setVisitorToComplete( null );
+      } catch (error) {
+        console.error('Error completing visit:', error);
+      }
+    }
+  };
 
   if ( isLoading ) {
     return <UI.Spinner />;
@@ -92,11 +110,7 @@ export const VisitorsList = () => {
   };
 
   const handleConfirm = () => {
-    if ( visitorToComplete ) {
-      completedVisit( visitorToComplete.id );
-      onClose();
-      setVisitorToComplete( null );
-    }
+    handleCompleteVisit();
   };
 
   return (

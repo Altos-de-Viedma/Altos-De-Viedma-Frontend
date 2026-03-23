@@ -6,6 +6,7 @@ import { useEmergencies, useEndEmergency, useMarkAsSeenEmergency } from '../hook
 import { useAuthStore } from '../../auth';
 import { IEmergency } from '../interfaces';
 import { formatDate } from '../../package';
+import { useSeenNotifications } from '../../../hooks/useSeenNotifications';
 
 
 
@@ -19,9 +20,22 @@ export const EmergencyList = () => {
   const endEmergencyMutation = useEndEmergency();
   const markAsSeenMutation = useMarkAsSeenEmergency();
   const { generateWhatsAppLink } = useWhatsApp();
+  const { markAsSeen } = useSeenNotifications();
 
   const isEndingEmergency = endEmergencyMutation.isPending;
   const isMarkingAsSeen = markAsSeenMutation.isPending;
+
+  // Handle marking emergency as seen - integrate with notification system
+  const handleMarkAsSeen = async (emergencyId: string) => {
+    try {
+      // Mark as seen in the backend
+      await markAsSeenMutation.mutateAsync(emergencyId);
+      // Also mark as seen in the notification system
+      markAsSeen('emergencies', emergencyId);
+    } catch (error) {
+      console.error('Error marking emergency as seen:', error);
+    }
+  };
 
   useEffect( () => {
     const interval = setInterval( () => {
@@ -69,10 +83,11 @@ export const EmergencyList = () => {
         { user?.roles?.includes( 'security' ) && !emergency.seen && (
           <UI.Button
             color="secondary"
-            variant="light"
-            onPress={ () => markAsSeenMutation.mutate( emergency.id ) }
+            variant="solid"
+            onPress={ () => handleMarkAsSeen( emergency.id ) }
             isLoading={ isMarkingAsSeen }
             startContent={ !isMarkingAsSeen && <Icons.IoEyeOutline size={ 18 } /> }
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium"
           >
             Marcar como visto
           </UI.Button>

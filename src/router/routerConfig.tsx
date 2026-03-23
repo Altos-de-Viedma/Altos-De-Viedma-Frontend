@@ -1,17 +1,31 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 
-import {
-  AuthLayout,
-  HomePage,
-  LoginForm,
-  PackagesPage,
-  PropertiesPage,
-  UsersPage,
-  VisitorsPage
-} from '../pages';
+import { AuthLayout, LoginForm } from '../pages';
 import { ProtectedRoute } from './ProtectedRoute';
-import { EmergenciesPage } from '../pages/emergency';
-import { DashboardLayoutPage } from '../pages/dashboard';
+
+// Lazy load components for better performance
+const HomePage = lazy(() => import('../pages/home/pages/HomePage').then(m => ({ default: m.HomePage })));
+const PackagesPage = lazy(() => import('../pages/package/pages/PackagesPage').then(m => ({ default: m.PackagesPage })));
+const PropertiesPage = lazy(() => import('../pages/property/pages/PropertiesPage').then(m => ({ default: m.PropertiesPage })));
+const UsersPage = lazy(() => import('../pages/users/pages/UsersPage').then(m => ({ default: m.UsersPage })));
+const VisitorsPage = lazy(() => import('../pages/visitor/pages/VisitorsPage').then(m => ({ default: m.VisitorsPage })));
+const EmergenciesPage = lazy(() => import('../pages/emergency/pages/EmergenciesPage').then(m => ({ default: m.EmergenciesPage })));
+const DashboardLayoutPage = lazy(() => import('../pages/dashboard/dashboard-layout/DashboardPage').then(m => ({ default: m.DashboardLayoutPage })));
+
+// Loading component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="flex flex-col items-center gap-4">
+      <div className="loading-dots text-primary-500">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <p className="text-foreground/60 font-medium">Cargando...</p>
+    </div>
+  </div>
+);
 
 export const router = createBrowserRouter( [
   {
@@ -32,7 +46,9 @@ export const router = createBrowserRouter( [
     path: '/',
     element: (
       <ProtectedRoute userStatus="authorized" role="user" redirectTo="/">
-        <DashboardLayoutPage />
+        <Suspense fallback={<PageLoader />}>
+          <DashboardLayoutPage />
+        </Suspense>
       </ProtectedRoute>
     ),
     children: [
@@ -42,33 +58,51 @@ export const router = createBrowserRouter( [
       },
       {
         path: 'home',
-        element: <HomePage />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <HomePage />
+          </Suspense>
+        ),
       },
-      // {
-      //   path: 'notificaciones',
-      //   element: <NotificationsPage />,
-      // },
       {
         path: 'emergencias',
-        element: <EmergenciesPage />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <EmergenciesPage />
+          </Suspense>
+        ),
       },
       {
         path: 'paquetes',
-        element: <PackagesPage />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PackagesPage />
+          </Suspense>
+        ),
       },
       {
         path: 'visitantes',
-        element: <VisitorsPage />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <VisitorsPage />
+          </Suspense>
+        ),
       },
       {
         path: 'propiedades',
-        element: <PropertiesPage />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PropertiesPage />
+          </Suspense>
+        ),
       },
       {
         path: 'usuarios',
         element: (
           <ProtectedRoute userStatus="authorized" role="admin" redirectTo="/home">
-            <UsersPage />
+            <Suspense fallback={<PageLoader />}>
+              <UsersPage />
+            </Suspense>
           </ProtectedRoute>
         ),
       },

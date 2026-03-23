@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-toastify';
 
-import { UI, useRedirect } from '../../../../shared';
+import { useRedirect } from '../../../../shared';
 import { LoginInputs } from '../../interfaces';
 import { useAuthStore } from '../../store';
 import { userLoginSchema } from '../../validations';
@@ -55,7 +55,7 @@ export const LoginForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={ handleSubmit( onSubmit ) } className="flex flex-col items-center justify-center space-y-4">
+    <form onSubmit={ handleSubmit( onSubmit ) } className="flex flex-col items-center justify-center space-y-4" role="form" aria-label="Formulario de inicio de sesión">
       <LoginFormInput
         type="username"
         label="Usuario"
@@ -74,15 +74,37 @@ export const LoginForm: React.FC = () => {
         <button
           type="button"
           onClick={ togglePasswordVisibility }
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-md p-1"
+          aria-label={ showPassword ? "Ocultar contraseña" : "Mostrar contraseña" }
+          aria-pressed={ showPassword }
         >
           { showPassword ? <Icons.IoEyeOffOutline /> : <Icons.IoEyeOutline /> }
         </button>
       </div>
-      { errors.root && <span className="text-danger">{ errors.root.message }</span> }
-      <UI.Button color="primary" className="w-full max-w-xs text-xl" size="lg" type="submit" disabled={ isSubmitting }>
-        { isSubmitting ? 'Ingresando...' : 'Ingresar' }
-      </UI.Button>
+      { errors.root && (
+        <div role="alert" aria-live="polite" className="text-danger text-sm">
+          { errors.root.message }
+        </div>
+      )}
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full max-w-xs bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg text-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+        aria-describedby={isSubmitting ? "login-loading" : undefined}
+      >
+        {isSubmitting ? (
+          <div className="flex items-center justify-center gap-2">
+            <div
+              className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+              role="status"
+              aria-label="Cargando"
+            ></div>
+            <span id="login-loading">Ingresando...</span>
+          </div>
+        ) : (
+          'Iniciar Sesión'
+        )}
+      </button>
     </form>
   );
 };
