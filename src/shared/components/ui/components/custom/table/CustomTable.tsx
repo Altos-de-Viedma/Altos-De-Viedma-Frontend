@@ -405,7 +405,7 @@ export const CustomTable = ({
           th: "bg-gray-50 dark:bg-gray-700 text-foreground font-semibold border-b border-gray-200 dark:border-gray-600 py-4 px-3 first:pl-6 last:pr-6",
           td: "border-b border-gray-100 dark:border-gray-700 py-4 px-3 first:pl-6 last:pr-6 align-middle",
           tr: "hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors duration-150",
-        }}}
+        }}
         selectedKeys={selectedKeys}
         selectionMode={selectionMode}
         sortDescriptor={sortDescriptor}
