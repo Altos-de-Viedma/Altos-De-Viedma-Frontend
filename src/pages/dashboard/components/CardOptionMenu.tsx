@@ -1,4 +1,4 @@
-import { ElementType, useState } from 'react';
+import { ElementType, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { UI } from '../../../shared';
@@ -38,9 +38,9 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
     navigate(route);
   };
 
-  const handleBadgeCountChange = (count: number) => {
+  const handleBadgeCountChange = useCallback((count: number) => {
     setBadgeCount(count);
-  };
+  }, []);
 
   const getCardColor = () => {
     // Solo mostrar colores si hay notificaciones

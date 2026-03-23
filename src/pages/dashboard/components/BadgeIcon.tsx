@@ -1,4 +1,4 @@
-import { ElementType, useEffect, useState } from 'react';
+import { ElementType, useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { UI } from '../../../shared';
@@ -21,6 +21,7 @@ export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
   const [previousCount, setPreviousCount] = useState(0);
   const [hasNewItems, setHasNewItems] = useState(false);
   const { isNotificationSeen } = useSeenNotifications();
+  const lastNotifiedCount = useRef<number>(-1);
 
   // Real-time data connection
   const realTimeData = useRealTimeData({
@@ -66,7 +67,8 @@ export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
 
   // Notify parent component of badge count changes
   useEffect(() => {
-    if (onBadgeCountChange) {
+    if (onBadgeCountChange && badgeContent !== lastNotifiedCount.current) {
+      lastNotifiedCount.current = badgeContent;
       onBadgeCountChange(badgeContent);
     }
   }, [badgeContent, onBadgeCountChange]);
