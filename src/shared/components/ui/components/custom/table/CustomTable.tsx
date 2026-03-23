@@ -145,12 +145,21 @@ export const CustomTable = ({
     switch (columnKey) {
       case "status":
         return (
-          <Chip className="capitalize" color={statusColorMap[item.status]} size="sm" variant="flat">
+          <Chip
+            className="capitalize font-medium"
+            color={statusColorMap[item.status]}
+            size="sm"
+            variant="flat"
+          >
             {cellValue}
           </Chip>
         );
       default:
-        return cellValue;
+        return (
+          <span className="text-foreground/90 font-medium truncate">
+            {cellValue || "-"}
+          </span>
+        );
     }
   }, [renderCustomCell, statusColorMap]);
 
@@ -290,18 +299,18 @@ export const CustomTable = ({
       </div>
 
       <div className="flex justify-between items-center">
-        <span className="text-foreground/60 text-sm font-medium">
+        <span className="text-foreground/70 text-sm font-medium">
           Total {data.length} elementos
           {filteredItems.length !== data.length && (
-            <span className="text-primary-500 ml-2">
+            <span className="text-primary-600 dark:text-primary-400 ml-2 font-semibold">
               ({filteredItems.length} filtrados)
             </span>
           )}
         </span>
-        <label className="flex items-center text-foreground/60 text-sm">
+        <label className="flex items-center text-foreground/70 text-sm font-medium">
           Filas por página:
           <select
-            className="bg-transparent outline-none text-foreground/60 text-sm ml-2"
+            className="bg-transparent outline-none text-foreground/70 text-sm ml-2 font-medium cursor-pointer hover:text-foreground transition-colors"
             value={rowsPerPage}
             onChange={onRowsPerPageChange}
           >
@@ -332,16 +341,16 @@ export const CustomTable = ({
   ]);
 
   const bottomContent = useMemo(() => (
-    <div className="py-4 px-2 flex justify-between items-center">
+    <div className="py-4 px-2 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
       {selectionMode !== "none" && (
-        <span className="w-[30%] text-sm text-foreground/60 font-medium">
+        <span className="w-[30%] text-sm text-foreground/70 font-medium">
           {selectedKeys === "all"
             ? "Todos los elementos seleccionados"
             : `${selectedKeys.size} de ${filteredItems.length} seleccionados`}
         </span>
       )}
 
-      <div>
+      <div className="flex-1 flex justify-center">
         <Pagination
           isCompact
           showControls
@@ -351,11 +360,11 @@ export const CustomTable = ({
           total={pages}
           onChange={setPage}
           classNames={{
-            wrapper: "gap-0 overflow-visible h-8 rounded border border-divider",
-            item: "w-8 h-8 text-small rounded-none bg-transparent",
-            cursor: "bg-primary-500 shadow-lg text-white font-medium",
-            prev: "hover:bg-primary-500/10",
-            next: "hover:bg-primary-500/10",
+            wrapper: "gap-0 overflow-visible h-8 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800",
+            item: "w-8 h-8 text-small rounded-none bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors",
+            cursor: "bg-primary-500 shadow-md text-white font-semibold",
+            prev: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
+            next: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
           }}
         />
       </div>
@@ -366,7 +375,7 @@ export const CustomTable = ({
           variant="flat"
           isDisabled={page === 1}
           onPress={onPreviousPage}
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
         >
           Anterior
         </Button>
@@ -376,7 +385,7 @@ export const CustomTable = ({
           variant="flat"
           isDisabled={page === pages}
           onPress={onNextPage}
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
         >
           Siguiente
         </Button>
@@ -393,9 +402,10 @@ export const CustomTable = ({
         bottomContentPlacement="outside"
         classNames={{
           wrapper: "max-h-[500px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm rounded-lg overflow-hidden",
-          th: "bg-gray-50 dark:bg-gray-700 text-foreground font-semibold border-b border-gray-200 dark:border-gray-600 text-center py-3 px-4",
-          td: "border-b border-gray-100 dark:border-gray-700 text-center py-3 px-4",
-        }}
+          th: "bg-gray-50 dark:bg-gray-700 text-foreground font-semibold border-b border-gray-200 dark:border-gray-600 py-4 px-3 first:pl-6 last:pr-6",
+          td: "border-b border-gray-100 dark:border-gray-700 py-4 px-3 first:pl-6 last:pr-6 align-middle",
+          tr: "hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors duration-150",
+        }}}
         selectedKeys={selectedKeys}
         selectionMode={selectionMode}
         sortDescriptor={sortDescriptor}
@@ -409,14 +419,25 @@ export const CustomTable = ({
           {(column) => (
             <TableColumn
               key={column.uid}
-              align="center"
+              align={column.uid === "profilePicture" || column.uid === "actions" ? "center" : "start"}
               allowsSorting={column.sortable}
-              className="text-foreground/80 font-semibold"
+              className="text-foreground font-medium group hover:text-foreground transition-colors"
             >
-              <div className="flex items-center justify-center gap-2 min-h-[2.5rem]">
-                <span className="text-center">{column.name}</span>
+              <div className="flex items-center gap-2">
+                <span className="truncate">{column.name}</span>
                 {column.sortable && (
-                  <IoChevronDownOutline size={14} className="text-foreground/50" />
+                  <IoChevronDownOutline
+                    size={14}
+                    className={`text-foreground/30 transition-all duration-200 ${
+                      sortDescriptor.column === column.uid
+                        ? 'opacity-100 text-primary-500'
+                        : 'opacity-0 group-hover:opacity-60'
+                    } ${
+                      sortDescriptor.column === column.uid && sortDescriptor.direction === 'ascending'
+                        ? 'rotate-180'
+                        : ''
+                    }`}
+                  />
                 )}
               </div>
             </TableColumn>
@@ -459,7 +480,11 @@ export const CustomTable = ({
             <TableRow key={(item as any).id || Math.random()}>
               {headerColumns.map((column) => (
                 <TableCell key={column.uid}>
-                  <div className="flex items-center justify-center min-h-[2.5rem]">
+                  <div className={`flex items-center ${
+                    column.uid === "profilePicture" || column.uid === "actions"
+                      ? "justify-center"
+                      : "justify-start"
+                  }`}>
                     {defaultRenderCell(item, column.uid)}
                   </div>
                 </TableCell>
