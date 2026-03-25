@@ -39,6 +39,7 @@ export {
   IoInformationCircleOutline,
   IoKeyOutline,
   IoLayersOutline,
+  IoLinkOutline,
   IoLocationOutline,
   IoLockClosedOutline,
   IoLockOpenOutline,
@@ -53,6 +54,8 @@ export {
   IoPeopleOutline,
   IoPersonOutline,
   IoPrintOutline,
+  IoReceiptOutline,
+  IoRefreshOutline,
   IoSaveOutline,
   IoSchoolOutline,
   IoSearchCircleOutline,
@@ -63,5 +66,6 @@ export {
   IoStarOutline,
   IoStopOutline,
   IoSunnyOutline,
+  IoTimeOutline,
   IoTrashOutline,
 } from 'react-icons/io5';

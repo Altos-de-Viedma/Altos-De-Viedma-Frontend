@@ -52,13 +52,13 @@ export const EmergencyList = () => {
   if ( !emergencies ) return null;
 
   const columns = [
-    { name: "Título", uid: "title", sortable: true },
-    { name: "Estado", uid: "status", sortable: true },
-    { name: "Fecha", uid: "date", sortable: true },
-    { name: "Visto", uid: "seen", sortable: true },
-    { name: "Descripción", uid: "description", sortable: true },
-    { name: "Usuario", uid: "user", sortable: true },
-    { name: "Teléfono", uid: "phone", sortable: true },
+    { name: "Título", uid: "title" },
+    { name: "Estado", uid: "status" },
+    { name: "Fecha", uid: "date" },
+    { name: "Visto", uid: "seen" },
+    { name: "Descripción", uid: "description" },
+    { name: "Usuario", uid: "user" },
+    { name: "Teléfono", uid: "phone" },
     { name: "Opciones", uid: "actions" }
   ];
 
@@ -67,7 +67,9 @@ export const EmergencyList = () => {
     inactive: "danger"
   };
 
-  const transformedEmergencies = emergencies.map( emergency => ( {
+  const transformedEmergencies = emergencies
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .map( emergency => ( {
     ...emergency,
     date: formatDate( emergency.date ),
     user: (
@@ -103,13 +105,14 @@ export const EmergencyList = () => {
         ) }
         { ( user?.roles?.includes( 'admin' ) || user?.roles?.includes( 'security' ) || emergency.user.id === user?.id ) && !emergency.emergencyEnded && (
           <UI.Button
-            color="primary"
-            variant="light"
+            color="success"
+            variant="solid"
             onPress={ () => {
               setEmergencyToEnd( emergency );
               onOpen();
             } }
             startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> }
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 pulse-animation"
           >
             Finalizar emergencia
           </UI.Button>
@@ -255,7 +258,14 @@ export const EmergencyList = () => {
                 <UI.Button color="danger" variant="light" onPress={ onClose } isDisabled={ isEndingEmergency } startContent={ <Icons.IoArrowBackOutline size={ 24 } /> }>
                   Cancelar
                 </UI.Button>
-                <UI.Button color="primary" onPress={ handleConfirm } isLoading={ isEndingEmergency } startContent={ !isEndingEmergency && <Icons.IoCheckmarkOutline size={ 24 } /> }>
+                <UI.Button
+                  color="success"
+                  variant="solid"
+                  onPress={ handleConfirm }
+                  isLoading={ isEndingEmergency }
+                  startContent={ !isEndingEmergency && <Icons.IoCheckmarkOutline size={ 24 } /> }
+                  className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                >
                   Confirmar
                 </UI.Button>
               </UI.ModalFooter>

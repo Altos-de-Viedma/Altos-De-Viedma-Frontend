@@ -38,14 +38,14 @@ export const PackageList = () => {
   if ( !user ) return null;
 
   const columns = [
-    { name: "Título", uid: "title", sortable: true },
-    { name: "Estado", uid: "receivedStatus", sortable: true },
-    { name: "Fecha de creación", uid: "date", sortable: true },
-    { name: "Fecha estimada de recepción", uid: "arrivalDate", sortable: true },
-    { name: "Descripción", uid: "description", sortable: true },
-    { name: "Propietario", uid: "user", sortable: true },
-    { name: "Propiedad", uid: "property", sortable: true },
-    { name: "Teléfono", uid: "phone", sortable: true },
+    { name: "Título", uid: "title" },
+    { name: "Estado", uid: "receivedStatus" },
+    { name: "Fecha de creación", uid: "date" },
+    { name: "Fecha estimada de recepción", uid: "arrivalDate" },
+    { name: "Descripción", uid: "description" },
+    { name: "Propietario", uid: "user" },
+    { name: "Propiedad", uid: "property" },
+    { name: "Teléfono", uid: "phone" },
     { name: "Opciones", uid: "actions" }
   ];
 
@@ -61,7 +61,9 @@ export const PackageList = () => {
   if ( !packages ) return null;
 
 
-  const transformedPackages = packages.map( pkg => ( {
+  const transformedPackages = packages
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .map( pkg => ( {
     ...pkg,
     date: formatDate( pkg.date ),
     arrivalDate: formatDate( pkg.arrivalDate ),
@@ -78,13 +80,14 @@ export const PackageList = () => {
     actions: ( user?.roles?.includes( 'security' ) || pkg.user.id === user.id ) ? (
       !pkg.received && (
         <UI.Button
-          color="primary"
-          variant="light"
+          color="success"
+          variant="solid"
           onPress={ () => {
             setPackageToMark( pkg );
             onOpen();
           } }
           startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> }
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
         >
           Marcar como recibido
         </UI.Button>
@@ -230,7 +233,14 @@ export const PackageList = () => {
                 <UI.Button color="danger" variant="light" onPress={ onClose } isDisabled={ isMarkingAsReceived } startContent={ <Icons.IoArrowBackOutline size={ 24 } /> }>
                   Cancelar
                 </UI.Button>
-                <UI.Button color="primary" onPress={ handleConfirm } isLoading={ isMarkingAsReceived } startContent={ !isMarkingAsReceived && <Icons.IoCheckmarkOutline size={ 24 } /> }>
+                <UI.Button
+                  color="success"
+                  variant="solid"
+                  onPress={ handleConfirm }
+                  isLoading={ isMarkingAsReceived }
+                  startContent={ !isMarkingAsReceived && <Icons.IoCheckmarkOutline size={ 24 } /> }
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                >
                   Confirmar
                 </UI.Button>
               </UI.ModalFooter>

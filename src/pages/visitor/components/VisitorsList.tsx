@@ -44,15 +44,15 @@ export const VisitorsList = () => {
 
   const columns = [
     { name: "Foto", uid: "profilePicture" },
-    { name: "Nombre completo", uid: "fullName", sortable: true },
-    { name: "Ingreso", uid: "date", sortable: true },
-    { name: "Fecha de salida estimada", uid: "dateAndTimeOfVisit", sortable: true },
-    { name: "D.N.I.", uid: "dni", sortable: true },
-    { name: "Teléfono", uid: "phone", sortable: true },
-    { name: "Descripción", uid: "description", sortable: true },
-    { name: "Patente", uid: "vehiclePlate", sortable: true },
-    { name: "Propiedad", uid: "property", sortable: true },
-    { name: "Estado", uid: "visitCompleted", sortable: true },
+    { name: "Nombre completo", uid: "fullName" },
+    { name: "Ingreso", uid: "date" },
+    { name: "Fecha de salida estimada", uid: "dateAndTimeOfVisit" },
+    { name: "D.N.I.", uid: "dni" },
+    { name: "Teléfono", uid: "phone" },
+    { name: "Descripción", uid: "description" },
+    { name: "Patente", uid: "vehiclePlate" },
+    { name: "Propiedad", uid: "property" },
+    { name: "Estado", uid: "visitCompleted" },
     { name: "Opciones", uid: "actions" }
   ];
 
@@ -82,13 +82,14 @@ export const VisitorsList = () => {
         <VisitorForm id={ visitor.id } />
         { !visitor.visitCompleted && canCompleteVisit( visitor ) && (
           <UI.Button
-            color="primary"
-            variant="light"
+            color="success"
+            variant="solid"
             onPress={ () => {
               setVisitorToComplete( visitor );
               onOpen();
             } }
             startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> }
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
           >
             Finalizar visita
           </UI.Button>
@@ -98,14 +99,16 @@ export const VisitorsList = () => {
   } );
 
   const getFilteredVisitors = ( filter: string | number ) => {
+    const sortedVisitors = visitors.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
     switch ( filter ) {
       case "pending":
-        return visitors.filter( visitor => !visitor.visitCompleted ).map( transformVisitor );
+        return sortedVisitors.filter( visitor => !visitor.visitCompleted ).map( transformVisitor );
       case "completed":
-        return visitors.filter( visitor => visitor.visitCompleted ).map( transformVisitor );
+        return sortedVisitors.filter( visitor => visitor.visitCompleted ).map( transformVisitor );
       case "all":
       default:
-        return visitors.map( transformVisitor );
+        return sortedVisitors.map( transformVisitor );
     }
   };
 
@@ -237,7 +240,14 @@ export const VisitorsList = () => {
                 <UI.Button color="danger" variant="light" onPress={ onClose } isDisabled={ isCompletingVisit } startContent={ <Icons.IoArrowBackOutline size={ 24 } /> }>
                   Cancelar
                 </UI.Button>
-                <UI.Button color="primary" onPress={ handleConfirm } isLoading={ isCompletingVisit } startContent={ !isCompletingVisit && <Icons.IoCheckmarkOutline size={ 24 } /> }>
+                <UI.Button
+                  color="success"
+                  variant="solid"
+                  onPress={ handleConfirm }
+                  isLoading={ isCompletingVisit }
+                  startContent={ !isCompletingVisit && <Icons.IoCheckmarkOutline size={ 24 } /> }
+                  className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                >
                   Confirmar
                 </UI.Button>
               </UI.ModalFooter>

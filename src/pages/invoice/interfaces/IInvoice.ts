@@ -1,0 +1,15 @@
+export interface IInvoice {
+  id: string;
+  title: string;
+  description?: string;
+  invoiceUrl: string;
+  date: string;
+  state: 'in_progress' | 'confirmed';
+  status: boolean;
+  user: {
+    id: string;
+    name: string;
+    lastName: string;
+    phone: string;
+  };
+}

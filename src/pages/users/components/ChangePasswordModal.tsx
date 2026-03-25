@@ -115,9 +115,11 @@ export const ChangePasswordModal = ( { isOpen, onClose, userId }: Props ) => {
 
               <UI.Button
                 color="primary"
+                variant="solid"
                 type="submit"
                 isLoading={ isPending }
                 startContent={ !isPending && <Icons.IoSaveOutline size={ 24 } /> }
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
               >
                 Guardar
               </UI.Button>

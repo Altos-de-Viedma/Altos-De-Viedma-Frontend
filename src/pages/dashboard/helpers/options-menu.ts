@@ -4,6 +4,7 @@ export const cardOptions = [
   { title: 'Emergencias', Icon: Icons.IoMegaphoneOutline, route: '/emergencias', type: 'emergencies' as const },
   { title: 'Paquetes', Icon: Icons.IoCubeOutline, route: '/paquetes', type: 'packages' as const },
   { title: 'Visitantes', Icon: Icons.IoManOutline, route: '/visitantes', type: 'visitors' as const },
+  { title: 'Facturas', Icon: Icons.IoReceiptOutline, route: '/facturas', type: 'invoices' as const },
   { title: 'Propiedades', Icon: Icons.IoHomeOutline, route: '/propiedades' },
   { title: 'Usuarios', Icon: Icons.IoIdCardOutline, route: '/usuarios' }
 ];

@@ -21,6 +21,7 @@ export * from './dashboard/dashboard-layout/DashboardPage';
 export * from './dashboard/helpers/options-menu';
 export * from './emergency/pages/EmergenciesPage';
 export * from './home/pages/HomePage';
+export * from './invoice/pages/InvoicePage';
 export * from './notification/components/NotificationCard';
 export * from './notification/pages/NotificationsPage';
 export * from './package/pages/PackagesPage';

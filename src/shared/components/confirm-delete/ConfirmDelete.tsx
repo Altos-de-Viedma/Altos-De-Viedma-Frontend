@@ -58,7 +58,12 @@ export const ConfirmDelete: React.FC<Props> = ( {
             <Button color="default" variant="light" onClick={ onClose } className="mr-2">
               Cancelar
             </Button>
-            <Button color="danger" onClick={ confirmDeletion }>
+            <Button
+              color="danger"
+              variant="solid"
+              onClick={ confirmDeletion }
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+            >
               Sí, borrar
             </Button>
           </ModalFooter>

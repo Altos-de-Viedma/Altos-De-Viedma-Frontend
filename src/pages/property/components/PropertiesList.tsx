@@ -15,11 +15,11 @@ export const PropertiesList = () => {
   const { setAsMain, isPending: isSettingMain } = useSetMainProperty();
 
   const columns = [
-    { name: "Principal", uid: "isMain", sortable: true },
-    { name: "Dirección", uid: "address", sortable: true },
-    { name: "Descripción", uid: "description", sortable: true },
-    { name: "Propietario", uid: "property", sortable: true },
-    { name: "Teléfono", uid: "phone", sortable: true },
+    { name: "Principal", uid: "isMain" },
+    { name: "Dirección", uid: "address" },
+    { name: "Descripción", uid: "description" },
+    { name: "Propietario", uid: "property" },
+    { name: "Teléfono", uid: "phone" },
     ...( user?.roles?.includes( 'admin' ) && !user?.roles?.includes( 'security' ) ? [ { name: "Opciones", uid: "actions" } ] : [] )
   ];
 
@@ -34,7 +34,9 @@ export const PropertiesList = () => {
 
   if ( !properties ) return null;
 
-  const transformedProperties = properties.map( property => ( {
+  const transformedProperties = properties
+    .sort((a, b) => new Date(b.createdAt || b.id).getTime() - new Date(a.createdAt || a.id).getTime())
+    .map( property => ( {
     ...property,
     isMain: property.isMain ? (
       <UI.Badge color="primary" variant="flat">

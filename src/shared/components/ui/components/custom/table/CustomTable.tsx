@@ -8,7 +8,6 @@ import {
   Input,
   Pagination,
   Selection,
-  SortDescriptor,
   Table,
   TableBody,
   TableCell,
@@ -51,7 +50,6 @@ export interface CustomTableProps {
 interface Column {
   name: string;
   uid: string;
-  sortable?: boolean;
 }
 
 export const CustomTable = ({
@@ -77,10 +75,6 @@ export const CustomTable = ({
   );
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
-  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: columns[0].uid,
-    direction: "ascending",
-  });
   const [page, setPage] = useState(1);
 
   const hasSearchFilter = Boolean(filterValue);
@@ -124,16 +118,6 @@ export const CustomTable = ({
     return filteredItems.slice(start, end);
   }, [page, filteredItems, rowsPerPage]);
 
-  const sortedItems = useMemo(() => {
-    return [...items].sort((a: any, b: any) => {
-      const first = a[sortDescriptor.column as keyof any] as number;
-      const second = b[sortDescriptor.column as keyof any] as number;
-      const cmp = first < second ? -1 : first > second ? 1 : 0;
-
-      return sortDescriptor.direction === "descending" ? -cmp : cmp;
-    });
-  }, [sortDescriptor, items]);
-
   const defaultRenderCell = useCallback((item: any, columnKey: string) => {
     const cellValue = item[columnKey];
 
@@ -154,9 +138,17 @@ export const CustomTable = ({
             {cellValue}
           </Chip>
         );
+      case "description":
+        return (
+          <div className="max-w-xs lg:max-w-md xl:max-w-lg">
+            <p className="text-foreground/90 font-medium text-sm leading-relaxed whitespace-normal break-words">
+              {cellValue || "-"}
+            </p>
+          </div>
+        );
       default:
         return (
-          <span className="text-foreground/90 font-medium truncate">
+          <span className="text-foreground/90 font-medium">
             {cellValue || "-"}
           </span>
         );
@@ -401,18 +393,17 @@ export const CustomTable = ({
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
         classNames={{
-          wrapper: "max-h-[500px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm rounded-lg overflow-hidden",
-          th: "bg-gray-50 dark:bg-gray-700 text-foreground font-semibold border-b border-gray-200 dark:border-gray-600 py-4 px-3 first:pl-6 last:pr-6",
-          td: "border-b border-gray-100 dark:border-gray-700 py-4 px-3 first:pl-6 last:pr-6 align-middle",
+          wrapper: "max-h-[500px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm rounded-lg overflow-auto",
+          table: "min-w-full",
+          th: "bg-gray-50 dark:bg-gray-700 text-foreground font-semibold border-b border-gray-200 dark:border-gray-600 py-4 px-3 first:pl-6 last:pr-6 whitespace-nowrap",
+          td: "border-b border-gray-100 dark:border-gray-700 py-4 px-3 first:pl-6 last:pr-6 align-top",
           tr: "hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors duration-150",
         }}
         selectedKeys={selectedKeys}
         selectionMode={selectionMode}
-        sortDescriptor={sortDescriptor}
         topContent={topContent}
         topContentPlacement="outside"
         onSelectionChange={setSelectedKeys}
-        onSortChange={setSortDescriptor}
         isStriped={isStriped}
       >
         <TableHeader columns={headerColumns}>
@@ -420,8 +411,17 @@ export const CustomTable = ({
             <TableColumn
               key={column.uid}
               align={column.uid === "profilePicture" || column.uid === "actions" ? "center" : "start"}
-              allowsSorting={column.sortable}
-              className="text-foreground font-medium hover:text-foreground transition-colors cursor-pointer"
+              allowsSorting={false}
+              className={`text-foreground font-medium hover:text-foreground transition-colors ${
+                column.uid === "description" ? "w-1/3 min-w-[300px]" :
+                column.uid === "actions" ? "w-auto min-w-[200px]" :
+                column.uid === "title" ? "w-1/6 min-w-[150px]" :
+                column.uid === "user" ? "w-1/6 min-w-[120px]" :
+                column.uid === "phone" ? "w-1/8 min-w-[100px]" :
+                column.uid === "date" ? "w-1/8 min-w-[100px]" :
+                column.uid === "status" || column.uid === "seen" ? "w-1/12 min-w-[80px]" :
+                "w-auto"
+              }`}
             >
               <div className="flex items-center">
                 <span className="truncate">{column.name}</span>
@@ -454,7 +454,7 @@ export const CustomTable = ({
               )}
             </div>
           }
-          items={sortedItems}
+          items={items}
           isLoading={isLoading}
           loadingContent={
             <div className="flex justify-center py-8">
@@ -465,8 +465,20 @@ export const CustomTable = ({
           {(item) => (
             <TableRow key={(item as any).id || Math.random()}>
               {headerColumns.map((column) => (
-                <TableCell key={column.uid}>
-                  <div className={`flex items-center ${
+                <TableCell
+                  key={column.uid}
+                  className={
+                    column.uid === "description" ? "w-1/3 min-w-[300px]" :
+                    column.uid === "actions" ? "w-auto min-w-[200px]" :
+                    column.uid === "title" ? "w-1/6 min-w-[150px]" :
+                    column.uid === "user" ? "w-1/6 min-w-[120px]" :
+                    column.uid === "phone" ? "w-1/8 min-w-[100px]" :
+                    column.uid === "date" ? "w-1/8 min-w-[100px]" :
+                    column.uid === "status" || column.uid === "seen" ? "w-1/12 min-w-[80px]" :
+                    "w-auto"
+                  }
+                >
+                  <div className={`flex items-start ${
                     column.uid === "profilePicture" || column.uid === "actions"
                       ? "justify-center"
                       : "justify-start"

@@ -148,6 +148,7 @@ export const CustomFormModal = ({
                   >
                     <UI.Button
                       color={saveButtonColor}
+                      variant="solid"
                       onPress={onConfirm}
                       startContent={
                         isLoading ? (
@@ -156,7 +157,7 @@ export const CustomFormModal = ({
                           <Icons.IoSaveOutline size={20} />
                         )
                       }
-                      className="btn-hover-lift font-medium shadow-medium hover:shadow-large transition-all duration-300"
+                      className="btn-hover-lift font-medium shadow-medium hover:shadow-large transition-all duration-300 bg-blue-600 hover:bg-blue-700 text-white"
                       isLoading={isLoading}
                       isDisabled={isLoading}
                     >

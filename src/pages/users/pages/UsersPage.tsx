@@ -11,11 +11,11 @@ export const UsersPage = () => {
   const { inactiveUsers, isLoading: isLoadingInactive } = useInactiveUsers();
 
   const columnsDef = [
-    { name: "Usuario", uid: "username", sortable: true },
-    { name: "Nombre Completo", uid: "fullName", sortable: true },
-    { name: "Teléfono", uid: "phone", sortable: true },
-    { name: "Dirección", uid: "address", sortable: true },
-    { name: "Roles", uid: "roles", sortable: false },
+    { name: "Usuario", uid: "username" },
+    { name: "Nombre Completo", uid: "fullName" },
+    { name: "Teléfono", uid: "phone" },
+    { name: "Dirección", uid: "address" },
+    { name: "Roles", uid: "roles" },
     { name: "Estado", uid: "status" },
     { name: "Opciones", uid: "actions" }
   ];
@@ -30,7 +30,9 @@ export const UsersPage = () => {
 
   if ( !displayUsers ) return null;
 
-  const transformedUsers = displayUsers.map( user => ( {
+  const transformedUsers = displayUsers
+    .sort((a, b) => new Date(b.createdAt || b.id).getTime() - new Date(a.createdAt || a.id).getTime())
+    .map( user => ( {
     ...user,
     username: user.username,
     fullName: user.lastName + ', ' + user.name,
