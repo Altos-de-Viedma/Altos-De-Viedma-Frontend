@@ -20,30 +20,44 @@ export const HomePage: React.FC = () => {
   return (
     <CheckAuthStatus
       loadingComponent={
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="flex flex-col items-center gap-4">
+        <div className="mobile-center">
+          <div className="center-flex-col gap-4 responsive-padding">
             <div className="loading-dots text-primary-500">
               <span></span>
               <span></span>
               <span></span>
             </div>
-            <p className="text-foreground/60 font-medium">Cargando...</p>
+            <p className="responsive-text-base text-foreground/60 font-medium text-center">
+              Cargando...
+            </p>
           </div>
         </div>
       }
       unauthenticatedComponent={<Navigate to="/ingresar" replace />}
     >
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-4 lg:gap-2 xl:gap-1.5">
+      <div className="layout-content bg-gray-50 dark:bg-gray-900">
+        <div className="wide-container responsive-padding">
+          {/* Welcome section */}
+          <div className="center-flex-col mb-6 sm:mb-8 lg:mb-10">
+            <h1 className="responsive-text-xl font-bold text-gray-800 dark:text-gray-200 text-center mb-2">
+              Bienvenido, {user?.name || 'Usuario'}
+            </h1>
+            <p className="responsive-text-sm text-gray-600 dark:text-gray-400 text-center max-w-4xl">
+              Selecciona una opción para comenzar a gestionar el sistema
+            </p>
+          </div>
+
+          {/* Cards grid - perfectly centered and responsive with more space on desktop */}
+          <div className="dashboard-grid">
             {filteredCardOptions.map((option, index) => (
-              <CardOptionMenu
-                key={index}
-                title={option.title}
-                Icon={option.Icon}
-                route={option.route}
-                type={option.type}
-              />
+              <div key={index} className="center-flex w-full">
+                <CardOptionMenu
+                  title={option.title}
+                  Icon={option.Icon}
+                  route={option.route}
+                  type={option.type}
+                />
+              </div>
             ))}
           </div>
         </div>

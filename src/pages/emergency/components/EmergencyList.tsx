@@ -46,7 +46,11 @@ export const EmergencyList = () => {
   }, [ refetch ] );
 
   if ( isLoading ) {
-    return <UI.Spinner />;
+    return (
+      <div className="center-flex py-12">
+        <UI.Spinner size="lg" color="primary" />
+      </div>
+    );
   }
 
   if ( !emergencies ) return null;
@@ -144,98 +148,118 @@ export const EmergencyList = () => {
   const addButtonComponent = user?.roles?.includes( 'security' ) ? null : <EmergencyForm />;
 
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-full flex-col space-y-6 lg:space-y-8">
       <UI.Tabs
         aria-label="Options"
         selectedKey={ selected }
         onSelectionChange={ setSelected }
+        size="lg"
         classNames={{
-          tabList: "gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg",
-          cursor: "bg-white dark:bg-gray-700 shadow-sm",
-          tab: "px-4 py-2 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white",
-          tabContent: "group-data-[selected=true]:text-gray-900 dark:group-data-[selected=true]:text-white"
+          tabList: "gap-2 sm:gap-3 lg:gap-4 bg-gray-100 dark:bg-gray-800 p-1 sm:p-1.5 rounded-lg sm:rounded-xl w-full sm:w-auto flex-wrap sm:flex-nowrap",
+          cursor: "bg-white dark:bg-gray-700 shadow-sm rounded-md sm:rounded-lg",
+          tab: "px-3 sm:px-4 lg:px-6 py-2 sm:py-3 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white responsive-text-sm sm:responsive-text-base min-w-0 flex-shrink-0",
+          tabContent: "group-data-[selected=true]:text-gray-900 dark:group-data-[selected=true]:text-white font-medium"
         }}
       >
         <UI.Tab
           key="active"
           title={
-            <div className="flex items-center space-x-2">
-              <Icons.IoAlertCircleOutline size={ 14 } />
-              <span>Activas</span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Icons.IoAlertCircleOutline size={16} className="sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="truncate">Activas</span>
+              <span className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold flex-shrink-0">
+                {getFilteredEmergencies("active").length}
+              </span>
             </div>
           }
         >
-          <CustomTable
-            data={ getFilteredEmergencies( "active" ) }
-            columns={ columns }
-            statusColorMap={ statusColorMap }
-            initialVisibleColumns={ [
-              "title",
-              "status",
-              "date",
-              "seen",
-              "description",
-              "user",
-              "phone",
-              "actions"
-            ] }
-            addButtonComponent={ addButtonComponent }
-            title="emergencias activas"
-          />
+          <div className="w-full">
+            <CustomTable
+              data={ getFilteredEmergencies( "active" ) }
+              columns={ columns }
+              statusColorMap={ statusColorMap }
+              initialVisibleColumns={ [
+                "title",
+                "status",
+                "date",
+                "seen",
+                "description",
+                "user",
+                "phone",
+                "actions"
+              ] }
+              addButtonComponent={ addButtonComponent }
+              title="emergencias activas"
+              className="w-full"
+            />
+          </div>
         </UI.Tab>
         <UI.Tab
           key="ended"
           title={
-            <div className="flex items-center space-x-2">
-              <Icons.IoCheckmarkOutline size={ 14 } />
-              <span>Finalizadas</span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Icons.IoCheckmarkOutline size={16} className="sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="truncate">Finalizadas</span>
+              <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold flex-shrink-0">
+                {getFilteredEmergencies("ended").length}
+              </span>
             </div>
           }
         >
-          <CustomTable
-            data={ getFilteredEmergencies( "ended" ) }
-            columns={ columns }
-            statusColorMap={ statusColorMap }
-            initialVisibleColumns={ [
-              "title",
-              "status",
-              "date",
-              "seen",
-              "description",
-              "user",
-              "phone",
-              "actions"
-            ] }
-            addButtonComponent={ addButtonComponent }
-            title="emergencias finalizadas"
-          />
+          <div className="w-full">
+            <CustomTable
+              data={ getFilteredEmergencies( "ended" ) }
+              columns={ columns }
+              statusColorMap={ statusColorMap }
+              initialVisibleColumns={ [
+                "title",
+                "status",
+                "date",
+                "seen",
+                "description",
+                "user",
+                "phone",
+                "actions"
+              ] }
+              addButtonComponent={ addButtonComponent }
+              title="emergencias finalizadas"
+              className="w-full"
+            />
+          </div>
         </UI.Tab>
         <UI.Tab
           key="all"
           title={
-            <div className="flex items-center space-x-2">
-              <Icons.IoMegaphoneOutline size={ 14 } />
-              <span>Todas las emergencias</span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Icons.IoMegaphoneOutline size={16} className="sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="truncate hidden sm:inline">Todas las emergencias</span>
+              <span className="truncate sm:hidden">Todas</span>
+              <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold flex-shrink-0">
+                {getFilteredEmergencies("all").length}
+              </span>
             </div>
           }
         >
-          <CustomTable
-            data={ getFilteredEmergencies( "all" ) }
-            columns={ columns }
-            statusColorMap={ statusColorMap }
-            initialVisibleColumns={ [
-              "title",
-              "status",
-              "date",
-              "seen",
-              "description",
-              "user",
-              "phone",
-              "actions"
-            ] }
-            addButtonComponent={ addButtonComponent }
-            title="emergencias"
-          />
+          <div className="w-full">
+            <CustomTable
+              data={ getFilteredEmergencies( "all" ) }
+              columns={ columns }
+              statusColorMap={ statusColorMap }
+              initialVisibleColumns={ [
+                "title",
+                "status",
+                "date",
+                "seen",
+                "description",
+                "user",
+                "phone",
+                "actions"
+              ] }
+              addButtonComponent={ addButtonComponent }
+              title="emergencias"
+              className="w-full"
+            />
+          </div>
         </UI.Tab>
       </UI.Tabs>
 

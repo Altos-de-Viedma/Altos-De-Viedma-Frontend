@@ -187,26 +187,36 @@ export const CustomTable = ({
   }, []);
 
   const topContent = useMemo(() => (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between gap-3 items-end">
-        <div className="w-full sm:max-w-[44%]">
+    <div className="flex flex-col gap-4 sm:gap-6">
+      {/* Mobile-first layout */}
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-3">
+        {/* Search input - full width on mobile */}
+        <div className="w-full sm:flex-1 sm:max-w-md">
           <Input
             isClearable
             className="w-full"
             placeholder={`Buscar ${title}...`}
-            startContent={<IoSearchOutline className="text-foreground/50" />}
+            startContent={<IoSearchOutline className="text-foreground/50" size={18} />}
             value={filterValue}
             onClear={() => onClear()}
             onValueChange={onSearchChange}
+            size="lg"
             classNames={{
               base: "bg-white dark:bg-gray-800",
-              input: "text-foreground",
-              inputWrapper: "border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+              input: "text-foreground responsive-text-base",
+              inputWrapper: [
+                "border border-gray-200 dark:border-gray-700",
+                "hover:border-gray-300 dark:hover:border-gray-600",
+                "focus-within:border-primary-500 dark:focus-within:border-primary-400",
+                "min-h-[3rem] sm:min-h-[3.5rem]",
+                "px-4 py-3"
+              ]
             }}
           />
         </div>
 
-        <div className="flex gap-3">
+        {/* Action buttons - responsive layout */}
+        <div className="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-end">
           {onRefresh && (
             <Button
               isIconOnly
@@ -214,21 +224,24 @@ export const CustomTable = ({
               onPress={onRefresh}
               isLoading={isLoading}
               aria-label="Actualizar datos"
+              size="lg"
+              className="min-w-[3rem] h-[3rem] sm:min-w-[3.5rem] sm:h-[3.5rem] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
             >
-              <IoRefreshOutline size={18} />
+              <IoRefreshOutline size={20} />
             </Button>
           )}
 
-          {statusFilter !== "all" && (
-            <Dropdown>
+          {Object.keys(statusColorMap).length > 0 && (
+            <Dropdown placement="bottom-end">
               <DropdownTrigger>
                 <Button
                   variant="flat"
-                  startContent={<IoFunnelOutline size={16} />}
-                  endContent={<IoChevronDownOutline size={16} />}
-                  className="hidden sm:flex bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+                  startContent={<IoFunnelOutline size={18} />}
+                  endContent={<IoChevronDownOutline size={16} className="hidden sm:block" />}
+                  size="lg"
+                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4"
                 >
-                  Estado
+                  <span className="hidden sm:inline">Estado</span>
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
@@ -239,28 +252,29 @@ export const CustomTable = ({
                 selectionMode="multiple"
                 onSelectionChange={setStatusFilter}
                 classNames={{
-                  base: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg"
+                  base: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg max-w-[90vw] sm:max-w-xs"
                 }}
               >
-                <DropdownItem key="active" className="capitalize">
+                <DropdownItem key="active" className="capitalize responsive-text-sm">
                   Activo
                 </DropdownItem>
-                <DropdownItem key="inactive" className="capitalize">
+                <DropdownItem key="inactive" className="capitalize responsive-text-sm">
                   Inactivo
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           )}
 
-          <Dropdown>
+          <Dropdown placement="bottom-end">
             <DropdownTrigger>
               <Button
                 variant="flat"
-                startContent={<IoGridOutline size={16} />}
-                endContent={<IoChevronDownOutline size={16} />}
-                className="hidden sm:flex bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+                startContent={<IoGridOutline size={18} />}
+                endContent={<IoChevronDownOutline size={16} className="hidden sm:block" />}
+                size="lg"
+                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4"
               >
-                Columnas
+                <span className="hidden sm:inline">Columnas</span>
               </Button>
             </DropdownTrigger>
             <DropdownMenu
@@ -271,11 +285,11 @@ export const CustomTable = ({
               selectionMode="multiple"
               onSelectionChange={setVisibleColumns}
               classNames={{
-                base: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg"
+                base: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg max-w-[90vw] sm:max-w-xs max-h-[60vh] overflow-y-auto"
               }}
             >
               {columns.map((column) => (
-                <DropdownItem key={column.uid} className="capitalize">
+                <DropdownItem key={column.uid} className="capitalize responsive-text-sm">
                   {column.name}
                 </DropdownItem>
               ))}
@@ -283,26 +297,30 @@ export const CustomTable = ({
           </Dropdown>
 
           {addButtonComponent && (
-            <div>
+            <div className="flex-shrink-0">
               {addButtonComponent}
             </div>
           )}
         </div>
       </div>
 
-      <div className="flex justify-between items-center">
-        <span className="text-foreground/70 text-sm font-medium">
-          Total {data.length} elementos
-          {filteredItems.length !== data.length && (
-            <span className="text-primary-600 dark:text-primary-400 ml-2 font-semibold">
-              ({filteredItems.length} filtrados)
-            </span>
-          )}
-        </span>
-        <label className="flex items-center text-foreground/70 text-sm font-medium">
+      {/* Stats and pagination controls - responsive layout */}
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between items-start sm:items-center">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center">
+          <span className="text-foreground/70 responsive-text-sm font-medium whitespace-nowrap">
+            Total {data.length} elementos
+            {filteredItems.length !== data.length && (
+              <span className="text-primary-600 dark:text-primary-400 ml-2 font-semibold">
+                ({filteredItems.length} filtrados)
+              </span>
+            )}
+          </span>
+        </div>
+
+        <label className="flex items-center text-foreground/70 responsive-text-sm font-medium whitespace-nowrap">
           Filas por página:
           <select
-            className="bg-transparent outline-none text-foreground/70 text-sm ml-2 font-medium cursor-pointer hover:text-foreground transition-colors"
+            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md outline-none text-foreground responsive-text-sm ml-2 px-2 py-1 font-medium cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
             value={rowsPerPage}
             onChange={onRowsPerPageChange}
           >
@@ -333,15 +351,19 @@ export const CustomTable = ({
   ]);
 
   const bottomContent = useMemo(() => (
-    <div className="py-4 px-2 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
+    <div className="py-3 sm:py-4 px-3 sm:px-4 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
+      {/* Selection info - full width on mobile */}
       {selectionMode !== "none" && (
-        <span className="w-[30%] text-sm text-foreground/70 font-medium">
-          {selectedKeys === "all"
-            ? "Todos los elementos seleccionados"
-            : `${selectedKeys.size} de ${filteredItems.length} seleccionados`}
-        </span>
+        <div className="w-full sm:w-auto text-center sm:text-left">
+          <span className="responsive-text-sm text-foreground/70 font-medium">
+            {selectedKeys === "all"
+              ? "Todos los elementos seleccionados"
+              : `${selectedKeys.size} de ${filteredItems.length} seleccionados`}
+          </span>
+        </div>
       )}
 
+      {/* Pagination - centered */}
       <div className="flex-1 flex justify-center">
         <Pagination
           isCompact
@@ -351,9 +373,10 @@ export const CustomTable = ({
           page={page}
           total={pages}
           onChange={setPage}
+          size="sm"
           classNames={{
-            wrapper: "gap-0 overflow-visible h-8 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800",
-            item: "w-8 h-8 text-small rounded-none bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors",
+            wrapper: "gap-0 overflow-visible h-8 sm:h-9 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800",
+            item: "w-8 h-8 sm:w-9 sm:h-9 responsive-text-xs rounded-none bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors",
             cursor: "bg-primary-500 shadow-md text-white font-semibold",
             prev: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
             next: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
@@ -361,13 +384,14 @@ export const CustomTable = ({
         />
       </div>
 
-      <div className="hidden sm:flex w-[30%] justify-end gap-2">
+      {/* Navigation buttons - hidden on mobile, shown on larger screens */}
+      <div className="hidden md:flex gap-2 flex-shrink-0">
         <Button
           size="sm"
           variant="flat"
           isDisabled={page === 1}
           onPress={onPreviousPage}
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium responsive-text-xs px-3"
         >
           Anterior
         </Button>
@@ -377,7 +401,7 @@ export const CustomTable = ({
           variant="flat"
           isDisabled={page === pages}
           onPress={onNextPage}
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium responsive-text-xs px-3"
         >
           Siguiente
         </Button>
@@ -386,17 +410,42 @@ export const CustomTable = ({
   ), [selectedKeys, filteredItems.length, page, pages, selectionMode, onPreviousPage, onNextPage]);
 
   return (
-    <div className={`w-full ${className}`}>
+    <div className={`w-full wide-container ${className}`}>
       <Table
         aria-label={`Tabla de ${title}`}
         isHeaderSticky
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
         classNames={{
-          wrapper: "max-h-[500px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm rounded-lg overflow-auto",
-          table: "min-w-full",
-          th: "bg-gray-50 dark:bg-gray-700 text-foreground font-semibold border-b border-gray-200 dark:border-gray-600 py-4 px-3 first:pl-6 last:pr-6 whitespace-nowrap",
-          td: "border-b border-gray-100 dark:border-gray-700 py-4 px-3 first:pl-6 last:pr-6 align-top",
+          wrapper: [
+            "max-h-[400px] sm:max-h-[500px] lg:max-h-[600px] xl:max-h-[700px]",
+            "bg-white dark:bg-gray-800",
+            "border border-gray-200 dark:border-gray-700",
+            "shadow-sm rounded-lg",
+            "overflow-auto",
+            "scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600",
+            "scrollbar-track-gray-100 dark:scrollbar-track-gray-800"
+          ].join(" "),
+          table: "min-w-full table-auto",
+          th: [
+            "bg-gray-50 dark:bg-gray-700",
+            "text-foreground font-semibold",
+            "border-b border-gray-200 dark:border-gray-600",
+            "py-3 sm:py-4 px-2 sm:px-3 lg:px-4 xl:px-6",
+            "first:pl-3 sm:first:pl-4 lg:first:pl-6 xl:first:pl-8",
+            "last:pr-3 sm:last:pr-4 lg:last:pr-6 xl:last:pr-8",
+            "whitespace-nowrap",
+            "responsive-text-xs sm:responsive-text-sm",
+            "text-left"
+          ].join(" "),
+          td: [
+            "border-b border-gray-100 dark:border-gray-700",
+            "py-3 sm:py-4 px-2 sm:px-3 lg:px-4 xl:px-6",
+            "first:pl-3 sm:first:pl-4 lg:first:pl-6 xl:first:pl-8",
+            "last:pr-3 sm:last:pr-4 lg:last:pr-6 xl:last:pr-8",
+            "align-top",
+            "responsive-text-xs sm:responsive-text-sm"
+          ].join(" "),
           tr: "hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors duration-150",
         }}
         selectedKeys={selectedKeys}
@@ -413,14 +462,14 @@ export const CustomTable = ({
               align={column.uid === "profilePicture" || column.uid === "actions" ? "center" : "start"}
               allowsSorting={false}
               className={`text-foreground font-medium hover:text-foreground transition-colors ${
-                column.uid === "description" ? "w-1/3 min-w-[300px]" :
-                column.uid === "actions" ? "w-auto min-w-[200px]" :
-                column.uid === "title" ? "w-1/6 min-w-[150px]" :
-                column.uid === "user" ? "w-1/6 min-w-[120px]" :
-                column.uid === "phone" ? "w-1/8 min-w-[100px]" :
-                column.uid === "date" ? "w-1/8 min-w-[100px]" :
-                column.uid === "status" || column.uid === "seen" ? "w-1/12 min-w-[80px]" :
-                "w-auto"
+                column.uid === "description" ? "w-auto min-w-[200px] sm:min-w-[300px] lg:min-w-[400px] xl:min-w-[500px]" :
+                column.uid === "actions" ? "w-auto min-w-[120px] sm:min-w-[150px] lg:min-w-[200px] xl:min-w-[250px]" :
+                column.uid === "title" ? "w-auto min-w-[100px] sm:min-w-[120px] lg:min-w-[150px] xl:min-w-[200px]" :
+                column.uid === "user" ? "w-auto min-w-[80px] sm:min-w-[100px] lg:min-w-[120px] xl:min-w-[150px]" :
+                column.uid === "phone" ? "w-auto min-w-[80px] sm:min-w-[100px] xl:min-w-[120px]" :
+                column.uid === "date" ? "w-auto min-w-[80px] sm:min-w-[100px] xl:min-w-[120px]" :
+                column.uid === "status" || column.uid === "seen" ? "w-auto min-w-[60px] sm:min-w-[80px] xl:min-w-[100px]" :
+                "w-auto min-w-[60px] sm:min-w-[80px] xl:min-w-[100px]"
               }`}
             >
               <div className="flex items-center">
@@ -432,18 +481,18 @@ export const CustomTable = ({
 
         <TableBody
           emptyContent={
-            <div className="flex flex-col items-center justify-center py-12">
+            <div className="flex flex-col items-center justify-center py-8 sm:py-12 px-4">
               {isLoading ? (
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center gap-4 text-center">
                   <Spinner size="lg" color="primary" />
-                  <p className="text-foreground/60">Cargando datos...</p>
+                  <p className="text-foreground/60 responsive-text-sm">Cargando datos...</p>
                 </div>
               ) : (
                 emptyContent || (
-                  <div className="flex flex-col items-center gap-4 text-foreground/60">
-                    <div className="text-center">
-                      <p className="text-lg font-medium">No hay datos disponibles</p>
-                      <p className="text-sm">
+                  <div className="flex flex-col items-center gap-4 text-foreground/60 text-center max-w-sm">
+                    <div>
+                      <p className="responsive-text-base font-medium mb-2">No hay datos disponibles</p>
+                      <p className="responsive-text-sm text-foreground/50">
                         {hasSearchFilter
                           ? "No se encontraron resultados para tu búsqueda"
                           : `No hay ${title} para mostrar`}
@@ -457,7 +506,7 @@ export const CustomTable = ({
           items={items}
           isLoading={isLoading}
           loadingContent={
-            <div className="flex justify-center py-8">
+            <div className="flex justify-center py-6 sm:py-8">
               <Spinner size="lg" color="primary" />
             </div>
           }
@@ -468,14 +517,14 @@ export const CustomTable = ({
                 <TableCell
                   key={column.uid}
                   className={
-                    column.uid === "description" ? "w-1/3 min-w-[300px]" :
-                    column.uid === "actions" ? "w-auto min-w-[200px]" :
-                    column.uid === "title" ? "w-1/6 min-w-[150px]" :
-                    column.uid === "user" ? "w-1/6 min-w-[120px]" :
-                    column.uid === "phone" ? "w-1/8 min-w-[100px]" :
-                    column.uid === "date" ? "w-1/8 min-w-[100px]" :
-                    column.uid === "status" || column.uid === "seen" ? "w-1/12 min-w-[80px]" :
-                    "w-auto"
+                    column.uid === "description" ? "w-auto min-w-[200px] sm:min-w-[300px] lg:min-w-[400px] xl:min-w-[500px]" :
+                    column.uid === "actions" ? "w-auto min-w-[120px] sm:min-w-[150px] lg:min-w-[200px] xl:min-w-[250px]" :
+                    column.uid === "title" ? "w-auto min-w-[100px] sm:min-w-[120px] lg:min-w-[150px] xl:min-w-[200px]" :
+                    column.uid === "user" ? "w-auto min-w-[80px] sm:min-w-[100px] lg:min-w-[120px] xl:min-w-[150px]" :
+                    column.uid === "phone" ? "w-auto min-w-[80px] sm:min-w-[100px] xl:min-w-[120px]" :
+                    column.uid === "date" ? "w-auto min-w-[80px] sm:min-w-[100px] xl:min-w-[120px]" :
+                    column.uid === "status" || column.uid === "seen" ? "w-auto min-w-[60px] sm:min-w-[80px] xl:min-w-[100px]" :
+                    "w-auto min-w-[60px] sm:min-w-[80px] xl:min-w-[100px]"
                   }
                 >
                   <div className={`flex items-start ${

@@ -2,10 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base responsive setup */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1280px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+/* Ensure full viewport usage */
+body, #root {
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 /* Professional scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
+}
+
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
 }
 
 ::-webkit-scrollbar-track {
@@ -30,20 +70,191 @@
   @apply ring-2 ring-primary-500 ring-offset-2 ring-offset-background;
 }
 
-/* Professional components */
+/* Professional responsive components */
 @layer components {
+  /* Responsive container system - much wider on desktop */
+  .responsive-container {
+    @apply w-full max-w-sm mx-auto px-4 sm:max-w-2xl sm:px-6 md:max-w-4xl lg:max-w-6xl xl:max-w-full xl:px-8 2xl:px-16;
+  }
+
+  .responsive-container-sm {
+    @apply w-full max-w-2xl mx-auto px-4 sm:px-6;
+  }
+
+  .responsive-container-xs {
+    @apply w-full max-w-md mx-auto px-4;
+  }
+
+  /* Wide desktop container - uses most of screen width */
+  .wide-container {
+    @apply w-full max-w-sm mx-auto px-4 sm:max-w-3xl sm:px-6 md:max-w-5xl lg:max-w-7xl xl:max-w-full xl:px-12 2xl:px-20;
+  }
+
+  /* Full width container for desktop */
+  .full-width-container {
+    @apply w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24;
+  }
+
+  /* Responsive grid system */
+  .responsive-grid {
+    @apply grid gap-4 sm:gap-6 lg:gap-8;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .responsive-grid-sm {
+    @apply grid gap-3 sm:gap-4 lg:gap-6;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  /* Perfect centering utilities */
+  .center-absolute {
+    @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+  }
+
+  .center-flex {
+    @apply flex items-center justify-center;
+  }
+
+  .center-flex-col {
+    @apply flex flex-col items-center justify-center;
+  }
+
+  /* Responsive spacing */
+  .responsive-padding {
+    @apply p-4 sm:p-6 lg:p-8 xl:p-10;
+  }
+
+  .responsive-padding-sm {
+    @apply p-3 sm:p-4 lg:p-6;
+  }
+
+  .responsive-margin {
+    @apply m-4 sm:m-6 lg:m-8;
+  }
+
+  /* Responsive text sizing */
+  .responsive-text-xs {
+    @apply text-xs sm:text-sm;
+  }
+
+  .responsive-text-sm {
+    @apply text-sm sm:text-base;
+  }
+
+  .responsive-text-base {
+    @apply text-base sm:text-lg;
+  }
+
+  .responsive-text-lg {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+
+  .responsive-text-xl {
+    @apply text-xl sm:text-2xl lg:text-3xl;
+  }
+
+  /* Corporate cards with responsive design */
   .corporate-card {
     @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm;
+    @apply w-full max-w-full overflow-hidden;
   }
 
+  .corporate-card-responsive {
+    @apply corporate-card;
+    @apply p-4 sm:p-6 lg:p-8;
+    @apply m-2 sm:m-4 lg:m-6;
+  }
+
+  /* Responsive buttons */
   .corporate-button {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium px-4 py-2 rounded-md;
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md;
+    @apply px-3 py-2 sm:px-4 sm:py-2.5 lg:px-6 lg:py-3;
+    @apply text-sm sm:text-base;
+    @apply transition-all duration-200 ease-in-out;
   }
 
+  .corporate-button-sm {
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md;
+    @apply px-2 py-1.5 sm:px-3 sm:py-2;
+    @apply text-xs sm:text-sm;
+  }
+
+  /* Responsive inputs */
   .corporate-input {
-    @apply border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-800;
+    @apply border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800;
+    @apply px-3 py-2 sm:px-4 sm:py-2.5;
+    @apply text-sm sm:text-base;
+    @apply w-full;
   }
 
+  /* Responsive layouts */
+  .layout-main {
+    @apply min-h-screen min-h-dvh w-full;
+    @apply flex flex-col;
+  }
+
+  .layout-content {
+    @apply flex-1 w-full;
+    @apply overflow-x-hidden overflow-y-auto;
+  }
+
+  .layout-centered {
+    @apply layout-main center-flex;
+  }
+
+  /* Dashboard specific responsive classes - much wider on desktop */
+  .dashboard-container {
+    @apply w-full min-h-screen min-h-dvh;
+    @apply flex flex-col;
+  }
+
+  .dashboard-content {
+    @apply flex-1 w-full;
+    @apply p-3 sm:p-4 md:p-6 lg:p-8 xl:p-12 2xl:p-16;
+    @apply overflow-x-hidden;
+  }
+
+  .dashboard-grid {
+    @apply grid gap-4 sm:gap-6 lg:gap-8 xl:gap-10;
+    @apply grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6;
+    @apply w-full max-w-full;
+    @apply place-items-center;
+  }
+
+  /* Auth layout responsive */
+  .auth-container {
+    @apply layout-main;
+    @apply relative overflow-hidden;
+  }
+
+  .auth-content {
+    @apply center-absolute w-full;
+    @apply px-4 sm:px-6 lg:px-8;
+    @apply max-w-md mx-auto;
+  }
+
+  /* Mobile-first responsive utilities */
+  .mobile-full {
+    @apply w-full h-full;
+  }
+
+  .mobile-center {
+    @apply center-flex-col;
+    @apply min-h-screen min-h-dvh;
+  }
+
+  /* Responsive card grid */
+  .card-grid {
+    @apply grid gap-4 sm:gap-6;
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+
+  .card-grid-sm {
+    @apply grid gap-3 sm:gap-4;
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  /* Professional gradients */
   .professional-gradient {
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   }
@@ -71,6 +282,12 @@
     @apply transition-colors duration-300 ease-in-out;
   }
 
+  /* Responsive table container */
+  .table-responsive {
+    @apply w-full overflow-x-auto;
+    @apply rounded-lg border border-gray-200 dark:border-gray-700;
+  }
+
   /* Prevent scrolls in dashboard cards */
   .dashboard-card {
     overflow: hidden !important;
@@ -85,6 +302,20 @@
     overflow: hidden !important;
     max-height: 100% !important;
     max-width: 100% !important;
+  }
+
+  /* Responsive modal */
+  .modal-responsive {
+    @apply w-full max-w-lg mx-auto;
+    @apply m-4 sm:m-6 lg:m-8;
+  }
+
+  /* Safe area for mobile devices */
+  .safe-area {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 }
 

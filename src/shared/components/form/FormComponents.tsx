@@ -31,25 +31,25 @@ export const FormContainer: React.FC<FormContainerProps> = ({
 }) => {
   return (
     <motion.div
-      className={`w-full max-w-2xl mx-auto ${className}`}
+      className={`w-full wide-container px-4 sm:px-6 lg:px-8 xl:px-12 ${className}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
     >
       {(title || subtitle) && (
         <motion.div
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8 lg:mb-10"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.4 }}
         >
           {title && (
-            <h2 className="text-2xl md:text-3xl font-bold text-gradient mb-2">
+            <h2 className="responsive-text-xl sm:responsive-text-2xl lg:text-3xl xl:text-4xl font-bold text-gradient mb-2">
               {title}
             </h2>
           )}
           {subtitle && (
-            <p className="text-foreground/70 text-lg">
+            <p className="text-foreground/70 responsive-text-base lg:text-lg xl:text-xl max-w-4xl mx-auto">
               {subtitle}
             </p>
           )}
@@ -57,7 +57,7 @@ export const FormContainer: React.FC<FormContainerProps> = ({
       )}
 
       <motion.form
-        className="glass-effect border border-gray-200/50 dark:border-gray-700/50 rounded-2xl p-6 md:p-8 shadow-large"
+        className="glass-effect border border-gray-200/50 dark:border-gray-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 2xl:p-16 shadow-large w-full max-w-none"
         onSubmit={onSubmit}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -77,26 +77,26 @@ export const FormSection: React.FC<FormSectionProps> = ({
 }) => {
   return (
     <motion.div
-      className={`mb-6 ${className}`}
+      className={`mb-4 sm:mb-6 ${className}`}
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
     >
       {(title || description) && (
-        <div className="mb-4">
+        <div className="mb-3 sm:mb-4 text-center sm:text-left">
           {title && (
-            <h3 className="text-lg font-semibold text-foreground mb-1">
+            <h3 className="responsive-text-base font-semibold text-foreground mb-1">
               {title}
             </h3>
           )}
           {description && (
-            <p className="text-sm text-foreground/60">
+            <p className="responsive-text-sm text-foreground/60">
               {description}
             </p>
           )}
         </div>
       )}
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4 w-full">
         {children}
       </div>
     </motion.div>
@@ -111,13 +111,13 @@ export const FormActions: React.FC<FormActionsProps> = ({
   const alignmentClasses = {
     left: 'justify-start',
     center: 'justify-center',
-    right: 'justify-end',
+    right: 'justify-end sm:justify-end',
     between: 'justify-between',
   };
 
   return (
     <motion.div
-      className={`flex ${alignmentClasses[align]} gap-3 pt-6 border-t border-gray-200/50 dark:border-gray-700/50 ${className}`}
+      className={`flex flex-col sm:flex-row ${alignmentClasses[align]} gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-gray-200/50 dark:border-gray-700/50 ${className}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3, duration: 0.4 }}

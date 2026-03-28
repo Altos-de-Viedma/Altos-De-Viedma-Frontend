@@ -4,11 +4,13 @@ import { NavBarComponent } from '../../../shared';
 
 export const DashboardLayoutPage: React.FC = () => {
   return (
-    <div>
+    <div className="dashboard-container safe-area">
       <NavBarComponent />
-      <div className="md:p-4 p-2">
-        <Outlet />
-      </div>
+      <main className="dashboard-content">
+        <div className="full-width-container">
+          <Outlet />
+        </div>
+      </main>
     </div>
   );
 };

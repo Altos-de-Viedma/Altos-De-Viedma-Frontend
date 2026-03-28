@@ -16,34 +16,43 @@ export const AuthLayout = () => {
   }, [status, redirectTo]);
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden">
-      <div className="absolute inset-0 z-0 bg-gradient-animated" aria-hidden="true"></div>
+    <div className="auth-container">
+      {/* Background with responsive gradient */}
+      <div className="absolute inset-0 z-0 bg-gradient-animated safe-area" aria-hidden="true"></div>
 
-      <main className="absolute inset-0 flex justify-center items-start md:items-center z-20 p-3 pt-[200px] md:pt-0">
-        <UI.Card className="w-full max-w-md shadow-lg border border-gray-200 dark:border-gray-700">
-          <UI.CardHeader
-            className="flex justify-center flex-col cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-t-lg"
-            onClick={() => redirectTo('/ingresar')}
-            role="button"
-            tabIndex={0}
-            aria-label="Ir a página de inicio de sesión"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                redirectTo('/ingresar');
-              }
-            }}
-          >
-            <IconContainer children={<IoHomeOutline size={29} className="md:mt-1 mr-1 text-gray-600" aria-hidden="true" />} />
-            <h1 className="font-bold text-inherit text-2xl mt-[4px] text-gray-800 dark:text-gray-200">
-              Altos de Viedma
-            </h1>
-          </UI.CardHeader>
+      {/* Main content - perfectly centered */}
+      <main className="absolute inset-0 z-20 center-flex safe-area">
+        <div className="auth-content">
+          <UI.Card className="corporate-card-responsive shadow-2xl border-0 backdrop-blur-sm bg-white/95 dark:bg-gray-800/95 w-full max-w-md">
+            <UI.CardHeader className="center-flex-col cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-t-lg responsive-padding-sm"
+              onClick={() => redirectTo('/ingresar')}
+              role="button"
+              tabIndex={0}
+              aria-label="Ir a página de inicio de sesión"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  redirectTo('/ingresar');
+                }
+              }}
+            >
+              <IconContainer className="mb-2">
+                <IoHomeOutline
+                  size={32}
+                  className="text-primary-600 dark:text-primary-400"
+                  aria-hidden="true"
+                />
+              </IconContainer>
+              <h1 className="responsive-text-xl font-bold text-gray-800 dark:text-gray-200 text-center">
+                Altos de Viedma
+              </h1>
+            </UI.CardHeader>
 
-          <UI.CardBody>
-            <Outlet />
-          </UI.CardBody>
-        </UI.Card>
+            <UI.CardBody className="responsive-padding">
+              <Outlet />
+            </UI.CardBody>
+          </UI.Card>
+        </div>
       </main>
     </div>
   );

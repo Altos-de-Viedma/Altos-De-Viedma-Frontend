@@ -56,13 +56,33 @@ export const CustomFormModal = ({
         backdrop="blur"
         isDismissable={isDismissable}
         size={size}
+        placement="center"
+        scrollBehavior="inside"
         classNames={{
-          wrapper: 'z-50',
+          wrapper: 'z-50 p-4 sm:p-6 center-flex',
           backdrop: 'bg-black/50 backdrop-blur-md',
-          base: 'glass-effect border border-gray-200/50 dark:border-gray-700/50 shadow-2xl',
-          header: 'border-b border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-gray-50/80 to-gray-100/50 dark:from-gray-800/80 dark:to-gray-900/50',
-          body: 'py-6',
-          footer: 'border-t border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-gray-50/80 to-gray-100/50 dark:from-gray-800/80 dark:to-gray-900/50',
+          base: [
+            'glass-effect border border-gray-200/50 dark:border-gray-700/50 shadow-2xl',
+            'mx-4 sm:mx-6 max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-3rem)]',
+            'max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-3rem)]',
+            'rounded-lg sm:rounded-xl'
+          ].join(' '),
+          header: [
+            'border-b border-gray-200/50 dark:border-gray-700/50',
+            'bg-gradient-to-r from-gray-50/80 to-gray-100/50 dark:from-gray-800/80 dark:to-gray-900/50',
+            'px-4 sm:px-6 py-4 sm:py-5'
+          ].join(' '),
+          body: [
+            'py-4 sm:py-6 px-4 sm:px-6',
+            'max-h-[60vh] sm:max-h-[70vh] overflow-y-auto',
+            'scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600',
+            'scrollbar-track-gray-100 dark:scrollbar-track-gray-800'
+          ].join(' '),
+          footer: [
+            'border-t border-gray-200/50 dark:border-gray-700/50',
+            'bg-gradient-to-r from-gray-50/80 to-gray-100/50 dark:from-gray-800/80 dark:to-gray-900/50',
+            'px-4 sm:px-6 py-4 sm:py-5'
+          ].join(' '),
         }}
         motionProps={{
           variants: {
@@ -87,12 +107,12 @@ export const CustomFormModal = ({
           },
         }}
       >
-        <UI.ModalContent>
+        <UI.ModalContent className="responsive-container">
           {(onClose) => (
             <>
-              <UI.ModalHeader className="flex items-center justify-center px-6 py-4">
+              <UI.ModalHeader className="flex items-center justify-center">
                 <motion.div
-                  className="flex items-center space-x-3 font-bold text-2xl"
+                  className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 text-center sm:text-left"
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1, duration: 0.3 }}
@@ -100,28 +120,30 @@ export const CustomFormModal = ({
                   <motion.div
                     whileHover={{ rotate: 360, scale: 1.1 }}
                     transition={{ duration: 0.6, ease: 'easeInOut' }}
+                    className="flex-shrink-0"
                   >
-                    <IconContainer className="p-2 bg-primary-500/10 rounded-xl text-primary-500">
+                    <IconContainer className="p-2 sm:p-3 bg-primary-500/10 rounded-xl text-primary-500">
                       {icon}
                     </IconContainer>
                   </motion.div>
-                  <h2 className="text-gradient">{title}</h2>
+                  <h2 className="text-gradient responsive-text-lg sm:responsive-text-xl font-bold">{title}</h2>
                 </motion.div>
               </UI.ModalHeader>
 
-              <UI.ModalBody className="px-6">
+              <UI.ModalBody>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.4 }}
+                  className="w-full center-flex-col gap-4 sm:gap-6"
                 >
                   {body}
                 </motion.div>
               </UI.ModalBody>
 
-              <UI.ModalFooter className="flex justify-center space-x-3 px-6 py-4">
+              <UI.ModalFooter className="center-flex">
                 <motion.div
-                  className="flex gap-3"
+                  className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto justify-center sm:justify-end"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.3 }}
@@ -129,13 +151,14 @@ export const CustomFormModal = ({
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    className="w-full sm:w-auto"
                   >
                     <UI.Button
                       color="danger"
                       variant="light"
                       onPress={onClose}
-                      startContent={<Icons.IoCloseOutline size={20} />}
-                      className="btn-hover-lift font-medium"
+                      startContent={<Icons.IoCloseOutline size={18} />}
+                      className="btn-hover-lift font-medium w-full sm:w-auto min-h-[3rem] sm:min-h-[2.5rem] responsive-text-sm"
                       isDisabled={isLoading}
                     >
                       {cancelButtonText}
@@ -145,6 +168,7 @@ export const CustomFormModal = ({
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    className="w-full sm:w-auto"
                   >
                     <UI.Button
                       color={saveButtonColor}
@@ -154,10 +178,10 @@ export const CustomFormModal = ({
                         isLoading ? (
                           <UI.Spinner size="sm" color="white" />
                         ) : (
-                          <Icons.IoSaveOutline size={20} />
+                          <Icons.IoSaveOutline size={18} />
                         )
                       }
-                      className="btn-hover-lift font-medium shadow-medium hover:shadow-large transition-all duration-300 bg-blue-600 hover:bg-blue-700 text-white"
+                      className="btn-hover-lift font-medium shadow-medium hover:shadow-large transition-all duration-300 bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto min-h-[3rem] sm:min-h-[2.5rem] responsive-text-sm"
                       isLoading={isLoading}
                       isDisabled={isLoading}
                     >

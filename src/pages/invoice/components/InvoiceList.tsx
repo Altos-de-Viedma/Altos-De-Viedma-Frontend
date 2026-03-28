@@ -44,7 +44,11 @@ export const InvoiceList = () => {
   }, [refetch]);
 
   if (isLoading) {
-    return <UI.Spinner />;
+    return (
+      <div className="center-flex py-12">
+        <UI.Spinner size="lg" color="primary" />
+      </div>
+    );
   }
 
   if (!invoices) return null;
@@ -133,95 +137,115 @@ export const InvoiceList = () => {
   const addButtonComponent = <InvoiceForm />;
 
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-full flex-col space-y-6 lg:space-y-8">
       <UI.Tabs
         aria-label="Options"
         selectedKey={selected}
         onSelectionChange={setSelected}
+        size="lg"
         classNames={{
-          tabList: "gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg",
-          cursor: "bg-white dark:bg-gray-700 shadow-sm",
-          tab: "px-4 py-2 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white",
-          tabContent: "group-data-[selected=true]:text-gray-900 dark:group-data-[selected=true]:text-white"
+          tabList: "gap-2 sm:gap-3 lg:gap-4 bg-gray-100 dark:bg-gray-800 p-1 sm:p-1.5 rounded-lg sm:rounded-xl w-full sm:w-auto flex-wrap sm:flex-nowrap",
+          cursor: "bg-white dark:bg-gray-700 shadow-sm rounded-md sm:rounded-lg",
+          tab: "px-3 sm:px-4 lg:px-6 py-2 sm:py-3 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white responsive-text-sm sm:responsive-text-base min-w-0 flex-shrink-0",
+          tabContent: "group-data-[selected=true]:text-gray-900 dark:group-data-[selected=true]:text-white font-medium"
         }}
       >
         <UI.Tab
           key="in_progress"
           title={
-            <div className="flex items-center space-x-2">
-              <Icons.IoTimeOutline size={14} />
-              <span>En Proceso</span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Icons.IoTimeOutline size={16} className="sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="truncate">En Proceso</span>
+              <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold flex-shrink-0">
+                {getFilteredInvoices("in_progress").length}
+              </span>
             </div>
           }
         >
-          <CustomTable
-            data={getFilteredInvoices("in_progress")}
-            columns={columns}
-            statusColorMap={statusColorMap}
-            initialVisibleColumns={[
-              "title",
-              "state",
-              "date",
-              "description",
-              "user",
-              "invoiceUrl",
-              "actions"
-            ]}
-            addButtonComponent={addButtonComponent}
-            title="facturas en proceso"
-          />
+          <div className="w-full">
+            <CustomTable
+              data={getFilteredInvoices("in_progress")}
+              columns={columns}
+              statusColorMap={statusColorMap}
+              initialVisibleColumns={[
+                "title",
+                "state",
+                "date",
+                "description",
+                "user",
+                "invoiceUrl",
+                "actions"
+              ]}
+              addButtonComponent={addButtonComponent}
+              title="facturas en proceso"
+              className="w-full"
+            />
+          </div>
         </UI.Tab>
         <UI.Tab
           key="confirmed"
           title={
-            <div className="flex items-center space-x-2">
-              <Icons.IoCheckmarkOutline size={14} />
-              <span>Confirmadas</span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Icons.IoCheckmarkOutline size={16} className="sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="truncate">Confirmadas</span>
+              <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold flex-shrink-0">
+                {getFilteredInvoices("confirmed").length}
+              </span>
             </div>
           }
         >
-          <CustomTable
-            data={getFilteredInvoices("confirmed")}
-            columns={columns}
-            statusColorMap={statusColorMap}
-            initialVisibleColumns={[
-              "title",
-              "state",
-              "date",
-              "description",
-              "user",
-              "invoiceUrl",
-              "actions"
-            ]}
-            addButtonComponent={addButtonComponent}
-            title="facturas confirmadas"
-          />
+          <div className="w-full">
+            <CustomTable
+              data={getFilteredInvoices("confirmed")}
+              columns={columns}
+              statusColorMap={statusColorMap}
+              initialVisibleColumns={[
+                "title",
+                "state",
+                "date",
+                "description",
+                "user",
+                "invoiceUrl",
+                "actions"
+              ]}
+              addButtonComponent={addButtonComponent}
+              title="facturas confirmadas"
+              className="w-full"
+            />
+          </div>
         </UI.Tab>
         <UI.Tab
           key="all"
           title={
-            <div className="flex items-center space-x-2">
-              <Icons.IoReceiptOutline size={14} />
-              <span>Todas las facturas</span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Icons.IoReceiptOutline size={16} className="sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="truncate hidden sm:inline">Todas las facturas</span>
+              <span className="truncate sm:hidden">Todas</span>
+              <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold flex-shrink-0">
+                {getFilteredInvoices("all").length}
+              </span>
             </div>
           }
         >
-          <CustomTable
-            data={getFilteredInvoices("all")}
-            columns={columns}
-            statusColorMap={statusColorMap}
-            initialVisibleColumns={[
-              "title",
-              "state",
-              "date",
-              "description",
-              "user",
-              "invoiceUrl",
-              "actions"
-            ]}
-            addButtonComponent={addButtonComponent}
-            title="facturas"
-          />
+          <div className="w-full">
+            <CustomTable
+              data={getFilteredInvoices("all")}
+              columns={columns}
+              statusColorMap={statusColorMap}
+              initialVisibleColumns={[
+                "title",
+                "state",
+                "date",
+                "description",
+                "user",
+                "invoiceUrl",
+                "actions"
+              ]}
+              addButtonComponent={addButtonComponent}
+              title="facturas"
+              className="w-full"
+            />
+          </div>
         </UI.Tab>
       </UI.Tabs>
 

@@ -28,7 +28,7 @@ export const CustomInput: React.FC<GenericInputProps> = ({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
-      className={`w-full ${className}`}
+      className={`w-full max-w-md mx-auto sm:max-w-none ${className}`}
     >
       <UI.Input
         type={type}
@@ -62,22 +62,30 @@ export const CustomInput: React.FC<GenericInputProps> = ({
             'shadow-soft',
             'hover:shadow-medium',
             'focus-within:shadow-glow',
+            'min-h-[3rem] sm:min-h-[3.5rem]',
+            'px-3 sm:px-4',
+            'rounded-lg sm:rounded-xl',
             hasError && 'border-danger-500 hover:border-danger-500 focus-within:border-danger-500',
           ].filter(Boolean).join(' '),
           input: [
             'text-foreground',
             'placeholder:text-foreground/50',
             'bg-transparent',
+            'responsive-text-sm sm:responsive-text-base',
+            'py-2 sm:py-3',
+            'text-center sm:text-left'
           ].join(' '),
           label: [
             'text-foreground/70',
             'font-medium',
+            'responsive-text-sm',
+            'text-center sm:text-left',
             hasError ? 'text-danger-500' : 'group-focus-within:text-primary-500',
             'transition-colors',
             'duration-200',
           ].filter(Boolean).join(' '),
-          description: 'text-foreground/60 text-sm',
-          errorMessage: 'text-danger-500 text-sm font-medium',
+          description: 'text-foreground/60 responsive-text-xs text-center sm:text-left mt-1',
+          errorMessage: 'text-danger-500 responsive-text-xs font-medium text-center sm:text-left mt-1',
         }}
       />
     </motion.div>

@@ -29,7 +29,11 @@ export const PropertiesList = () => {
   };
 
   if ( isLoading ) {
-    return <UI.Spinner />;
+    return (
+      <div className="center-flex py-12">
+        <UI.Spinner size="lg" color="primary" />
+      </div>
+    );
   }
 
   if ( !properties ) return null;

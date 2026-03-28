@@ -63,12 +63,14 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
     <UI.Card
       isPressable
       className={`
-        w-44 h-44 sm:w-48 sm:h-48 lg:w-44 lg:h-44 xl:w-40 xl:h-40
-        cursor-pointer border-2 transition-colors duration-200
+        w-full max-w-xs mx-auto
+        aspect-square
+        cursor-pointer border-2 transition-all duration-300 ease-in-out
         ${getCardColor()}
-        shadow-sm hover:shadow-md
+        shadow-sm hover:shadow-lg hover:scale-105
         focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-        overflow-hidden
+        rounded-xl
+        btn-hover-lift
       `}
       onPress={() => handleNavigate(route)}
       role="button"
@@ -81,14 +83,20 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
         }
       }}
     >
-      <UI.CardBody className="flex flex-col justify-center items-center p-6 overflow-hidden">
-        <div className="mb-4 flex-shrink-0" aria-hidden="true">
-          <div className={`${getIconColor()}`}>
-            <BadgeIcon Icon={Icon} type={type} onBadgeCountChange={handleBadgeCountChange} />
+      <UI.CardBody className="center-flex-col responsive-padding h-full">
+        {/* Icon container - perfectly centered */}
+        <div className="center-flex mb-3 sm:mb-4 flex-shrink-0" aria-hidden="true">
+          <div className={`${getIconColor()} transform transition-transform duration-200 hover:scale-110`}>
+            <BadgeIcon
+              Icon={Icon}
+              type={type}
+              onBadgeCountChange={handleBadgeCountChange}
+            />
           </div>
         </div>
 
-        <h3 className="font-semibold text-lg text-center text-gray-800 dark:text-gray-200 flex-shrink-0">
+        {/* Title - responsive text sizing */}
+        <h3 className="responsive-text-base font-semibold text-center text-gray-800 dark:text-gray-200 flex-shrink-0 leading-tight">
           {title}
         </h3>
       </UI.CardBody>

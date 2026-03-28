@@ -53,43 +53,57 @@ export const UsersPage = () => {
   } ) );
 
   const userPageContent = isLoadingTab ? (
-    <UI.Spinner />
+    <div className="center-flex py-12">
+      <UI.Spinner size="lg" color="primary" />
+    </div>
   ) : (
-    <>
+    <div className="w-full space-y-6 lg:space-y-8">
       <UI.Tabs
         selectedKey={ selectedTab }
         onSelectionChange={ ( key ) => setSelectedTab( key as string ) }
         aria-label="User tabs"
+        size="lg"
         classNames={ {
-          tabList: "gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg",
-          cursor: "bg-white dark:bg-gray-700 shadow-sm",
-          tab: "px-4 py-2 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white",
-          tabContent: "group-data-[selected=true]:text-gray-900 dark:group-data-[selected=true]:text-white"
+          tabList: "gap-2 sm:gap-3 lg:gap-4 bg-gray-100 dark:bg-gray-800 p-1 sm:p-1.5 rounded-lg sm:rounded-xl w-full sm:w-auto",
+          cursor: "bg-white dark:bg-gray-700 shadow-sm rounded-md sm:rounded-lg",
+          tab: "px-3 sm:px-4 lg:px-6 py-2 sm:py-3 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white responsive-text-sm sm:responsive-text-base",
+          tabContent: "group-data-[selected=true]:text-gray-900 dark:group-data-[selected=true]:text-white font-medium"
         } }
       >
         <UI.Tab key="active" title={
-          <div className="flex items-center gap-2">
-            <Icons.IoCheckmarkCircleOutline />
-            Activos ({ users?.length || 0 })
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Icons.IoCheckmarkCircleOutline size={18} className="sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Activos</span>
+            <span className="sm:hidden">Act.</span>
+            <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
+              { users?.length || 0 }
+            </span>
           </div>
         } />
         <UI.Tab key="inactive" title={
-          <div className="flex items-center gap-2">
-            <Icons.IoCloseCircleOutline />
-            Bloqueados ({ inactiveUsers?.length || 0 })
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Icons.IoCloseCircleOutline size={18} className="sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Bloqueados</span>
+            <span className="sm:hidden">Bloq.</span>
+            <span className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
+              { inactiveUsers?.length || 0 }
+            </span>
           </div>
         } />
       </UI.Tabs>
 
-      <CustomTable
-        data={ transformedUsers }
-        columns={ columnsDef }
-        statusColorMap={ statusColorMap }
-        initialVisibleColumns={ [ "username", "fullName", "phone", "address", "roles", "status", "actions" ] }
-        addButtonComponent={ selectedTab === 'active' ? <UsersForm /> : null }
-        title={ selectedTab === 'active' ? "Usuarios activos" : "Usuarios bloqueados" }
-      />
-    </>
+      <div className="w-full">
+        <CustomTable
+          data={ transformedUsers }
+          columns={ columnsDef }
+          statusColorMap={ statusColorMap }
+          initialVisibleColumns={ [ "username", "fullName", "phone", "address", "roles", "status", "actions" ] }
+          addButtonComponent={ selectedTab === 'active' ? <UsersForm /> : null }
+          title={ selectedTab === 'active' ? "Usuarios activos" : "Usuarios bloqueados" }
+          className="w-full"
+        />
+      </div>
+    </div>
   );
 
   return (

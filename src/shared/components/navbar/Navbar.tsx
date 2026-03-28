@@ -46,12 +46,13 @@ export const NavBarComponent = () => {
     <UI.Navbar
       isBlurred
       maxWidth="full"
-      className="bg-white/95 dark:bg-gray-900/95 border-b border-gray-200 dark:border-gray-700 backdrop-blur-sm"
+      className="bg-white/95 dark:bg-gray-900/95 border-b border-gray-200 dark:border-gray-700 backdrop-blur-sm safe-area"
       height="4rem"
     >
-      <UI.NavbarContent justify="start">
-        <UI.NavbarItem className="flex items-center gap-3">
-          {/* Theme Toggle */}
+      {/* Left section - Theme toggle and quick nav */}
+      <UI.NavbarContent justify="start" className="flex-shrink-0 min-w-0">
+        <UI.NavbarItem className="center-flex gap-1 sm:gap-2 md:gap-3">
+          {/* Theme Toggle - always visible */}
           <UI.Switch
             size="sm"
             color="primary"
@@ -71,53 +72,54 @@ export const NavBarComponent = () => {
             }}
           />
 
-          {/* Quick Navigation - Hidden on mobile */}
-          <div className="hidden lg:flex items-center gap-2 ml-4">
+          {/* Quick Navigation - Hidden on small screens */}
+          <div className="hidden md:flex items-center gap-1 lg:gap-2">
             <UI.Button
               variant="light"
               size="sm"
-              startContent={<Icons.IoHomeOutline size={18} />}
+              startContent={<Icons.IoHomeOutline size={16} />}
               onPress={() => handleNavigate('/home')}
-              className="text-foreground/70 hover:text-foreground"
+              className="text-foreground/70 hover:text-foreground responsive-text-xs min-w-unit-8 px-2 lg:px-3"
             >
-              Inicio
+              <span className="hidden lg:inline">Inicio</span>
             </UI.Button>
 
             <UI.Button
               variant="light"
               size="sm"
-              startContent={<Icons.IoAlertCircleOutline size={18} />}
+              startContent={<Icons.IoAlertCircleOutline size={16} />}
               onPress={() => handleNavigate('/emergencias')}
-              className="text-foreground/70 hover:text-foreground"
+              className="text-foreground/70 hover:text-foreground responsive-text-xs min-w-unit-8 px-2 lg:px-3"
             >
-              Emergencias
+              <span className="hidden lg:inline">Emergencias</span>
             </UI.Button>
           </div>
         </UI.NavbarItem>
       </UI.NavbarContent>
 
-      <UI.NavbarContent justify="center">
+      {/* Center section - Brand */}
+      <UI.NavbarContent justify="center" className="flex-shrink-0">
         <UI.NavbarBrand
-          className="flex items-center cursor-pointer justify-center"
+          className="center-flex cursor-pointer px-2"
           onClick={() => handleNavigate('/home')}
         >
-          <h1 className="font-semibold text-lg text-foreground/80 hover:text-foreground">
+          <h1 className="font-semibold responsive-text-base text-foreground/80 hover:text-foreground transition-colors duration-200 text-center truncate max-w-[200px] sm:max-w-none">
             Altos de Viedma
           </h1>
         </UI.NavbarBrand>
       </UI.NavbarContent>
 
-      <UI.NavbarContent justify="end">
-        {/* User Avatar Menu */}
+      {/* Right section - User menu */}
+      <UI.NavbarContent justify="end" className="flex-shrink-0 min-w-0">
         {user && (
-          <UI.NavbarItem className="flex">
-            <div className="flex items-center gap-3">
+          <UI.NavbarItem className="center-flex">
+            <div className="center-flex gap-1 sm:gap-2 md:gap-3">
               {/* User Info - Hidden on small screens */}
-              <div className="hidden md:block text-right">
-                <p className="text-sm font-medium text-foreground">
+              <div className="hidden sm:block text-right min-w-0">
+                <p className="responsive-text-xs font-medium text-foreground truncate max-w-20 md:max-w-24 lg:max-w-32 xl:max-w-none">
                   {user.name || 'Usuario'}
                 </p>
-                <p className="text-xs text-foreground/60">
+                <p className="text-xs text-foreground/60 truncate max-w-20 md:max-w-24 lg:max-w-32 xl:max-w-none">
                   {user.roles?.join(', ') || 'user'}
                 </p>
               </div>
@@ -129,22 +131,22 @@ export const NavBarComponent = () => {
                     as="button"
                     size="sm"
                     name={user.name || 'U'}
-                    className="bg-primary-500 text-white cursor-pointer transition-transform hover:scale-105"
+                    className="bg-primary-500 text-white cursor-pointer transition-transform hover:scale-105 flex-shrink-0"
                     classNames={{
                       base: 'ring-2 ring-primary-500/20 hover:ring-primary-500/40',
                     }}
                   />
                 </UI.DropdownTrigger>
 
-                <UI.DropdownMenu aria-label="User Actions">
+                <UI.DropdownMenu aria-label="User Actions" className="w-64 max-w-[90vw]">
                   <UI.DropdownItem
                     key="profile"
                     startContent={<Icons.IoPersonOutline size={18} />}
                     className="text-foreground"
                   >
-                    <div className="flex flex-col">
-                      <span className="font-medium">{user.name || 'Usuario'}</span>
-                      <span className="text-xs text-foreground/60">
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-medium responsive-text-sm truncate">{user.name || 'Usuario'}</span>
+                      <span className="text-xs text-foreground/60 truncate">
                         {user.roles?.join(', ') || 'user'}
                       </span>
                     </div>
@@ -155,6 +157,25 @@ export const NavBarComponent = () => {
                     className="opacity-0 cursor-default"
                   >
                     <UI.Divider />
+                  </UI.DropdownItem>
+
+                  {/* Mobile navigation items */}
+                  <UI.DropdownItem
+                    key="home"
+                    startContent={<Icons.IoHomeOutline size={18} />}
+                    className="text-foreground md:hidden"
+                    onPress={() => handleNavigate('/home')}
+                  >
+                    Inicio
+                  </UI.DropdownItem>
+
+                  <UI.DropdownItem
+                    key="emergencies"
+                    startContent={<Icons.IoAlertCircleOutline size={18} />}
+                    className="text-foreground md:hidden"
+                    onPress={() => handleNavigate('/emergencias')}
+                  >
+                    Emergencias
                   </UI.DropdownItem>
 
                   <UI.DropdownItem

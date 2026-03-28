@@ -58,11 +58,11 @@ export const GenericCustomForm = ( { id, config, onSubmit }: IGenericCustomFormP
         onOpenChange={ onOpenChange }
         headerContent={ <CustomHeaderForm title={ id ? `Editar ${ config.title }` : `Nuevo ${ config.title }` } id={ id } /> }
         bodyContent={
-          <form onSubmit={ handleSubmit( handleFormSubmit ) } onKeyDown={ handleKeyDown }>
-            <div className="flex flex-col space-y-4 justify-center">
+          <form onSubmit={ handleSubmit( handleFormSubmit ) } onKeyDown={ handleKeyDown } className="w-full">
+            <div className="flex flex-col gap-4 sm:gap-6 justify-center w-full responsive-container">
               {
                 config.fields.map( ( field ) => (
-                  <div key={ field.name }>{ renderField( field ) }</div>
+                  <div key={ field.name } className="w-full">{ renderField( field ) }</div>
                 ) )
               }
             </div>
