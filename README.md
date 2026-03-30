@@ -2,7 +2,7 @@
 
 This is the frontend application for the Altos de Viedma neighborhood management system. It provides a user-friendly interface for residents and administrators to manage various aspects of the community.
 
-## ✨ Features
+## ✨ Features.
 
 - **Authentication**: Secure login for residents and administrators.
 - **Dashboard**: A central hub for users to access different features based on their roles.
