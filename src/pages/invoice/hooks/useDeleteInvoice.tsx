@@ -8,7 +8,13 @@ export const useDeleteInvoice = () => {
   const { mutateAsync: removeInvoice, isPending } = useMutation({
     mutationFn: (id: string) => deleteInvoice(id),
     onSuccess: () => {
+      // Invalidar múltiples queries relacionadas
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
+      queryClient.invalidateQueries({ queryKey: ['invoice'] });
+
+      // Forzar refetch inmediato
+      queryClient.refetchQueries({ queryKey: ['invoices'] });
+
       toast.success('Factura eliminada exitosamente');
     },
     onError: (error: any) => {

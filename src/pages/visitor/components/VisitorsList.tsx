@@ -14,7 +14,7 @@ export const VisitorsList = () => {
   const { generateWhatsAppLink } = useWhatsApp();
   const { visitors, isLoading } = useVisitors();
   const { completedVisit, isPending: isCompletingVisit } = useVisitCompleted();
-  const [ selected, setSelected ] = useState<string | number>( "pending" );
+  const [ selectedTab, setSelectedTab ] = useState( "pending" );
   const { user } = useAuthStore( ( state ) => ( { user: state.user } ) );
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [ visitorToComplete, setVisitorToComplete ] = useState<IVisitor | null>( null );
@@ -121,130 +121,64 @@ export const VisitorsList = () => {
   };
 
   return (
-    <div className="flex w-full flex-col space-y-6 lg:space-y-8">
+    <div className="w-full space-y-6 lg:space-y-8">
       <UI.Tabs
-        aria-label="Options"
-        selectedKey={ selected }
-        onSelectionChange={ setSelected }
+        selectedKey={ selectedTab }
+        onSelectionChange={ ( key ) => setSelectedTab( key as string ) }
+        aria-label="Visitor tabs"
         size="lg"
-        classNames={{
-          tabList: "gap-2 sm:gap-3 lg:gap-4 bg-gray-100 dark:bg-gray-800 p-1 sm:p-1.5 rounded-lg sm:rounded-xl w-full sm:w-auto flex-wrap sm:flex-nowrap",
+        classNames={ {
+          tabList: "gap-2 sm:gap-3 lg:gap-4 bg-gray-100 dark:bg-gray-800 p-1 sm:p-1.5 rounded-lg sm:rounded-xl w-full sm:w-auto",
           cursor: "bg-white dark:bg-gray-700 shadow-sm rounded-md sm:rounded-lg",
-          tab: "px-3 sm:px-4 lg:px-6 py-2 sm:py-3 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white responsive-text-sm sm:responsive-text-base min-w-0 flex-shrink-0",
+          tab: "px-3 sm:px-4 lg:px-6 py-2 sm:py-3 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white responsive-text-sm sm:responsive-text-base",
           tabContent: "group-data-[selected=true]:text-gray-900 dark:group-data-[selected=true]:text-white font-medium"
-        }}
+        } }
       >
-        <UI.Tab
-          key="pending"
-          title={
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Icons.IoAlertCircleOutline size={16} className="sm:w-5 sm:h-5 flex-shrink-0" />
-              <span className="truncate">Visitantes</span>
-              <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold flex-shrink-0">
-                {getFilteredVisitors("pending").length}
-              </span>
-            </div>
-          }
-        >
-          <div className="w-full">
-            <CustomTable
-              data={ getFilteredVisitors( "pending" ) }
-              columns={ columns }
-              statusColorMap={ statusColorMap }
-              initialVisibleColumns={ [
-                "profilePicture",
-                "fullName",
-                "date",
-                "dateAndTimeOfVisit",
-                "dni",
-                "phone",
-                "vehiclePlate",
-                "description",
-                "property",
-                "visitCompleted",
-                "actions",
-              ] }
-              addButtonComponent={ <VisitorForm /> }
-              title="visitantes pendientes"
-              className="w-full"
-            />
+        <UI.Tab key="pending" title={
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Icons.IoAlertCircleOutline size={18} className="sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Pendientes</span>
+            <span className="sm:hidden">Pend.</span>
+            <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
+              {getFilteredVisitors("pending").length}
+            </span>
           </div>
-        </UI.Tab>
-        <UI.Tab
-          key="completed"
-          title={
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Icons.IoCheckmarkOutline size={16} className="sm:w-5 sm:h-5 flex-shrink-0" />
-              <span className="truncate hidden sm:inline">Visitas finalizadas</span>
-              <span className="truncate sm:hidden">Finalizadas</span>
-              <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold flex-shrink-0">
-                {getFilteredVisitors("completed").length}
-              </span>
-            </div>
-          }
-        >
-          <div className="w-full">
-            <CustomTable
-              data={ getFilteredVisitors( "completed" ) }
-              columns={ columns }
-              statusColorMap={ statusColorMap }
-              initialVisibleColumns={ [
-                "profilePicture",
-                "fullName",
-                "date",
-                "dateAndTimeOfVisit",
-                "dni",
-                "phone",
-                "description",
-                "vehiclePlate",
-                "property",
-                "visitCompleted",
-                "actions",
-              ] }
-              addButtonComponent={ <VisitorForm /> }
-              title="visitas finalizadas"
-              className="w-full"
-            />
+        } />
+        <UI.Tab key="completed" title={
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Icons.IoCheckmarkOutline size={18} className="sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Finalizadas</span>
+            <span className="sm:hidden">Fin.</span>
+            <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
+              {getFilteredVisitors("completed").length}
+            </span>
           </div>
-        </UI.Tab>
-        <UI.Tab
-          key="all"
-          title={
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Icons.IoPeopleOutline size={16} className="sm:w-5 sm:h-5 flex-shrink-0" />
-              <span className="truncate hidden sm:inline">Registro de visitas</span>
-              <span className="truncate sm:hidden">Registro</span>
-              <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold flex-shrink-0">
-                {getFilteredVisitors("all").length}
-              </span>
-            </div>
-          }
-        >
-          <div className="w-full">
-            <CustomTable
-              data={ getFilteredVisitors( "all" ) }
-              columns={ columns }
-              statusColorMap={ statusColorMap }
-              initialVisibleColumns={ [
-                "profilePicture",
-                "fullName",
-                "date",
-                "dateAndTimeOfVisit",
-                "dni",
-                "phone",
-                "description",
-                "vehiclePlate",
-                "property",
-                "visitCompleted",
-                "actions",
-              ] }
-              addButtonComponent={ <VisitorForm /> }
-              title="todas las visitas"
-              className="w-full"
-            />
-          </div>
-        </UI.Tab>
+        } />
       </UI.Tabs>
+
+      <div className="w-full">
+        <CustomTable
+          data={ getFilteredVisitors( selectedTab ) }
+          columns={ columns }
+          statusColorMap={ statusColorMap }
+          initialVisibleColumns={ [
+            "profilePicture",
+            "fullName",
+            "date",
+            "dateAndTimeOfVisit",
+            "dni",
+            "phone",
+            "vehiclePlate",
+            "description",
+            "property",
+            "visitCompleted",
+            "actions",
+          ] }
+          addButtonComponent={ <VisitorForm /> }
+          title={ selectedTab === 'pending' ? "visitantes pendientes" : "visitas finalizadas" }
+          className="w-full"
+        />
+      </div>
 
       <UI.Modal isOpen={ isOpen } onOpenChange={ onOpenChange } backdrop="blur" isDismissable={ false } scrollBehavior="normal" placement="top">
         <UI.ModalContent>

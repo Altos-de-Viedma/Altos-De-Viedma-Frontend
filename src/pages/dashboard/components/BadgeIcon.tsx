@@ -10,7 +10,7 @@ import { useSeenNotifications } from '../../../hooks/useSeenNotifications';
 
 interface Props {
   Icon: ElementType;
-  type?: 'emergencies' | 'packages' | 'visitors';
+  type?: 'emergencies' | 'packages' | 'visitors' | 'invoices';
   onBadgeCountChange?: (count: number) => void;
 }
 

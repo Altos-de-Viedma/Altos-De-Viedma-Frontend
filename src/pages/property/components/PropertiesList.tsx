@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { CustomTable, StatusColorMap, UI, useWhatsApp, UserModal } from '../../../shared';
 import { useProperties, useSetMainProperty } from '../hooks';
 import { PropertyForm } from './PropertyForm';
@@ -13,6 +14,7 @@ export const PropertiesList = () => {
   const { properties, isLoading } = useProperties();
   const { generateWhatsAppLink } = useWhatsApp();
   const { setAsMain, isPending: isSettingMain } = useSetMainProperty();
+  const [selectedTab, setSelectedTab] = useState("active");
 
   const columns = [
     { name: "Principal", uid: "isMain" },
@@ -38,9 +40,7 @@ export const PropertiesList = () => {
 
   if ( !properties ) return null;
 
-  const transformedProperties = properties
-    .sort((a, b) => new Date(b.createdAt || b.id).getTime() - new Date(a.createdAt || a.id).getTime())
-    .map( property => ( {
+  const transformProperty = (property: any) => ({
     ...property,
     isMain: property.isMain ? (
       <UI.Badge color="primary" variant="flat">
@@ -67,16 +67,71 @@ export const PropertiesList = () => {
     phone: generateWhatsAppLink( property.user.phone ),
     description: property.description,
     ...( user?.roles?.includes( 'admin' ) && !user?.roles?.includes( 'security' ) && { actions: <PropertyForm id={ property.id } /> } )
-  } ) );
+  });
+
+  const getFilteredProperties = (filter: string) => {
+    const sortedProperties = properties.sort((a, b) => new Date(b.date || b.id).getTime() - new Date(a.date || a.id).getTime());
+
+    switch (filter) {
+      case "active":
+        return sortedProperties.filter(property => property.status).map(transformProperty);
+      case "inactive":
+        return sortedProperties.filter(property => !property.status).map(transformProperty);
+      default:
+        return sortedProperties.map(transformProperty);
+    }
+  };
+
+  const displayProperties = selectedTab === 'active' ? getFilteredProperties("active") : getFilteredProperties("inactive");
+  const addButtonComponent = user?.roles?.includes( 'admin' ) ? <PropertyForm /> : null;
 
   return (
-    <CustomTable
-      data={ transformedProperties }
-      columns={ columns }
-      statusColorMap={ statusColorMap }
-      initialVisibleColumns={ [ "isMain", "address", "description", "property", "phone", ...( user?.roles?.includes( 'admin' ) && !user?.roles?.includes( 'security' ) ? [ "actions" ] : [] ) ] }
-      addButtonComponent={ user?.roles?.includes( 'admin' ) ? <PropertyForm /> : null }
-      title="Propiedades"
-    />
+    <div className="w-full space-y-6 lg:space-y-8">
+      <UI.Tabs
+        selectedKey={selectedTab}
+        onSelectionChange={(key) => setSelectedTab(key as string)}
+        aria-label="Property tabs"
+        size="lg"
+        classNames={{
+          tabList: "gap-2 sm:gap-3 lg:gap-4 bg-gray-100 dark:bg-gray-800 p-1 sm:p-1.5 rounded-lg sm:rounded-xl w-full sm:w-auto",
+          cursor: "bg-white dark:bg-gray-700 shadow-sm rounded-md sm:rounded-lg",
+          tab: "px-3 sm:px-4 lg:px-6 py-2 sm:py-3 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white responsive-text-sm sm:responsive-text-base",
+          tabContent: "group-data-[selected=true]:text-gray-900 dark:group-data-[selected=true]:text-white font-medium"
+        }}
+      >
+        <UI.Tab key="active" title={
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Icons.IoCheckmarkCircleOutline size={18} className="sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Pendientes</span>
+            <span className="sm:hidden">Pend.</span>
+            <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
+              {getFilteredProperties("active").length}
+            </span>
+          </div>
+        } />
+        <UI.Tab key="inactive" title={
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Icons.IoCloseCircleOutline size={18} className="sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Finalizadas</span>
+            <span className="sm:hidden">Fin.</span>
+            <span className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
+              {getFilteredProperties("inactive").length}
+            </span>
+          </div>
+        } />
+      </UI.Tabs>
+
+      <div className="w-full">
+        <CustomTable
+          data={displayProperties}
+          columns={columns}
+          statusColorMap={statusColorMap}
+          initialVisibleColumns={["isMain", "address", "description", "property", "phone", ...(user?.roles?.includes('admin') && !user?.roles?.includes('security') ? ["actions"] : [])]}
+          addButtonComponent={addButtonComponent}
+          title={selectedTab === 'active' ? "propiedades pendientes" : "propiedades finalizadas"}
+          className="w-full"
+        />
+      </div>
+    </div>
   );
 };

@@ -4,25 +4,34 @@ interface SeenNotifications {
   emergencies: string[];
   packages: string[];
   visitors: string[];
+  invoices: string[];
 }
 
 const STORAGE_KEY = 'altos-de-videma-seen-notifications';
 
 const getInitialSeenNotifications = (): SeenNotifications => {
+  const defaultNotifications: SeenNotifications = {
+    emergencies: [],
+    packages: [],
+    visitors: [],
+    invoices: []
+  };
+
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+      // Merge with defaults to ensure all properties exist
+      return {
+        ...defaultNotifications,
+        ...parsed
+      };
     }
   } catch (error) {
     console.warn('Error loading seen notifications:', error);
   }
 
-  return {
-    emergencies: [],
-    packages: [],
-    visitors: []
-  };
+  return defaultNotifications;
 };
 
 export const useSeenNotifications = () => {
@@ -59,7 +68,8 @@ export const useSeenNotifications = () => {
     setSeenNotifications({
       emergencies: [],
       packages: [],
-      visitors: []
+      visitors: [],
+      invoices: []
     });
   };
 

@@ -1,5 +1,5 @@
 import { altosDeViedmaApi } from '../../../api';
-import { IInvoice } from '../interfaces';
+import { IInvoice } from '../interfaces/IInvoice';
 
 export const getInvoices = async (): Promise<IInvoice[]> => {
   const { data } = await altosDeViedmaApi.get<IInvoice[]>('/invoice');
@@ -17,12 +17,42 @@ export const getInvoice = async (id: string): Promise<IInvoice> => {
 };
 
 export const createInvoice = async (invoice: { title: string; description?: string; invoiceUrl: string }): Promise<IInvoice> => {
-  const { data } = await altosDeViedmaApi.post<IInvoice>('/invoice', invoice);
+  // Limpiar los datos antes de enviarlos
+  const cleanData: { title: string; description?: string; invoiceUrl: string } = {
+    title: invoice.title.trim(),
+    invoiceUrl: invoice.invoiceUrl.trim(),
+  };
+
+  // Solo incluir description si no está vacía
+  if (invoice.description && invoice.description.trim() !== '') {
+    cleanData.description = invoice.description.trim();
+  }
+
+  const { data } = await altosDeViedmaApi.post<IInvoice>('/invoice', cleanData);
   return data;
 };
 
 export const updateInvoice = async (id: string, invoice: { title?: string; description?: string; invoiceUrl?: string; state?: 'in_progress' | 'confirmed' }): Promise<IInvoice> => {
-  const { data } = await altosDeViedmaApi.patch<IInvoice>(`/invoice/${id}`, invoice);
+  // Limpiar los datos antes de enviarlos
+  const cleanData: { title?: string; description?: string; invoiceUrl?: string; state?: 'in_progress' | 'confirmed' } = {};
+
+  if (invoice.title !== undefined) {
+    cleanData.title = invoice.title.trim();
+  }
+
+  if (invoice.invoiceUrl !== undefined) {
+    cleanData.invoiceUrl = invoice.invoiceUrl.trim();
+  }
+
+  if (invoice.description !== undefined && invoice.description.trim() !== '') {
+    cleanData.description = invoice.description.trim();
+  }
+
+  if (invoice.state !== undefined) {
+    cleanData.state = invoice.state;
+  }
+
+  const { data } = await altosDeViedmaApi.patch<IInvoice>(`/invoice/${id}`, cleanData);
   return data;
 };
 

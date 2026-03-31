@@ -31,7 +31,7 @@ export const UsersPage = () => {
   if ( !displayUsers ) return null;
 
   const transformedUsers = displayUsers
-    .sort((a, b) => new Date(b.createdAt || b.id).getTime() - new Date(a.createdAt || a.id).getTime())
+    .sort((a, b) => new Date(b.creationDate || b.id).getTime() - new Date(a.creationDate || a.id).getTime())
     .map( user => ( {
     ...user,
     username: user.username,
@@ -73,8 +73,8 @@ export const UsersPage = () => {
         <UI.Tab key="active" title={
           <div className="flex items-center gap-2 sm:gap-3">
             <Icons.IoCheckmarkCircleOutline size={18} className="sm:w-5 sm:h-5" />
-            <span className="hidden sm:inline">Activos</span>
-            <span className="sm:hidden">Act.</span>
+            <span className="hidden sm:inline">Pendientes</span>
+            <span className="sm:hidden">Pend.</span>
             <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
               { users?.length || 0 }
             </span>
@@ -83,8 +83,8 @@ export const UsersPage = () => {
         <UI.Tab key="inactive" title={
           <div className="flex items-center gap-2 sm:gap-3">
             <Icons.IoCloseCircleOutline size={18} className="sm:w-5 sm:h-5" />
-            <span className="hidden sm:inline">Bloqueados</span>
-            <span className="sm:hidden">Bloq.</span>
+            <span className="hidden sm:inline">Finalizados</span>
+            <span className="sm:hidden">Fin.</span>
             <span className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
               { inactiveUsers?.length || 0 }
             </span>
