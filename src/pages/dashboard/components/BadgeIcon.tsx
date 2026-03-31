@@ -5,6 +5,7 @@ import { UI } from '../../../shared';
 import { useEmergencies } from '../../emergency';
 import { usePackages } from '../../package';
 import { useVisitors } from '../../visitor';
+import { useInvoices } from '../../invoice';
 import { useRealTimeData } from '../../../hooks/useRealTimeData';
 import { useSeenNotifications } from '../../../hooks/useSeenNotifications';
 
@@ -18,6 +19,7 @@ export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
   const { emergencies, refetch: refetchEmergencies } = useEmergencies();
   const { packages, refetch: refetchPackages } = usePackages();
   const { visitors, refetch: refetchVisitors } = useVisitors();
+  const { invoices, refetch: refetchInvoices } = useInvoices();
   const [previousCount, setPreviousCount] = useState(0);
   const [hasNewItems, setHasNewItems] = useState(false);
   const { isNotificationSeen } = useSeenNotifications();
@@ -34,10 +36,11 @@ export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
       if (type === 'emergencies') refetchEmergencies();
       if (type === 'packages') refetchPackages();
       if (type === 'visitors') refetchVisitors();
+      if (type === 'invoices') refetchInvoices();
     }, 30000); // Reduced from 5s to 30s since we have real-time updates
 
     return () => clearInterval(interval);
-  }, [type, refetchEmergencies, refetchPackages, refetchVisitors]);
+  }, [type, refetchEmergencies, refetchPackages, refetchVisitors, refetchInvoices]);
 
   const getBadgeContent = () => {
     if (!type) return 0;
@@ -53,6 +56,9 @@ export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
         break;
       case 'visitors':
         activeItems = visitors.filter(v => !v.visitCompleted);
+        break;
+      case 'invoices':
+        activeItems = invoices.filter(i => i.state === 'in_progress');
         break;
       default:
         return 0;
@@ -91,6 +97,8 @@ export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
         return 'primary';
       case 'visitors':
         return 'success';
+      case 'invoices':
+        return 'warning';
       default:
         return 'primary';
     }
@@ -125,6 +133,7 @@ export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
                   type === 'emergencies' ? 'bg-red-600 border-2 border-red-700' :
                   type === 'packages' ? 'bg-blue-600 border-2 border-blue-700' :
                   type === 'visitors' ? 'bg-green-600 border-2 border-green-700' :
+                  type === 'invoices' ? 'bg-orange-600 border-2 border-orange-700' :
                   'bg-primary-600 border-2 border-primary-700'
                 }`,
               }}

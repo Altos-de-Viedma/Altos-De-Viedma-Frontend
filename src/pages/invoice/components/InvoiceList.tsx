@@ -82,7 +82,6 @@ export const InvoiceList = () => {
     { name: "Estado", uid: "state" },
     { name: "Fecha", uid: "date" },
     { name: "Descripción", uid: "description" },
-    ...(user?.roles?.includes('admin') ? [{ name: "Usuario", uid: "user" }] : []),
     { name: "URL", uid: "invoiceUrl" },
     { name: "Opciones", uid: "actions" }
   ];
@@ -108,13 +107,6 @@ export const InvoiceList = () => {
       .map(invoice => ({
         ...invoice,
         date: formatDate(invoice.date),
-        ...(user?.roles?.includes('admin') && {
-          user: (
-            <UserModal user={invoice.user as any}>
-              {`${invoice.user.lastName}, ${invoice.user.name}`}
-            </UserModal>
-          )
-        }),
         state: invoice.state === 'confirmed'
           ? <UI.Chip color="success" startContent={<Icons.IoCheckmarkOutline size={18} />} variant="flat">Aprobada</UI.Chip>
           : <UI.Chip color="warning" startContent={<Icons.IoTimeOutline size={18} />} variant="flat">Pendiente</UI.Chip>,
@@ -167,9 +159,7 @@ export const InvoiceList = () => {
     in_progress: "warning",
   };
 
-  const visibleColumns = user?.roles?.includes('admin')
-    ? ["title", "state", "date", "description", "user", "invoiceUrl", "actions"]
-    : ["title", "state", "date", "description", "invoiceUrl", "actions"];
+  const visibleColumns = ["title", "state", "date", "description", "invoiceUrl", "actions"];
 
   return (
     <div className="flex w-full flex-col space-y-6 lg:space-y-8">
