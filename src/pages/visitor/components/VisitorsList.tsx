@@ -121,7 +121,7 @@ export const VisitorsList = () => {
   };
 
   return (
-    <div className="w-full space-y-6 lg:space-y-8">
+    <div className="w-full space-y-3 lg:space-y-4">
       <div className="flex justify-center w-full">
         <UI.Tabs
           selectedKey={ selectedTab }
@@ -129,7 +129,7 @@ export const VisitorsList = () => {
           aria-label="Visitor tabs"
           size="lg"
           classNames={ {
-            tabList: "gap-2 sm:gap-3 lg:gap-4 bg-gray-100 dark:bg-gray-800 p-1 sm:p-1.5 rounded-lg sm:rounded-xl w-auto",
+            tabList: "gap-2 sm:gap-3 lg:gap-4 border border-gray-200 dark:border-gray-700 p-1 sm:p-1.5 rounded-lg sm:rounded-xl w-auto",
             cursor: "bg-white dark:bg-gray-700 shadow-sm rounded-md sm:rounded-lg",
             tab: "px-3 sm:px-4 lg:px-6 py-2 sm:py-3 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white responsive-text-sm sm:responsive-text-base",
             tabContent: "group-data-[selected=true]:text-gray-900 dark:group-data-[selected=true]:text-white font-medium"
