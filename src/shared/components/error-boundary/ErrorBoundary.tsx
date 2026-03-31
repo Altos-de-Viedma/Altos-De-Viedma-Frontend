@@ -46,7 +46,7 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+        <div className="min-h-screen flex items-center justify-center p-4">
           <UI.Card className="w-full max-w-md shadow-lg">
             <UI.CardHeader className="flex flex-col items-center gap-4 pb-4">
               <div className="p-3 bg-red-100 dark:bg-red-900/20 rounded-full">
@@ -69,7 +69,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <UI.CardBody className="pt-0">
               <div className="space-y-4">
                 {process.env.NODE_ENV === 'development' && this.state.error && (
-                  <details className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md text-xs">
+                  <details className="border border-gray-200 dark:border-gray-700 p-3 rounded-md text-xs">
                     <summary className="cursor-pointer font-medium text-gray-700 dark:text-gray-300">
                       Detalles del error (desarrollo)
                     </summary>
