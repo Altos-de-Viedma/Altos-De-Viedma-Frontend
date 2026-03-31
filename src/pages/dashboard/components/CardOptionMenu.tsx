@@ -63,8 +63,7 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
     <UI.Card
       isPressable
       className={`
-        w-full max-w-48 mx-auto
-        aspect-[3/4]
+        w-48 h-60
         cursor-pointer border-2 transition-all duration-300 ease-in-out
         ${getCardColor()}
         shadow-sm hover:shadow-lg hover:scale-105
@@ -72,6 +71,7 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
         rounded-xl
         btn-hover-lift
         overflow-hidden
+        flex-shrink-0
       `}
       onPress={() => handleNavigate(route)}
       role="button"
