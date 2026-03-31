@@ -410,7 +410,7 @@ export const CustomTable = ({
   ), [selectedKeys, filteredItems.length, page, pages, selectionMode, onPreviousPage, onNextPage]);
 
   return (
-    <div className={`w-full wide-container ${className}`}>
+    <div className={`w-full ${className}`}>
       <Table
         aria-label={`Tabla de ${title}`}
         isHeaderSticky

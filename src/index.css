@@ -65,27 +65,27 @@ body, #root {
 
 /* Professional responsive components */
 @layer components {
-  /* Responsive container system - much wider with minimal padding */
+  /* Responsive container system - minimal padding everywhere */
   .responsive-container {
-    @apply w-full max-w-sm mx-auto px-3 sm:max-w-3xl sm:px-4 md:max-w-5xl lg:max-w-7xl xl:max-w-full xl:px-4 2xl:px-6;
+    @apply w-full max-w-sm mx-auto px-1 sm:max-w-3xl sm:px-2 md:max-w-5xl lg:max-w-7xl xl:max-w-full xl:px-2 2xl:px-3;
   }
 
   .responsive-container-sm {
-    @apply w-full max-w-3xl mx-auto px-3 sm:px-4;
+    @apply w-full max-w-3xl mx-auto px-1 sm:px-2;
   }
 
   .responsive-container-xs {
-    @apply w-full max-w-lg mx-auto px-3;
+    @apply w-full max-w-lg mx-auto px-1;
   }
 
-  /* Wide desktop container - uses most of screen width with minimal padding */
+  /* Wide desktop container - minimal padding */
   .wide-container {
-    @apply w-full max-w-sm mx-auto px-3 sm:max-w-4xl sm:px-4 md:max-w-6xl lg:max-w-full xl:max-w-full xl:px-4 2xl:px-6;
+    @apply w-full max-w-sm mx-auto px-1 sm:max-w-4xl sm:px-2 md:max-w-6xl lg:max-w-full xl:max-w-full xl:px-2 2xl:px-3;
   }
 
   /* Full width container for desktop - minimal padding */
   .full-width-container {
-    @apply w-full px-3 sm:px-4 md:px-4 lg:px-4 xl:px-6 2xl:px-8;
+    @apply w-full px-1 sm:px-2 md:px-2 lg:px-2 xl:px-3 2xl:px-4;
   }
 
   /* Responsive grid system - more compact */
@@ -203,7 +203,7 @@ body, #root {
 
   .dashboard-content {
     @apply flex-1 w-full;
-    @apply pt-1 pb-2 px-2 sm:pt-2 sm:pb-3 sm:px-3 md:pt-2 md:pb-4 md:px-4 lg:pt-3 lg:pb-4 lg:px-4 xl:pt-3 xl:pb-6 xl:px-6 2xl:pt-4 2xl:pb-6 2xl:px-6;
+    @apply pt-1 pb-1 px-1 sm:pt-1 sm:pb-2 sm:px-2 md:pt-1 md:pb-2 md:px-2 lg:pt-2 lg:pb-2 lg:px-2 xl:pt-2 xl:pb-3 xl:px-3 2xl:pt-2 2xl:pb-3 2xl:px-3;
     @apply overflow-x-hidden;
   }
 
