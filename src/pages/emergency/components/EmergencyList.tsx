@@ -149,39 +149,41 @@ export const EmergencyList = () => {
 
   return (
     <div className="w-full space-y-6 lg:space-y-8">
-      <UI.Tabs
-        selectedKey={ selectedTab }
-        onSelectionChange={ ( key ) => setSelectedTab( key as string ) }
-        aria-label="Emergency tabs"
-        size="lg"
-        classNames={ {
-          tabList: "gap-2 sm:gap-3 lg:gap-4 bg-gray-100 dark:bg-gray-800 p-1 sm:p-1.5 rounded-lg sm:rounded-xl w-full sm:w-auto",
-          cursor: "bg-white dark:bg-gray-700 shadow-sm rounded-md sm:rounded-lg",
-          tab: "px-3 sm:px-4 lg:px-6 py-2 sm:py-3 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white responsive-text-sm sm:responsive-text-base",
-          tabContent: "group-data-[selected=true]:text-gray-900 dark:group-data-[selected=true]:text-white font-medium"
-        } }
-      >
-        <UI.Tab key="active" title={
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Icons.IoAlertCircleOutline size={18} className="sm:w-5 sm:h-5" />
-            <span className="hidden sm:inline">Pendientes</span>
-            <span className="sm:hidden">Pend.</span>
-            <span className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
-              {getFilteredEmergencies("active").length}
-            </span>
-          </div>
-        } />
-        <UI.Tab key="ended" title={
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Icons.IoCheckmarkOutline size={18} className="sm:w-5 sm:h-5" />
-            <span className="hidden sm:inline">Finalizadas</span>
-            <span className="sm:hidden">Fin.</span>
-            <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
-              {getFilteredEmergencies("ended").length}
-            </span>
-          </div>
-        } />
-      </UI.Tabs>
+      <div className="flex justify-center w-full">
+        <UI.Tabs
+          selectedKey={ selectedTab }
+          onSelectionChange={ ( key ) => setSelectedTab( key as string ) }
+          aria-label="Emergency tabs"
+          size="lg"
+          classNames={ {
+            tabList: "gap-2 sm:gap-3 lg:gap-4 bg-gray-100 dark:bg-gray-800 p-1 sm:p-1.5 rounded-lg sm:rounded-xl w-auto",
+            cursor: "bg-white dark:bg-gray-700 shadow-sm rounded-md sm:rounded-lg",
+            tab: "px-3 sm:px-4 lg:px-6 py-2 sm:py-3 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white responsive-text-sm sm:responsive-text-base",
+            tabContent: "group-data-[selected=true]:text-gray-900 dark:group-data-[selected=true]:text-white font-medium"
+          } }
+        >
+          <UI.Tab key="active" title={
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Icons.IoAlertCircleOutline size={18} className="sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Pendientes</span>
+              <span className="sm:hidden">Pend.</span>
+              <span className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
+                {getFilteredEmergencies("active").length}
+              </span>
+            </div>
+          } />
+          <UI.Tab key="ended" title={
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Icons.IoCheckmarkOutline size={18} className="sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Finalizadas</span>
+              <span className="sm:hidden">Fin.</span>
+              <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
+                {getFilteredEmergencies("ended").length}
+              </span>
+            </div>
+          } />
+        </UI.Tabs>
+      </div>
 
       <div className="w-full">
         <CustomTable

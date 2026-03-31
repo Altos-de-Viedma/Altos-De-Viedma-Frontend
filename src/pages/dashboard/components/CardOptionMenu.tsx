@@ -63,8 +63,8 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
     <UI.Card
       isPressable
       className={`
-        w-full max-w-xs mx-auto
-        aspect-square
+        w-full max-w-48 mx-auto
+        aspect-[4/3]
         cursor-pointer border-2 transition-all duration-300 ease-in-out
         ${getCardColor()}
         shadow-sm hover:shadow-lg hover:scale-105
@@ -83,9 +83,9 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
         }
       }}
     >
-      <UI.CardBody className="center-flex-col responsive-padding h-full">
+      <UI.CardBody className="center-flex-col compact-padding h-full">
         {/* Icon container - perfectly centered */}
-        <div className="center-flex mb-3 sm:mb-4 flex-shrink-0" aria-hidden="true">
+        <div className="center-flex mb-2 sm:mb-3 flex-shrink-0" aria-hidden="true">
           <div className={`${getIconColor()} transform transition-transform duration-200 hover:scale-110`}>
             <BadgeIcon
               Icon={Icon}
@@ -96,7 +96,7 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
         </div>
 
         {/* Title - responsive text sizing */}
-        <h3 className="responsive-text-base font-semibold text-center text-gray-800 dark:text-gray-200 flex-shrink-0 leading-tight">
+        <h3 className="text-sm sm:text-base font-semibold text-center text-gray-800 dark:text-gray-200 flex-shrink-0 leading-tight">
           {title}
         </h3>
       </UI.CardBody>
