@@ -2,27 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base responsive setup */
+/* Base responsive setup - reduced font sizes */
 html {
-  font-size: 16px;
+  font-size: 14px;
   scroll-behavior: smooth;
 }
 
 @media (max-width: 640px) {
   html {
-    font-size: 14px;
+    font-size: 13px;
   }
 }
 
 @media (min-width: 1024px) {
   html {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
 @media (min-width: 1280px) {
   html {
-    font-size: 18px;
+    font-size: 15px;
   }
 }
 
@@ -65,38 +65,38 @@ body, #root {
 
 /* Professional responsive components */
 @layer components {
-  /* Responsive container system - much wider on desktop */
+  /* Responsive container system - much wider with minimal padding */
   .responsive-container {
-    @apply w-full max-w-sm mx-auto px-4 sm:max-w-2xl sm:px-6 md:max-w-4xl lg:max-w-6xl xl:max-w-full xl:px-8 2xl:px-16;
+    @apply w-full max-w-sm mx-auto px-3 sm:max-w-3xl sm:px-4 md:max-w-5xl lg:max-w-7xl xl:max-w-full xl:px-4 2xl:px-6;
   }
 
   .responsive-container-sm {
-    @apply w-full max-w-2xl mx-auto px-4 sm:px-6;
+    @apply w-full max-w-3xl mx-auto px-3 sm:px-4;
   }
 
   .responsive-container-xs {
-    @apply w-full max-w-md mx-auto px-4;
+    @apply w-full max-w-lg mx-auto px-3;
   }
 
-  /* Wide desktop container - uses most of screen width */
+  /* Wide desktop container - uses most of screen width with minimal padding */
   .wide-container {
-    @apply w-full max-w-sm mx-auto px-4 sm:max-w-3xl sm:px-6 md:max-w-5xl lg:max-w-7xl xl:max-w-full xl:px-12 2xl:px-20;
+    @apply w-full max-w-sm mx-auto px-3 sm:max-w-4xl sm:px-4 md:max-w-6xl lg:max-w-full xl:max-w-full xl:px-4 2xl:px-6;
   }
 
-  /* Full width container for desktop */
+  /* Full width container for desktop - minimal padding */
   .full-width-container {
-    @apply w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24;
+    @apply w-full px-3 sm:px-4 md:px-4 lg:px-4 xl:px-6 2xl:px-8;
   }
 
-  /* Responsive grid system */
+  /* Responsive grid system - more compact */
   .responsive-grid {
-    @apply grid gap-4 sm:gap-6 lg:gap-8;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    @apply grid gap-2 sm:gap-3 lg:gap-4;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   }
 
   .responsive-grid-sm {
-    @apply grid gap-3 sm:gap-4 lg:gap-6;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    @apply grid gap-2 sm:gap-3 lg:gap-3;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
 
   /* Perfect centering utilities */
@@ -112,17 +112,17 @@ body, #root {
     @apply flex flex-col items-center justify-center;
   }
 
-  /* Responsive spacing */
+  /* Responsive spacing - much more compact */
   .responsive-padding {
-    @apply p-4 sm:p-6 lg:p-8 xl:p-10;
+    @apply p-2 sm:p-3 lg:p-4 xl:p-4;
   }
 
   .responsive-padding-sm {
-    @apply p-3 sm:p-4 lg:p-6;
+    @apply p-2 sm:p-2 lg:p-3;
   }
 
   .responsive-margin {
-    @apply m-4 sm:m-6 lg:m-8;
+    @apply m-2 sm:m-3 lg:m-4;
   }
 
   /* Responsive text sizing */
@@ -154,29 +154,29 @@ body, #root {
 
   .corporate-card-responsive {
     @apply corporate-card;
-    @apply p-4 sm:p-6 lg:p-8;
-    @apply m-2 sm:m-4 lg:m-6;
+    @apply p-2 sm:p-3 lg:p-4;
+    @apply m-1 sm:m-2 lg:m-2;
   }
 
-  /* Responsive buttons */
+  /* Responsive buttons - more compact */
   .corporate-button {
     @apply bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md;
-    @apply px-3 py-2 sm:px-4 sm:py-2.5 lg:px-6 lg:py-3;
-    @apply text-sm sm:text-base;
+    @apply px-2 py-1.5 sm:px-3 sm:py-2 lg:px-4 lg:py-2;
+    @apply text-sm sm:text-sm;
     @apply transition-all duration-200 ease-in-out;
   }
 
   .corporate-button-sm {
     @apply bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md;
-    @apply px-2 py-1.5 sm:px-3 sm:py-2;
+    @apply px-2 py-1 sm:px-2 sm:py-1.5;
     @apply text-xs sm:text-sm;
   }
 
-  /* Responsive inputs */
+  /* Responsive inputs - more compact */
   .corporate-input {
     @apply border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800;
-    @apply px-3 py-2 sm:px-4 sm:py-2.5;
-    @apply text-sm sm:text-base;
+    @apply px-2 py-1.5 sm:px-3 sm:py-2;
+    @apply text-sm sm:text-sm;
     @apply w-full;
   }
 
@@ -203,12 +203,12 @@ body, #root {
 
   .dashboard-content {
     @apply flex-1 w-full;
-    @apply p-3 sm:p-4 md:p-6 lg:p-8 xl:p-12 2xl:p-16;
+    @apply p-2 sm:p-3 md:p-4 lg:p-4 xl:p-6 2xl:p-6;
     @apply overflow-x-hidden;
   }
 
   .dashboard-grid {
-    @apply grid gap-4 sm:gap-6 lg:gap-8 xl:gap-10;
+    @apply grid gap-2 sm:gap-3 lg:gap-4 xl:gap-4;
     @apply grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6;
     @apply w-full max-w-full;
     @apply place-items-center;
@@ -222,8 +222,8 @@ body, #root {
 
   .auth-content {
     @apply center-absolute w-full;
-    @apply px-4 sm:px-6 lg:px-8;
-    @apply max-w-md mx-auto;
+    @apply px-3 sm:px-4 lg:px-4;
+    @apply max-w-lg mx-auto;
   }
 
   /* Mobile-first responsive utilities */
@@ -236,14 +236,14 @@ body, #root {
     @apply min-h-screen min-h-dvh;
   }
 
-  /* Responsive card grid */
+  /* Responsive card grid - more compact */
   .card-grid {
-    @apply grid gap-4 sm:gap-6;
+    @apply grid gap-2 sm:gap-3;
     @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
   }
 
   .card-grid-sm {
-    @apply grid gap-3 sm:gap-4;
+    @apply grid gap-2 sm:gap-3;
     @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
   }
 
@@ -297,10 +297,10 @@ body, #root {
     max-width: 100% !important;
   }
 
-  /* Responsive modal */
+  /* Responsive modal - wider and more compact */
   .modal-responsive {
-    @apply w-full max-w-lg mx-auto;
-    @apply m-4 sm:m-6 lg:m-8;
+    @apply w-full max-w-2xl mx-auto;
+    @apply m-2 sm:m-3 lg:m-4;
   }
 
   /* Safe area for mobile devices */
@@ -309,6 +309,37 @@ body, #root {
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
+  }
+
+  /* Compact layout utilities */
+  .compact-container {
+    @apply w-full max-w-full px-2 sm:px-3 md:px-4;
+  }
+
+  .compact-padding {
+    @apply p-1 sm:p-2 md:p-3;
+  }
+
+  .compact-margin {
+    @apply m-1 sm:m-2 md:m-2;
+  }
+
+  .compact-gap {
+    @apply gap-1 sm:gap-2 md:gap-3;
+  }
+
+  /* Ultra-wide containers for desktop */
+  .ultra-wide {
+    @apply w-full max-w-full px-2 sm:px-3 md:px-4 lg:px-4 xl:px-6;
+  }
+
+  /* Minimal spacing for nested containers */
+  .minimal-spacing {
+    @apply p-1 m-0;
+  }
+
+  .minimal-spacing > * {
+    @apply m-1;
   }
 }
 
