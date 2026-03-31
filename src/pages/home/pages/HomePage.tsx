@@ -48,11 +48,11 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
 
-          {/* Cards grid - perfectly centered horizontally */}
+          {/* Cards grid - perfectly centered regardless of number of items */}
           <div className="w-full flex justify-center">
-            <div className="grid gap-3 sm:gap-4 md:gap-4 lg:gap-5 xl:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 justify-items-center">
+            <div className="flex flex-wrap justify-center items-start gap-3 sm:gap-4 md:gap-4 lg:gap-5 xl:gap-6 max-w-6xl">
               {filteredCardOptions.map((option, index) => (
-                <div key={index} className="w-full flex justify-center">
+                <div key={index} className="flex-shrink-0">
                   <CardOptionMenu
                     title={option.title}
                     Icon={option.Icon}
