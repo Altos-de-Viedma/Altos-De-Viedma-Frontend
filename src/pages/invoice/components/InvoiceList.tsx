@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { CustomTable, Icons, StatusColorMap, UI, useDisclosure, IconContainer, UserModal } from '../../../shared';
 import { InvoiceForm } from './InvoiceForm';
 import { InvoiceSearch } from './InvoiceSearch';
-import { useInvoices, useConfirmInvoice, useDeleteInvoice } from '../hooks';
+import { useInvoices, useConfirmInvoice } from '../hooks';
 import { useAuthStore } from '../../auth';
 import { IInvoice } from '../interfaces/IInvoice';
 import { formatDate } from '../helper';
@@ -13,31 +13,35 @@ export const InvoiceList = () => {
   const { invoices, isLoading, refetch } = useInvoices();
   const { user } = useAuthStore((state) => ({ user: state.user }));
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onOpenChange: onDeleteOpenChange, onClose: onDeleteClose } = useDisclosure();
   const [invoiceToConfirm, setInvoiceToConfirm] = useState<IInvoice | null>(null);
-  const [invoiceToDelete, setInvoiceToDelete] = useState<IInvoice | null>(null);
   const [selectedTab, setSelectedTab] = useState("in_progress");
   const [searchTerm, setSearchTerm] = useState<string>('');
   const confirmInvoiceMutation = useConfirmInvoice();
-  const { removeInvoice, isPending: isDeletingInvoice } = useDeleteInvoice();
   const { markAsSeen } = useSeenNotifications();
 
   const isConfirmingInvoice = confirmInvoiceMutation.isPending;
 
-  // Filtrar facturas por búsqueda - MOVER ANTES DE LOS RETURNS CONDICIONALES
+  // Filtrar facturas por usuario y búsqueda
   const filteredInvoices = useMemo(() => {
     if (!invoices) return [];
 
-    if (!searchTerm.trim()) return invoices;
+    // Si es usuario normal (no admin), solo mostrar sus propias facturas
+    let userFilteredInvoices = invoices;
+    if (!user?.roles?.includes('admin')) {
+      userFilteredInvoices = invoices.filter(invoice => invoice.user.id === user?.id);
+    }
+
+    // Aplicar filtro de búsqueda
+    if (!searchTerm.trim()) return userFilteredInvoices;
 
     const searchLower = searchTerm.toLowerCase().trim();
-    return invoices.filter(invoice =>
+    return userFilteredInvoices.filter(invoice =>
       invoice.title.toLowerCase().includes(searchLower) ||
       invoice.description?.toLowerCase().includes(searchLower) ||
       invoice.user.name.toLowerCase().includes(searchLower) ||
       invoice.user.lastName.toLowerCase().includes(searchLower)
     );
-  }, [invoices, searchTerm]);
+  }, [invoices, searchTerm, user]);
 
   // Handle confirming invoice - integrate with notification system
   const handleConfirmInvoice = async () => {
@@ -51,19 +55,6 @@ export const InvoiceList = () => {
         setInvoiceToConfirm(null);
       } catch (error) {
         console.error('Error confirming invoice:', error);
-      }
-    }
-  };
-
-  // Handle deleting invoice
-  const handleDeleteInvoice = async () => {
-    if (invoiceToDelete) {
-      try {
-        await removeInvoice(invoiceToDelete.id);
-        onDeleteClose();
-        setInvoiceToDelete(null);
-      } catch (error) {
-        console.error('Error deleting invoice:', error);
       }
     }
   };
@@ -91,7 +82,7 @@ export const InvoiceList = () => {
     { name: "Estado", uid: "state" },
     { name: "Fecha", uid: "date" },
     { name: "Descripción", uid: "description" },
-    { name: "Usuario", uid: "user" },
+    ...(user?.roles?.includes('admin') ? [{ name: "Usuario", uid: "user" }] : []),
     { name: "URL", uid: "invoiceUrl" },
     { name: "Opciones", uid: "actions" }
   ];
@@ -117,14 +108,16 @@ export const InvoiceList = () => {
       .map(invoice => ({
         ...invoice,
         date: formatDate(invoice.date),
-        user: (
-          <UserModal user={invoice.user as any}>
-            {`${invoice.user.lastName}, ${invoice.user.name}`}
-          </UserModal>
-        ),
+        ...(user?.roles?.includes('admin') && {
+          user: (
+            <UserModal user={invoice.user as any}>
+              {`${invoice.user.lastName}, ${invoice.user.name}`}
+            </UserModal>
+          )
+        }),
         state: invoice.state === 'confirmed'
-          ? <UI.Chip color="success" startContent={<Icons.IoCheckmarkOutline size={18} />} variant="flat">Confirmada</UI.Chip>
-          : <UI.Chip color="warning" startContent={<Icons.IoTimeOutline size={18} />} variant="flat">En proceso</UI.Chip>,
+          ? <UI.Chip color="success" startContent={<Icons.IoCheckmarkOutline size={18} />} variant="flat">Aprobada</UI.Chip>
+          : <UI.Chip color="warning" startContent={<Icons.IoTimeOutline size={18} />} variant="flat">Pendiente</UI.Chip>,
         invoiceUrl: (
           <UI.Button
             as="a"
@@ -141,7 +134,7 @@ export const InvoiceList = () => {
         ),
         actions: (
           <div className="flex space-x-2 items-center">
-            {(user?.roles?.includes('admin') || user?.roles?.includes('security')) && invoice.state === 'in_progress' && (
+            {user?.roles?.includes('admin') && invoice.state === 'in_progress' && (
               <UI.Button
                 color="success"
                 variant="solid"
@@ -152,25 +145,11 @@ export const InvoiceList = () => {
                 startContent={<Icons.IoCheckmarkOutline size={18} />}
                 className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
               >
-                Confirmar Factura
+                Aprobar Factura
               </UI.Button>
             )}
             {(user?.roles?.includes('admin') || invoice.user.id === user?.id) && (
               <InvoiceForm id={invoice.id} />
-            )}
-            {(user?.roles?.includes('admin') || invoice.user.id === user?.id) && (
-              <UI.Button
-                color="danger"
-                variant="solid"
-                onPress={() => {
-                  setInvoiceToDelete(invoice);
-                  onDeleteOpen();
-                }}
-                startContent={<Icons.IoTrashOutline size={18} />}
-                className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
-              >
-                Eliminar
-              </UI.Button>
             )}
           </div>
         )
@@ -187,6 +166,10 @@ export const InvoiceList = () => {
     confirmed: "success",
     in_progress: "warning",
   };
+
+  const visibleColumns = user?.roles?.includes('admin')
+    ? ["title", "state", "date", "description", "user", "invoiceUrl", "actions"]
+    : ["title", "state", "date", "description", "invoiceUrl", "actions"];
 
   return (
     <div className="flex w-full flex-col space-y-6 lg:space-y-8">
@@ -251,15 +234,7 @@ export const InvoiceList = () => {
             data={getFilteredInvoices(selectedTab)}
             columns={columns}
             statusColorMap={statusColorMap}
-            initialVisibleColumns={[
-              "title",
-              "state",
-              "date",
-              "description",
-              "user",
-              "invoiceUrl",
-              "actions"
-            ]}
+            initialVisibleColumns={visibleColumns}
             addButtonComponent={addButtonComponent}
             title={selectedTab === 'in_progress' ? "facturas pendientes" : "facturas aprobadas"}
             className="w-full"
@@ -272,10 +247,10 @@ export const InvoiceList = () => {
           <>
             <UI.ModalHeader className="flex justify-center flex-row space-x-2 items-center">
               <IconContainer children={<Icons.IoReceiptOutline size={24} />} />
-              <h2>Confirmar factura</h2>
+              <h2>Aprobar factura</h2>
             </UI.ModalHeader>
             <UI.ModalBody>
-              <p className="text-2xl text-center">¿Estás seguro de que deseas confirmar esta factura?</p>
+              <p className="text-2xl text-center">¿Estás seguro de que deseas aprobar esta factura?</p>
               <div className="mt-4 flex flex-col justify-center">
                 <h2 className="text-xl font-bold">{invoiceToConfirm?.title}</h2>
                 <p>{invoiceToConfirm?.description}</p>
@@ -293,42 +268,7 @@ export const InvoiceList = () => {
                 startContent={!isConfirmingInvoice && <Icons.IoCheckmarkOutline size={24} />}
                 className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
               >
-                Confirmar
-              </UI.Button>
-            </UI.ModalFooter>
-          </>
-        </UI.ModalContent>
-      </UI.Modal>
-
-      {/* Delete Confirmation Modal */}
-      <UI.Modal isOpen={isDeleteOpen} onOpenChange={onDeleteOpenChange} backdrop="blur" isDismissable={false} scrollBehavior="normal" placement="top">
-        <UI.ModalContent>
-          <>
-            <UI.ModalHeader className="flex justify-center flex-row space-x-2 items-center">
-              <IconContainer children={<Icons.IoTrashOutline size={24} />} />
-              <h2>Eliminar factura</h2>
-            </UI.ModalHeader>
-            <UI.ModalBody>
-              <p className="text-2xl text-center">¿Estás seguro de que deseas eliminar esta factura?</p>
-              <div className="mt-4 flex flex-col justify-center">
-                <h2 className="text-xl font-bold">{invoiceToDelete?.title}</h2>
-                <p>{invoiceToDelete?.description}</p>
-                <p className="text-red-600 font-semibold mt-2">Esta acción no se puede deshacer.</p>
-              </div>
-            </UI.ModalBody>
-            <UI.ModalFooter className="flex justify-center flex-row space-x-2 items-center">
-              <UI.Button color="default" variant="light" onPress={onDeleteClose} isDisabled={isDeletingInvoice} startContent={<Icons.IoArrowBackOutline size={24} />}>
-                Cancelar
-              </UI.Button>
-              <UI.Button
-                color="danger"
-                variant="solid"
-                onPress={handleDeleteInvoice}
-                isLoading={isDeletingInvoice}
-                startContent={!isDeletingInvoice && <Icons.IoTrashOutline size={24} />}
-                className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
-              >
-                Eliminar
+                Aprobar
               </UI.Button>
             </UI.ModalFooter>
           </>

@@ -60,8 +60,3 @@ export const confirmInvoice = async (id: string): Promise<IInvoice> => {
   const { data } = await altosDeViedmaApi.patch<IInvoice>(`/invoice/confirm/${id}`);
   return data;
 };
-
-export const deleteInvoice = async (id: string): Promise<IInvoice> => {
-  const { data } = await altosDeViedmaApi.delete<IInvoice>(`/invoice/${id}`);
-  return data;
-};
