@@ -49,7 +49,7 @@ export const UserModal = ({ user, children }: Props) => {
 
                   {/* Información de contacto */}
                   <div className="space-y-4">
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div className="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
                       <IconContainer>
                         <Icons.IoCallOutline size={20} className="text-blue-500" />
                       </IconContainer>
@@ -66,7 +66,7 @@ export const UserModal = ({ user, children }: Props) => {
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div className="flex items-start gap-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
                       <IconContainer>
                         <Icons.IoLocationOutline size={20} className="text-green-500" />
                       </IconContainer>
@@ -79,7 +79,7 @@ export const UserModal = ({ user, children }: Props) => {
 
                   {/* Información del sistema */}
                   <div className="space-y-4">
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div className="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
                       <IconContainer>
                         <Icons.IoShieldOutline size={20} className="text-purple-500" />
                       </IconContainer>
@@ -101,7 +101,7 @@ export const UserModal = ({ user, children }: Props) => {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div className="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
                       <IconContainer>
                         <Icons.IoCalendarOutline size={20} className="text-orange-500" />
                       </IconContainer>

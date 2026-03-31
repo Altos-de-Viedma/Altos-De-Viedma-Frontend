@@ -428,7 +428,6 @@ export const CustomTable = ({
           ].join(" "),
           table: "min-w-full table-auto",
           th: [
-            "bg-gray-50 dark:bg-gray-700",
             "text-foreground font-semibold",
             "border-b border-gray-200 dark:border-gray-600",
             "py-1 sm:py-2 px-2 sm:px-3 lg:px-3 xl:px-4",
