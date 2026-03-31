@@ -112,17 +112,17 @@ body, #root {
     @apply flex flex-col items-center justify-center;
   }
 
-  /* Responsive spacing - much more compact */
+  /* Responsive spacing - much more compact with minimal top spacing */
   .responsive-padding {
-    @apply p-2 sm:p-3 lg:p-4 xl:p-4;
+    @apply pt-1 pb-2 px-2 sm:pt-2 sm:pb-3 sm:px-3 lg:pt-2 lg:pb-4 lg:px-4 xl:pt-3 xl:pb-4 xl:px-4;
   }
 
   .responsive-padding-sm {
-    @apply p-2 sm:p-2 lg:p-3;
+    @apply pt-1 pb-2 px-2 sm:pt-1 sm:pb-2 sm:px-2 lg:pt-2 lg:pb-3 lg:px-3;
   }
 
   .responsive-margin {
-    @apply m-2 sm:m-3 lg:m-4;
+    @apply mt-1 mb-2 mx-2 sm:mt-2 sm:mb-3 sm:mx-3 lg:mt-2 lg:mb-4 lg:mx-4;
   }
 
   /* Responsive text sizing */
@@ -203,7 +203,7 @@ body, #root {
 
   .dashboard-content {
     @apply flex-1 w-full;
-    @apply p-2 sm:p-3 md:p-4 lg:p-4 xl:p-6 2xl:p-6;
+    @apply pt-1 pb-2 px-2 sm:pt-2 sm:pb-3 sm:px-3 md:pt-2 md:pb-4 md:px-4 lg:pt-3 lg:pb-4 lg:px-4 xl:pt-3 xl:pb-6 xl:px-6 2xl:pt-4 2xl:pb-6 2xl:px-6;
     @apply overflow-x-hidden;
   }
 
@@ -311,35 +311,44 @@ body, #root {
     padding-right: env(safe-area-inset-right);
   }
 
-  /* Compact layout utilities */
+  /* Compact layout utilities with minimal top spacing */
   .compact-container {
     @apply w-full max-w-full px-2 sm:px-3 md:px-4;
   }
 
   .compact-padding {
-    @apply p-1 sm:p-2 md:p-3;
+    @apply pt-1 pb-1 px-1 sm:pt-2 sm:pb-2 sm:px-2 md:pt-2 md:pb-3 md:px-3;
   }
 
   .compact-margin {
-    @apply m-1 sm:m-2 md:m-2;
+    @apply mt-1 mb-1 mx-1 sm:mt-2 sm:mb-2 sm:mx-2 md:mt-2 md:mb-2 md:mx-2;
   }
 
   .compact-gap {
     @apply gap-1 sm:gap-2 md:gap-3;
   }
 
-  /* Ultra-wide containers for desktop */
+  /* Ultra-wide containers for desktop with minimal top spacing */
   .ultra-wide {
-    @apply w-full max-w-full px-2 sm:px-3 md:px-4 lg:px-4 xl:px-6;
+    @apply w-full max-w-full pt-1 pb-2 px-2 sm:pt-2 sm:pb-3 sm:px-3 md:pt-2 md:pb-4 md:px-4 lg:pt-2 lg:pb-4 lg:px-4 xl:pt-3 xl:pb-6 xl:px-6;
   }
 
-  /* Minimal spacing for nested containers */
+  /* Minimal spacing for nested containers - almost no top spacing */
   .minimal-spacing {
-    @apply p-1 m-0;
+    @apply pt-0 pb-1 px-1 mt-0;
   }
 
   .minimal-spacing > * {
-    @apply m-1;
+    @apply mt-1;
+  }
+
+  /* Zero top spacing utilities for when content needs to be at the very top */
+  .zero-top {
+    @apply pt-0 mt-0;
+  }
+
+  .minimal-top {
+    @apply pt-1 mt-1 sm:pt-2 sm:mt-1;
   }
 }
 

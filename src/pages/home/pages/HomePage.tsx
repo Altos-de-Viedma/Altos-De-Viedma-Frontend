@@ -36,10 +36,10 @@ export const HomePage: React.FC = () => {
       unauthenticatedComponent={<Navigate to="/ingresar" replace />}
     >
       <div className="layout-content bg-gray-50 dark:bg-gray-900">
-        <div className="wide-container responsive-padding">
+        <div className="wide-container pt-2 sm:pt-3 md:pt-4 px-3 sm:px-4 md:px-4 lg:px-4 xl:px-6 2xl:px-8">
           {/* Welcome section */}
-          <div className="center-flex-col mb-6 sm:mb-8 lg:mb-10">
-            <h1 className="responsive-text-xl font-bold text-gray-800 dark:text-gray-200 text-center mb-2">
+          <div className="center-flex-col mb-3 sm:mb-4 lg:mb-5">
+            <h1 className="responsive-text-xl font-bold text-gray-800 dark:text-gray-200 text-center mb-1">
               Bienvenido, {user?.name || 'Usuario'}
             </h1>
             <p className="responsive-text-sm text-gray-600 dark:text-gray-400 text-center max-w-4xl">
