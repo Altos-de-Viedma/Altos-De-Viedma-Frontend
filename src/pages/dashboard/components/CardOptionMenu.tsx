@@ -63,8 +63,8 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
     <UI.Card
       isPressable
       className={`
-        w-full max-w-72 mx-auto
-        aspect-[7/6]
+        w-full max-w-80 mx-auto
+        aspect-[4/3]
         cursor-pointer border-2 transition-all duration-300 ease-in-out
         ${getCardColor()}
         shadow-sm hover:shadow-lg hover:scale-105

@@ -351,7 +351,7 @@ export const CustomTable = ({
   ]);
 
   const bottomContent = useMemo(() => (
-    <div className="py-2 sm:py-2 px-2 sm:px-3 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
+    <div className="py-1 sm:py-2 px-2 sm:px-3 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-between items-center border-t border-gray-200 dark:border-gray-700">
       {/* Selection info - full width on mobile */}
       {selectionMode !== "none" && (
         <div className="w-full sm:w-auto text-center sm:text-left">
