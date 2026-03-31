@@ -225,7 +225,7 @@ export const CustomTable = ({
               isLoading={isLoading}
               aria-label="Actualizar datos"
               size="lg"
-              className="min-w-[3rem] h-[3rem] sm:min-w-[3.5rem] sm:h-[3.5rem] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="min-w-[3rem] h-[3rem] sm:min-w-[3.5rem] sm:h-[3.5rem] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-700"
             >
               <IoRefreshOutline size={20} />
             </Button>
@@ -239,7 +239,7 @@ export const CustomTable = ({
                   startContent={<IoFunnelOutline size={18} />}
                   endContent={<IoChevronDownOutline size={16} className="hidden sm:block" />}
                   size="lg"
-                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4"
+                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4"
                 >
                   <span className="hidden sm:inline">Estado</span>
                 </Button>
@@ -272,7 +272,7 @@ export const CustomTable = ({
                 startContent={<IoGridOutline size={18} />}
                 endContent={<IoChevronDownOutline size={16} className="hidden sm:block" />}
                 size="lg"
-                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4"
+                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4"
               >
                 <span className="hidden sm:inline">Columnas</span>
               </Button>
@@ -376,7 +376,7 @@ export const CustomTable = ({
           size="sm"
           classNames={{
             wrapper: "gap-0 overflow-visible h-7 sm:h-8 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800",
-            item: "w-7 h-7 sm:w-8 sm:h-8 responsive-text-xs rounded-none bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors",
+            item: "w-7 h-7 sm:w-8 sm:h-8 responsive-text-xs rounded-none bg-transparent hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors",
             cursor: "bg-primary-500 shadow-md text-white font-semibold",
             prev: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
             next: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
@@ -391,7 +391,7 @@ export const CustomTable = ({
           variant="flat"
           isDisabled={page === 1}
           onPress={onPreviousPage}
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium responsive-text-xs px-3"
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors font-medium responsive-text-xs px-3"
         >
           Anterior
         </Button>
@@ -401,7 +401,7 @@ export const CustomTable = ({
           variant="flat"
           isDisabled={page === pages}
           onPress={onNextPage}
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium responsive-text-xs px-3"
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors font-medium responsive-text-xs px-3"
         >
           Siguiente
         </Button>
@@ -445,7 +445,7 @@ export const CustomTable = ({
             "align-top",
             "responsive-text-xs sm:responsive-text-sm"
           ].join(" "),
-          tr: "hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors duration-150",
+          tr: "hover:border border-gray-200 dark:border-gray-700/50 dark:hover:bg-gray-700/30 transition-colors duration-150",
         }}
         selectedKeys={selectedKeys}
         selectionMode={selectionMode}

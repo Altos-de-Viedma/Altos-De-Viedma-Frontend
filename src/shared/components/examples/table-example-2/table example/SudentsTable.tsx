@@ -11,8 +11,8 @@ export const StudentsTable: React.FC = () => {
 
   const borderColor = darkMode === 'dark' ? 'border-gray-600' : 'border-gray-300';
   const bgColor = darkMode === 'dark' ? 'bg-gray-800' : 'bg-white';
-  const hoverColor = darkMode === 'dark' ? 'hover:bg-gray-900' : 'hover:bg-gray-100';
-  const headerColor = darkMode === 'dark' ? 'bg-gray-900' : 'bg-gray-100';
+  const hoverColor = darkMode === 'dark' ? 'hover:bg-gray-900' : 'hover:border border-gray-200 dark:border-gray-700';
+  const headerColor = darkMode === 'dark' ? 'bg-gray-900' : 'border border-gray-200 dark:border-gray-700';
   const stickyHeaderColor = darkMode === 'dark' ? 'bg-gray-800' : 'bg-white';
 
   return (

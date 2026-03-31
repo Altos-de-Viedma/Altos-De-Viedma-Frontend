@@ -34,11 +34,11 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
         case 'visitors':
           return 'border-green-300 hover:border-green-400 bg-green-50 hover:bg-green-100 dark:border-green-600 dark:hover:border-green-500 dark:bg-green-900/20 dark:hover:bg-green-900/30';
         default:
-          return 'border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50 dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-900 dark:hover:bg-gray-800';
+          return 'border-gray-300 hover:border-gray-400 bg-white hover:border border-gray-200 dark:border-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-900 dark:hover:bg-gray-800';
       }
     }
     // Sin notificaciones: blanco y negro según el tema
-    return 'border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50 dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-900 dark:hover:bg-gray-800';
+    return 'border-gray-300 hover:border-gray-400 bg-white hover:border border-gray-200 dark:border-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-900 dark:hover:bg-gray-800';
   };
 
   const getIconColor = () => {

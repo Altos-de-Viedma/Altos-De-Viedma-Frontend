@@ -93,7 +93,7 @@ export const RecoverAccount: React.FC = () => {
           </>
         ) : null }
         { message && (
-          <div className={ `text-lg font-semibold ${ message.includes( 'error' ) ? 'text-red-600' : 'text-green-600' } p-4 bg-gray-100 rounded-lg shadow-inner` }>
+          <div className={ `text-lg font-semibold ${ message.includes( 'error' ) ? 'text-red-600' : 'text-green-600' } p-4 border border-gray-200 dark:border-gray-700 rounded-lg shadow-inner` }>
             { message }
             { isSubmitted && (
               <p className="text-gray-600 mt-2">

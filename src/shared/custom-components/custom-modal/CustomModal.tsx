@@ -80,7 +80,7 @@ export const CustomModal = ({
               'px-4 sm:px-6 py-3 sm:py-4'
             ].join(' '),
             closeButton: [
-              'hover:bg-gray-100 dark:hover:bg-gray-800',
+              'hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-800',
               'transition-colors duration-200',
               'top-3 sm:top-4 right-3 sm:right-4',
               'w-8 h-8 sm:w-10 sm:h-10'
