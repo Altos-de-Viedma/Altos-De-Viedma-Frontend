@@ -89,7 +89,7 @@ export class ErrorBoundary extends Component<Props, State> {
                   </button>
                   <button
                     onClick={this.handleReload}
-                    className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                    className="flex-1 px-4 py-2 border border-gray-600 hover:border-gray-700 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                   >
                     Recargar página
                   </button>

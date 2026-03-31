@@ -27,7 +27,7 @@ export const GenericPage = ( {
 
         {/* Main card with minimal padding */}
         <div className="w-full">
-          <UI.Card className="w-full shadow-lg border border-gray-200/50 dark:border-gray-700/50 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl sm:rounded-2xl">
+          <UI.Card className="w-full shadow-lg border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm rounded-xl sm:rounded-2xl">
             <UI.CardHeader className="center-flex px-2 sm:px-3 lg:px-4 py-2 sm:py-3 border-b border-gray-200/50 dark:border-gray-700/50">
               <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left w-full max-w-none">
                 <div className="flex-shrink-0">

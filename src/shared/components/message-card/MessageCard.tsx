@@ -35,7 +35,7 @@ export const MessageCard: React.FC<MessageCardProps> = ( { title, message, icon,
 
   return (
     <div className="flex justify-center items-center py-12 px-4">
-      <div className={ `${ isDark ? 'bg-gray-800 text-white' : 'bg-white text-gray-800' } rounded-2xl shadow-lg p-6 max-w-lg w-full transition-all duration-300 hover:shadow-xl` }>
+      <div className={ `${ isDark ? 'border border-gray-700 text-white' : 'border border-gray-200 text-gray-800' } rounded-2xl shadow-lg p-6 max-w-lg w-full transition-all duration-300 hover:shadow-xl` }>
         <div className="flex items-center mb-4">
           <div className={ `${ getBgColor() } rounded-full p-3 mr-4` }>
             <IconComponent className={ `${ getIconColor() } w-6 h-6` } />

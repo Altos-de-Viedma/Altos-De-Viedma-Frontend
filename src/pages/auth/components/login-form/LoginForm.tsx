@@ -110,7 +110,7 @@ export const LoginForm: React.FC = () => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="corporate-button w-full max-w-xs mx-auto disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400 disabled:transform-none shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
+          className="corporate-button w-full max-w-xs mx-auto disabled:border disabled:border-gray-300 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:transform-none shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
           aria-describedby={isSubmitting ? "login-loading" : undefined}
         >
           {isSubmitting ? (

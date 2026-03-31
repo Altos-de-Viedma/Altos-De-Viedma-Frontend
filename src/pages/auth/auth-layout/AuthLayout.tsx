@@ -23,7 +23,7 @@ export const AuthLayout = () => {
       {/* Main content - perfectly centered */}
       <main className="absolute inset-0 z-20 center-flex safe-area">
         <div className="auth-content">
-          <UI.Card className="corporate-card-responsive shadow-2xl border-0 backdrop-blur-sm bg-white/95 dark:bg-gray-800/95 w-full max-w-md">
+          <UI.Card className="corporate-card-responsive shadow-2xl border border-gray-200 dark:border-gray-700 backdrop-blur-sm w-full max-w-md">
             <UI.CardHeader className="center-flex-col cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-t-lg responsive-padding-sm"
               onClick={() => redirectTo('/ingresar')}
               role="button"

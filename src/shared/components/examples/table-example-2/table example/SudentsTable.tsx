@@ -10,10 +10,10 @@ export const StudentsTable: React.FC = () => {
   const { darkMode } = useThemeStore();
 
   const borderColor = darkMode === 'dark' ? 'border-gray-600' : 'border-gray-300';
-  const bgColor = darkMode === 'dark' ? 'bg-gray-800' : 'bg-white';
-  const hoverColor = darkMode === 'dark' ? 'hover:bg-gray-900' : 'hover:border border-gray-200 dark:border-gray-700';
-  const headerColor = darkMode === 'dark' ? 'bg-gray-900' : 'border border-gray-200 dark:border-gray-700';
-  const stickyHeaderColor = darkMode === 'dark' ? 'bg-gray-800' : 'bg-white';
+  const bgColor = darkMode === 'dark' ? 'border border-gray-700' : 'border border-gray-200';
+  const hoverColor = darkMode === 'dark' ? 'hover:border-gray-600' : 'hover:border-gray-300';
+  const headerColor = darkMode === 'dark' ? 'border border-gray-600' : 'border border-gray-300';
+  const stickyHeaderColor = darkMode === 'dark' ? 'border border-gray-700' : 'border border-gray-200';
 
   return (
     <div className="w-full h-[600px] overflow-hidden border border-gray-300">

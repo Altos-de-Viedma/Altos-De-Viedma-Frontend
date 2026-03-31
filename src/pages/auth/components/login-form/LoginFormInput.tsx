@@ -22,7 +22,7 @@ export const LoginFormInput: React.FC<LoginFormInputProps> = ({ type, label, id,
         mainWrapper: "w-full",
         inputWrapper: [
           "w-full",
-          "bg-white dark:bg-gray-800",
+          "border border-gray-200 dark:border-gray-700",
           "border-2 border-gray-300 dark:border-gray-600",
           "hover:border-gray-400 dark:hover:border-gray-500",
           "focus-within:border-primary-500 dark:focus-within:border-primary-400",

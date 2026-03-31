@@ -82,7 +82,7 @@ export const UserTooltip = ({ user, children }: Props) => {
       closeDelay={100}
       classNames={{
         base: "max-w-none",
-        content: "bg-gray-900 border border-gray-700 shadow-xl"
+        content: "border border-gray-700 shadow-xl"
       }}
     >
       <span className="cursor-help hover:text-blue-600 dark:hover:text-blue-400 transition-colors">

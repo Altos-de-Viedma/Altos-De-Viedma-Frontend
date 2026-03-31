@@ -16,7 +16,7 @@ export const IconContainer = ( { children, size = 24, className }: IconContainer
 
   return (
     <div
-      className={ `flex items-center justify-center rounded-full p-2 ${ darkMode === 'dark' ? 'bg-gray-800' : 'bg-gray-200'
+      className={ `flex items-center justify-center rounded-full p-2 ${ darkMode === 'dark' ? 'border border-gray-700' : 'border border-gray-200'
         } ${ className }` }
     >
       { React.cloneElement( children as React.ReactElement, {

@@ -202,7 +202,7 @@ export const CustomTable = ({
             onValueChange={onSearchChange}
             size="md"
             classNames={{
-              base: "bg-white dark:bg-gray-800",
+              base: "border border-gray-200 dark:border-gray-700",
               input: "text-foreground responsive-text-base",
               inputWrapper: [
                 "border border-gray-200 dark:border-gray-700",
@@ -225,7 +225,7 @@ export const CustomTable = ({
               isLoading={isLoading}
               aria-label="Actualizar datos"
               size="lg"
-              className="min-w-[3rem] h-[3rem] sm:min-w-[3.5rem] sm:h-[3.5rem] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-700"
+              className="min-w-[3rem] h-[3rem] sm:min-w-[3.5rem] sm:h-[3.5rem] border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
             >
               <IoRefreshOutline size={20} />
             </Button>
@@ -239,7 +239,7 @@ export const CustomTable = ({
                   startContent={<IoFunnelOutline size={18} />}
                   endContent={<IoChevronDownOutline size={16} className="hidden sm:block" />}
                   size="lg"
-                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4"
+                  className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4"
                 >
                   <span className="hidden sm:inline">Estado</span>
                 </Button>
@@ -252,7 +252,7 @@ export const CustomTable = ({
                 selectionMode="multiple"
                 onSelectionChange={setStatusFilter}
                 classNames={{
-                  base: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg max-w-[90vw] sm:max-w-xs"
+                  base: "border border-gray-200 dark:border-gray-700 shadow-lg max-w-[90vw] sm:max-w-xs"
                 }}
               >
                 <DropdownItem key="active" className="capitalize responsive-text-sm">
@@ -272,7 +272,7 @@ export const CustomTable = ({
                 startContent={<IoGridOutline size={18} />}
                 endContent={<IoChevronDownOutline size={16} className="hidden sm:block" />}
                 size="lg"
-                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4"
+                className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4"
               >
                 <span className="hidden sm:inline">Columnas</span>
               </Button>
@@ -285,7 +285,7 @@ export const CustomTable = ({
               selectionMode="multiple"
               onSelectionChange={setVisibleColumns}
               classNames={{
-                base: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg max-w-[90vw] sm:max-w-xs max-h-[60vh] overflow-y-auto"
+                base: "border border-gray-200 dark:border-gray-700 shadow-lg max-w-[90vw] sm:max-w-xs max-h-[60vh] overflow-y-auto"
               }}
             >
               {columns.map((column) => (
@@ -320,7 +320,7 @@ export const CustomTable = ({
         <label className="flex items-center text-foreground/70 responsive-text-sm font-medium whitespace-nowrap">
           Filas por página:
           <select
-            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md outline-none text-foreground responsive-text-sm ml-2 px-2 py-1 font-medium cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
+            className="border border-gray-200 dark:border-gray-700 rounded-md outline-none text-foreground responsive-text-sm ml-2 px-2 py-1 font-medium cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
             value={rowsPerPage}
             onChange={onRowsPerPageChange}
           >
@@ -375,8 +375,8 @@ export const CustomTable = ({
           onChange={setPage}
           size="sm"
           classNames={{
-            wrapper: "gap-0 overflow-visible h-7 sm:h-8 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800",
-            item: "w-7 h-7 sm:w-8 sm:h-8 responsive-text-xs rounded-none bg-transparent hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors",
+            wrapper: "gap-0 overflow-visible h-7 sm:h-8 rounded border border-gray-300 dark:border-gray-600",
+            item: "w-7 h-7 sm:w-8 sm:h-8 responsive-text-xs rounded-none border-transparent hover:border-gray-300 dark:hover:border-gray-600 transition-colors",
             cursor: "bg-primary-500 shadow-md text-white font-semibold",
             prev: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
             next: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
@@ -391,7 +391,7 @@ export const CustomTable = ({
           variant="flat"
           isDisabled={page === 1}
           onPress={onPreviousPage}
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors font-medium responsive-text-xs px-3"
+          className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors font-medium responsive-text-xs px-3"
         >
           Anterior
         </Button>
@@ -401,7 +401,7 @@ export const CustomTable = ({
           variant="flat"
           isDisabled={page === pages}
           onPress={onNextPage}
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors font-medium responsive-text-xs px-3"
+          className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors font-medium responsive-text-xs px-3"
         >
           Siguiente
         </Button>
@@ -419,7 +419,7 @@ export const CustomTable = ({
         classNames={{
           wrapper: [
             "max-h-[400px] sm:max-h-[500px] lg:max-h-[600px] xl:max-h-[700px]",
-            "bg-white dark:bg-gray-800",
+            "border border-gray-200 dark:border-gray-700",
             "border border-gray-200 dark:border-gray-700",
             "shadow-sm rounded-lg",
             "overflow-auto",
@@ -445,7 +445,7 @@ export const CustomTable = ({
             "align-top",
             "responsive-text-xs sm:responsive-text-sm"
           ].join(" "),
-          tr: "hover:border border-gray-200 dark:border-gray-700/50 dark:hover:bg-gray-700/30 transition-colors duration-150",
+          tr: "hover:border-gray-300 dark:hover:border-gray-600 transition-colors duration-150",
         }}
         selectedKeys={selectedKeys}
         selectionMode={selectionMode}

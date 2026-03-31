@@ -46,7 +46,7 @@ export const NavBarComponent = () => {
     <UI.Navbar
       isBlurred
       maxWidth="full"
-      className="bg-white/95 dark:bg-gray-900/95 border-b border-gray-200 dark:border-gray-700 backdrop-blur-sm safe-area"
+      className="border border-gray-200 dark:border-gray-700 backdrop-blur-sm safe-area"
       height="4rem"
     >
       {/* Left section - Theme toggle and quick nav */}

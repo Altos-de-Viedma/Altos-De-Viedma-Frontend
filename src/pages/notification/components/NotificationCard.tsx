@@ -67,7 +67,7 @@ export const NotificationCard: FC<NotificationCardProps> = ( {
           classNames={{
             base: [
               "border border-gray-200/50 dark:border-gray-700/50",
-              "bg-white/95 dark:bg-gray-800/95",
+              "border border-gray-200/50 dark:border-gray-700/50",
               "backdrop-blur-sm",
               "rounded-lg sm:rounded-xl",
               "p-3 sm:p-4 lg:p-5"

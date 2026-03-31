@@ -48,7 +48,7 @@ export const CustomSelect = ( {
             "min-h-[3rem] sm:min-h-[3.5rem]",
             "px-3 sm:px-4",
             "rounded-lg sm:rounded-xl",
-            "bg-white dark:bg-gray-800"
+            "border border-gray-200 dark:border-gray-700"
           ].join(" "),
           value: [
             "text-foreground",
@@ -64,7 +64,7 @@ export const CustomSelect = ( {
             "transition-colors duration-200"
           ].filter(Boolean).join(" "),
           listbox: [
-            "bg-white dark:bg-gray-800",
+            "border border-gray-200 dark:border-gray-700",
             "border border-gray-200/50 dark:border-gray-700/50",
             "shadow-lg",
             "rounded-lg sm:rounded-xl",
@@ -86,7 +86,7 @@ export const CustomSelect = ( {
             key={ key }
             classNames={{
               base: [
-                "hover:border border-gray-200 dark:border-gray-700 dark:hover:bg-gray-700",
+                "hover:border-gray-300 dark:hover:border-gray-600",
                 "focus:bg-primary-50 dark:focus:bg-primary-900/20",
                 "transition-colors duration-200",
                 "px-3 sm:px-4 py-2 sm:py-3",

@@ -49,16 +49,16 @@ body, #root {
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100 dark:bg-gray-800;
+  @apply border border-gray-200 dark:border-gray-700;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-400 dark:bg-gray-600;
+  @apply border border-gray-300 dark:border-gray-600;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-500 dark:bg-gray-500;
+  @apply border border-gray-400 dark:border-gray-500;
 }
 
 /* Let HeroUI handle its own focus styles */
@@ -148,7 +148,7 @@ body, #root {
 
   /* Corporate cards with responsive design */
   .corporate-card {
-    @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm;
+    @apply border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm;
     @apply w-full max-w-full overflow-hidden;
   }
 
@@ -174,7 +174,7 @@ body, #root {
 
   /* Responsive inputs - more compact */
   .corporate-input {
-    @apply border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800;
+    @apply border border-gray-300 dark:border-gray-600 rounded-md;
     @apply px-2 py-1.5 sm:px-3 sm:py-2;
     @apply text-sm sm:text-sm;
     @apply w-full;
@@ -258,7 +258,7 @@ body, #root {
 
   /* Glass effect for modals */
   .glass-effect {
-    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl;
+    @apply border border-gray-200/80 dark:border-gray-700/80 backdrop-blur-xl;
   }
 
   /* Button hover effects */
