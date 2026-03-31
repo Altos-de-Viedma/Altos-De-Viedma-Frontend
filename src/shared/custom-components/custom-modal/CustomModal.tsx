@@ -65,7 +65,7 @@ export const CustomModal = ({
             ].join(' '),
             header: [
               'border-b border-gray-200/50 dark:border-gray-700/50',
-              'bg-gray-50/50 dark:bg-gray-800/50',
+              '',
               'px-4 sm:px-6 py-3 sm:py-4'
             ].join(' '),
             body: [
@@ -76,7 +76,7 @@ export const CustomModal = ({
             ].join(' '),
             footer: [
               'border-t border-gray-200/50 dark:border-gray-700/50',
-              'bg-gray-50/50 dark:bg-gray-800/50',
+              '',
               'px-4 sm:px-6 py-3 sm:py-4'
             ].join(' '),
             closeButton: [
