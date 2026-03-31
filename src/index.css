@@ -61,14 +61,7 @@ body, #root {
   @apply bg-gray-500 dark:bg-gray-500;
 }
 
-/* Professional focus styles */
-*:focus {
-  outline: none;
-}
-
-*:focus-visible {
-  @apply ring-2 ring-primary-500 ring-offset-2 ring-offset-background;
-}
+/* Let HeroUI handle its own focus styles */
 
 /* Professional responsive components */
 @layer components {
