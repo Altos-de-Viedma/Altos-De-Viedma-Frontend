@@ -48,9 +48,9 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
 
-          {/* Cards grid - horizontal layout with proper centering */}
-          <div className="flex justify-center w-full">
-            <div className="grid gap-3 sm:gap-4 md:gap-4 lg:gap-5 xl:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 place-items-center max-w-7xl">
+          {/* Cards grid - perfectly centered horizontally */}
+          <div className="w-full flex justify-center">
+            <div className="grid gap-3 sm:gap-4 md:gap-4 lg:gap-5 xl:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 justify-items-center">
               {filteredCardOptions.map((option, index) => (
                 <div key={index} className="w-full flex justify-center">
                   <CardOptionMenu

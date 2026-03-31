@@ -84,7 +84,7 @@ export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {
         }
       }}
     >
-      <UI.CardBody className="center-flex-col p-3 sm:p-4 h-full overflow-hidden justify-center">
+      <UI.CardBody className="center-flex-col px-4 py-3 sm:px-5 sm:py-4 h-full overflow-hidden justify-center">
         {/* Icon container - perfectly centered */}
         <div className="center-flex mb-2 sm:mb-3 flex-shrink-0" aria-hidden="true">
           <div className={`${getIconColor()} transform transition-transform duration-200 hover:scale-110`}>
