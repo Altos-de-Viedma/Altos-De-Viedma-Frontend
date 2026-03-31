@@ -35,8 +35,8 @@ export const HomePage: React.FC = () => {
       }
       unauthenticatedComponent={<Navigate to="/ingresar" replace />}
     >
-      <div className="layout-content bg-gray-50 dark:bg-gray-900">
-        <div className="wide-container pt-2 sm:pt-3 md:pt-4 px-3 sm:px-4 md:px-4 lg:px-4 xl:px-6 2xl:px-8">
+      <div className="layout-content">
+        <div className="ultra-wide">
           {/* Welcome section */}
           <div className="center-flex-col mb-3 sm:mb-4 lg:mb-5">
             <h1 className="responsive-text-xl font-bold text-gray-800 dark:text-gray-200 text-center mb-1">
@@ -47,18 +47,20 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
 
-          {/* Cards grid - perfectly centered and responsive with more space on desktop */}
-          <div className="dashboard-grid">
-            {filteredCardOptions.map((option, index) => (
-              <div key={index} className="center-flex w-full">
-                <CardOptionMenu
-                  title={option.title}
-                  Icon={option.Icon}
-                  route={option.route}
-                  type={option.type}
-                />
-              </div>
-            ))}
+          {/* Cards grid - tightly packed and perfectly centered */}
+          <div className="flex justify-center w-full">
+            <div className="grid gap-2 sm:gap-3 md:gap-4 lg:gap-3 xl:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 place-items-center max-w-6xl">
+              {filteredCardOptions.map((option, index) => (
+                <div key={index} className="center-flex w-full">
+                  <CardOptionMenu
+                    title={option.title}
+                    Icon={option.Icon}
+                    route={option.route}
+                    type={option.type}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

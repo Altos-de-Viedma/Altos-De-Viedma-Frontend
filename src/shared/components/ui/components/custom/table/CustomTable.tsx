@@ -187,9 +187,9 @@ export const CustomTable = ({
   }, []);
 
   const topContent = useMemo(() => (
-    <div className="flex flex-col gap-4 sm:gap-6">
+    <div className="flex flex-col gap-2 sm:gap-3">
       {/* Mobile-first layout */}
-      <div className="flex flex-col sm:flex-row gap-4 sm:gap-3">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
         {/* Search input - full width on mobile */}
         <div className="w-full sm:flex-1 sm:max-w-md">
           <Input
@@ -200,7 +200,7 @@ export const CustomTable = ({
             value={filterValue}
             onClear={() => onClear()}
             onValueChange={onSearchChange}
-            size="lg"
+            size="md"
             classNames={{
               base: "bg-white dark:bg-gray-800",
               input: "text-foreground responsive-text-base",
@@ -208,15 +208,15 @@ export const CustomTable = ({
                 "border border-gray-200 dark:border-gray-700",
                 "hover:border-gray-300 dark:hover:border-gray-600",
                 "focus-within:border-primary-500 dark:focus-within:border-primary-400",
-                "min-h-[3rem] sm:min-h-[3.5rem]",
-                "px-4 py-3"
+                "min-h-[2.5rem] sm:min-h-[3rem]",
+                "px-3 py-2"
               ]
             }}
           />
         </div>
 
         {/* Action buttons - responsive layout */}
-        <div className="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-end">
+        <div className="flex flex-wrap gap-2 sm:gap-2 justify-center sm:justify-end">
           {onRefresh && (
             <Button
               isIconOnly
@@ -305,8 +305,8 @@ export const CustomTable = ({
       </div>
 
       {/* Stats and pagination controls - responsive layout */}
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between items-start sm:items-center">
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-between items-start sm:items-center">
+        <div className="flex flex-col sm:flex-row gap-1 sm:gap-2 items-start sm:items-center">
           <span className="text-foreground/70 responsive-text-sm font-medium whitespace-nowrap">
             Total {data.length} elementos
             {filteredItems.length !== data.length && (
@@ -351,7 +351,7 @@ export const CustomTable = ({
   ]);
 
   const bottomContent = useMemo(() => (
-    <div className="py-3 sm:py-4 px-3 sm:px-4 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
+    <div className="py-2 sm:py-2 px-2 sm:px-3 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
       {/* Selection info - full width on mobile */}
       {selectionMode !== "none" && (
         <div className="w-full sm:w-auto text-center sm:text-left">
@@ -375,8 +375,8 @@ export const CustomTable = ({
           onChange={setPage}
           size="sm"
           classNames={{
-            wrapper: "gap-0 overflow-visible h-8 sm:h-9 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800",
-            item: "w-8 h-8 sm:w-9 sm:h-9 responsive-text-xs rounded-none bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors",
+            wrapper: "gap-0 overflow-visible h-7 sm:h-8 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800",
+            item: "w-7 h-7 sm:w-8 sm:h-8 responsive-text-xs rounded-none bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors",
             cursor: "bg-primary-500 shadow-md text-white font-semibold",
             prev: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
             next: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
@@ -431,18 +431,18 @@ export const CustomTable = ({
             "bg-gray-50 dark:bg-gray-700",
             "text-foreground font-semibold",
             "border-b border-gray-200 dark:border-gray-600",
-            "py-3 sm:py-4 px-2 sm:px-3 lg:px-4 xl:px-6",
-            "first:pl-3 sm:first:pl-4 lg:first:pl-6 xl:first:pl-8",
-            "last:pr-3 sm:last:pr-4 lg:last:pr-6 xl:last:pr-8",
+            "py-1 sm:py-2 px-2 sm:px-3 lg:px-3 xl:px-4",
+            "first:pl-2 sm:first:pl-3 lg:first:pl-4 xl:first:pl-5",
+            "last:pr-2 sm:last:pr-3 lg:last:pr-4 xl:last:pr-5",
             "whitespace-nowrap",
             "responsive-text-xs sm:responsive-text-sm",
             "text-left"
           ].join(" "),
           td: [
             "border-b border-gray-100 dark:border-gray-700",
-            "py-3 sm:py-4 px-2 sm:px-3 lg:px-4 xl:px-6",
-            "first:pl-3 sm:first:pl-4 lg:first:pl-6 xl:first:pl-8",
-            "last:pr-3 sm:last:pr-4 lg:last:pr-6 xl:last:pr-8",
+            "py-1 sm:py-2 px-2 sm:px-3 lg:px-3 xl:px-4",
+            "first:pl-2 sm:first:pl-3 lg:first:pl-4 xl:first:pl-5",
+            "last:pr-2 sm:last:pr-3 lg:last:pr-4 xl:last:pr-5",
             "align-top",
             "responsive-text-xs sm:responsive-text-sm"
           ].join(" "),
