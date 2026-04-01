@@ -35,30 +35,37 @@ body, #root {
   padding: 0;
 }
 
-/* Professional scrollbar styling */
+/* Professional scrollbar styling - more visible */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
   }
 }
 
 ::-webkit-scrollbar-track {
-  @apply border border-gray-200 dark:border-gray-700;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply border border-gray-300 dark:border-gray-600;
+  @apply bg-gray-100 dark:bg-gray-800;
   border-radius: 4px;
 }
 
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 dark:bg-gray-500;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
 ::-webkit-scrollbar-thumb:hover {
-  @apply border border-gray-400 dark:border-gray-500;
+  @apply bg-gray-500 dark:bg-gray-400;
+}
+
+::-webkit-scrollbar-corner {
+  @apply bg-gray-100 dark:bg-gray-800;
 }
 
 /* Let HeroUI handle its own focus styles */
@@ -275,10 +282,43 @@ body, #root {
     @apply transition-colors duration-300 ease-in-out;
   }
 
-  /* Responsive table container */
+  /* Responsive table container with visible scroll */
   .table-responsive {
-    @apply w-full overflow-x-auto;
+    @apply w-full overflow-x-auto overflow-y-auto;
     @apply rounded-lg border border-gray-200 dark:border-gray-700;
+  }
+
+  /* Enhanced table scroll styling */
+  .table-scroll-container {
+    @apply w-full overflow-x-auto overflow-y-auto;
+    @apply scrollbar-thin scrollbar-thumb-gray-500 dark:scrollbar-thumb-gray-400;
+    @apply scrollbar-track-gray-200 dark:scrollbar-track-gray-700;
+    @apply hover:scrollbar-thumb-gray-600 dark:hover:scrollbar-thumb-gray-300;
+  }
+
+  .table-scroll-container::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .table-scroll-container::-webkit-scrollbar-track {
+    @apply bg-gray-200 dark:bg-gray-700;
+    border-radius: 4px;
+  }
+
+  .table-scroll-container::-webkit-scrollbar-thumb {
+    @apply bg-gray-500 dark:bg-gray-400;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  .table-scroll-container::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-600 dark:bg-gray-300;
+  }
+
+  .table-scroll-container::-webkit-scrollbar-corner {
+    @apply bg-gray-200 dark:bg-gray-700;
   }
 
   /* Prevent scrolls in dashboard cards */

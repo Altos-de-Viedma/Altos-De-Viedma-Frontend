@@ -420,13 +420,11 @@ export const CustomTable = ({
           wrapper: [
             "max-h-[400px] sm:max-h-[500px] lg:max-h-[600px] xl:max-h-[700px]",
             "border border-gray-200 dark:border-gray-700",
-            "border border-gray-200 dark:border-gray-700",
             "shadow-sm rounded-lg",
-            "overflow-auto",
-            "scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600",
-            "scrollbar-track-gray-100 dark:scrollbar-track-gray-800"
+            "table-scroll-container",
+            "w-full"
           ].join(" "),
-          table: "min-w-full table-auto",
+          table: "min-w-max table-auto w-full",
           th: [
             "text-foreground font-semibold",
             "border-b border-gray-200 dark:border-gray-600",
