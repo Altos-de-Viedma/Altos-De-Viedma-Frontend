@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CustomTable, Icons, StatusColorMap, UI, useWhatsApp, useDisclosure, IconContainer } from '../../../shared';
+import { CustomTable, Icons, StatusColorMap, UI, useWhatsApp, useDisclosure, IconContainer, UserModal } from '../../../shared';
 import { IVisitor } from '../interfaces/IVisitor';
 import { useDate } from '../helper';
 import { useVisitCompleted, useVisitors } from '../hooks';
@@ -56,6 +56,7 @@ export const VisitorsList = () => {
     { name: "Descripción", uid: "description" },
     { name: "Patente", uid: "vehiclePlate" },
     { name: "Propiedad", uid: "property" },
+    { name: "Propietario", uid: "propertyOwner" },
     { name: "Estado", uid: "visitCompleted" },
     { name: "Opciones", uid: "actions" }
   ];
@@ -77,6 +78,11 @@ export const VisitorsList = () => {
     profilePicture: <UI.Avatar className="w-10 h-10 text-tiny" src={ visitor.profilePicture } />,
     dateAndTimeOfVisit: formatDate( visitor.dateAndTimeOfVisit ),
     property: visitor.property.isMain ? `🏠 ${ visitor.property.address }` : visitor.property.address,
+    propertyOwner: (
+      <UserModal user={visitor.property.user}>
+        {`${ visitor.property.user.lastName }, ${ visitor.property.user.name }`}
+      </UserModal>
+    ),
     phone: generateWhatsAppLink( visitor.phone ),
     visitCompleted: visitor.visitCompleted
       ? <UI.Chip color="success" startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> } variant="flat">Finalizada</UI.Chip>
@@ -173,6 +179,7 @@ export const VisitorsList = () => {
             "vehiclePlate",
             "description",
             "property",
+            "propertyOwner",
             "visitCompleted",
             "actions",
           ] }
