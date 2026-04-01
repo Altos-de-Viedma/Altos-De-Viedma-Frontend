@@ -128,16 +128,27 @@ export const PropertyForm = ( { id }: Props ) => {
                   } ) ) || [] }
                 />
 
-                <UI.Checkbox
-                  isSelected={ isMainProperty }
-                  onValueChange={ setIsMainProperty }
-                  color="primary"
-                >
-                  Establecer como propiedad principal
-                </UI.Checkbox>
-                <p className="text-xs text-gray-500 mt-1">
-                  Solo una propiedad puede ser la principal. Al seleccionar esta opción, se quitara la principal de las demas propiedades.
-                </p>
+                <div className="flex flex-col space-y-2">
+                  <UI.Checkbox
+                    isSelected={ isMainProperty }
+                    onValueChange={ setIsMainProperty }
+                    color="primary"
+                    size="lg"
+                    className="text-foreground"
+                    classNames={{
+                      base: "inline-flex max-w-full w-full bg-content1 m-0",
+                      wrapper: "before:border-gray-300 after:bg-primary after:text-primary-foreground",
+                      label: "text-foreground font-medium"
+                    }}
+                  >
+                    <span className="font-medium text-foreground">
+                      Establecer como propiedad principal
+                    </span>
+                  </UI.Checkbox>
+                  <p className="text-xs text-gray-500 ml-6">
+                    Solo una propiedad puede ser la principal. Al seleccionar esta opción, se quitará la principal de las demás propiedades.
+                  </p>
+                </div>
               </UI.ModalBody>
 
               <UI.ModalFooter className="flex justify-center space-x-2">
