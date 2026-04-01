@@ -11,7 +11,7 @@ export const useInvoices = () => {
   });
 
   return {
-    invoices,
+    invoices: invoices || [],
     isLoading,
     error,
     refetch

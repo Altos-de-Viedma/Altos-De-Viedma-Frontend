@@ -49,16 +49,16 @@ export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
 
     switch (type) {
       case 'emergencies':
-        activeItems = emergencies.filter(e => !e.emergencyEnded);
+        activeItems = (emergencies || []).filter(e => !e.emergencyEnded);
         break;
       case 'packages':
-        activeItems = packages.filter(p => !p.received);
+        activeItems = (packages || []).filter(p => !p.received);
         break;
       case 'visitors':
-        activeItems = visitors.filter(v => !v.visitCompleted);
+        activeItems = (visitors || []).filter(v => !v.visitCompleted);
         break;
       case 'invoices':
-        activeItems = invoices.filter(i => i.state === 'in_progress');
+        activeItems = (invoices || []).filter(i => i.state === 'in_progress');
         break;
       default:
         return 0;
