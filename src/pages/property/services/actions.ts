@@ -9,10 +9,11 @@ const PROPERTY_ENDPOINT = '/property';
 const makeApiCall = <T>( method: 'get' | 'post' | 'patch' | 'delete', endpoint: string, data?: any ): Promise<T> =>
   apiCall( `${ method.toUpperCase() } ${ endpoint }`, () => altosDeViedmaApi[ method ]<T>( endpoint, data ) );
 
-makeApiCall( 'get', PROPERTY_ENDPOINT );
-
 export const getProperties = (): Promise<IProperty[]> =>
   makeApiCall( 'get', PROPERTY_ENDPOINT );
+
+export const getMyProperties = (): Promise<IProperty[]> =>
+  makeApiCall( 'get', `${PROPERTY_ENDPOINT}/my-properties` );
 
 export const getPropertyById = ( id: string ): Promise<IProperty> => {
   if ( !id ) return Promise.reject( new Error( 'User ID is required' ) );

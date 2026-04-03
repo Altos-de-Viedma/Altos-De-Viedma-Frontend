@@ -14,11 +14,17 @@ export const useVisitors = () => {
     queryFn: () => getVisitors()
   } );
 
-  const visitors = allVisitors?.filter( visitor =>
-    user?.roles?.includes( 'admin' ) ||
-    user?.roles?.includes( 'security' ) ||
-    visitor.property.user.id === user?.id
-  ) || [];
+  const visitors = allVisitors?.filter( visitor => {
+    // Compatibilidad: convertir estructura antigua a nueva
+    const normalizedProperty = {
+      ...visitor.property,
+      users: visitor.property.users || (visitor.property.user ? [visitor.property.user] : [])
+    };
+
+    return user?.roles?.includes( 'admin' ) ||
+      user?.roles?.includes( 'security' ) ||
+      normalizedProperty.users.some(owner => owner.id === user?.id);
+  } ) || [];
 
   return {
     isLoading,

@@ -2,9 +2,11 @@ import { z } from 'zod';
 
 
 
-const userIdValidation = z.string().uuid( {
-  message: "El ID de usuario es obligatorio y debe ser un UUID válido."
-} );
+const usersValidation = z.array(z.string().uuid({
+  message: "Cada ID de usuario debe ser un UUID válido."
+})).min(1, {
+  message: "La propiedad debe tener al menos un propietario."
+});
 
 const addressValidation = z.string().min( 1, {
   message: "La dirección de la propiedad es obligatoria."
@@ -17,7 +19,7 @@ const descriptionValidation = z.string().min( 1, {
 export const propertySchema = z.object( {
   address:     addressValidation,
   description: descriptionValidation,
-  user:        userIdValidation,
+  users:       usersValidation,
   isMain:      z.boolean().optional(),
 } );
 

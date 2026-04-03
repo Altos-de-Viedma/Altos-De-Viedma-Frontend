@@ -7,6 +7,7 @@ import { userInputs, updateInputs, createUserSchema, updateUserSchema } from '..
 import { useStringToArray, useInputIcon } from '../../../shared';
 import { useUser, useUserAdd, useUserUpdate } from '../hooks';
 import { ChangePasswordModal } from './ChangePasswordModal';
+import { SelectModal } from '../../../shared/components/ui/components/custom/select-modal/SelectModal';
 
 
 
@@ -17,6 +18,7 @@ interface Props {
 export const UsersForm = ( { id }: Props ) => {
 
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { isOpen: isRoleModalOpen, onOpen: onRoleModalOpen, onClose: onRoleModalClose } = useDisclosure();
   const { addNewUser, isPending: isAdding } = useUserAdd();
   const { userUpdate, isPending: isUpdating } = useUserUpdate();
 
@@ -223,16 +225,45 @@ export const UsersForm = ( { id }: Props ) => {
                   { ...register( 'address' ) }
                 />
 
-                <UI.SelectConBuscador
-                  label="Seleccione los roles del usuario"
-                  placeholder="Buscar roles..."
-                  selectedKeys={ watch( 'roles' ) || [] }
-                  onSelectionChange={ ( keys ) => handleRolesChange( Array.from( keys ).join( ',' ) ) }
-                  selectionMode="multiple"
-                  variant="bordered"
-                  errorMessage={ errors.roles?.message }
-                  isInvalid={ !!errors.roles }
-                  options={ [
+                <div className="flex flex-col space-y-2">
+                  <label className="text-sm font-medium text-foreground">Roles del usuario</label>
+                  <UI.Button
+                    variant="bordered"
+                    onPress={onRoleModalOpen}
+                    className="justify-start h-14 px-3"
+                    startContent={<Icons.IoShieldOutline size={20} />}
+                  >
+                    <div className="flex-1 text-left">
+                      {watch('roles')?.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {watch('roles').map(role => {
+                            const roleLabels = {
+                              admin: 'Administrador',
+                              user: 'Propietario',
+                              security: 'Seguridad'
+                            };
+                            return (
+                              <UI.Chip key={role} size="sm" color="primary" variant="flat">
+                                {roleLabels[role] || role}
+                              </UI.Chip>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <span className="text-default-400">Seleccionar roles...</span>
+                      )}
+                    </div>
+                  </UI.Button>
+                  {errors.roles && (
+                    <p className="text-xs text-danger">{errors.roles.message}</p>
+                  )}
+                </div>
+
+                <SelectModal
+                  isOpen={isRoleModalOpen}
+                  onClose={onRoleModalClose}
+                  title="Seleccionar Roles"
+                  options={[
                     {
                       key: "admin",
                       label: "Administrador",
@@ -248,7 +279,13 @@ export const UsersForm = ( { id }: Props ) => {
                       label: "Seguridad",
                       description: "Control de acceso y emergencias"
                     }
-                  ] }
+                  ]}
+                  selectedKeys={watch('roles') || []}
+                  onSelectionChange={(keys) => {
+                    setValue('roles', keys);
+                  }}
+                  selectionMode="multiple"
+                  searchPlaceholder="Buscar roles..."
                 />
               </UI.ModalBody>
 

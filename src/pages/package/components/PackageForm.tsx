@@ -7,6 +7,7 @@ import { PackageInputs, packageSchema } from '../validators';
 import { useAddPackage, usePackage, usePackageUpdate } from '../hooks';
 import { useInputIcon } from '../../../shared';
 import { useProperties } from '../../property';
+import { SelectModal } from '../../../shared/components/ui/components/custom/select-modal/SelectModal';
 
 
 
@@ -17,6 +18,7 @@ interface Props {
 export const PackageForm = ( { id }: Props ) => {
 
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { isOpen: isPropertyModalOpen, onOpen: onPropertyModalOpen, onClose: onPropertyModalClose } = useDisclosure();
   const { addPackage, isPending: isAddingPackage } = useAddPackage();
   const { packageUpdate, isPending: isUpdatingPackage } = usePackageUpdate();
   const { properties } = useProperties();
@@ -94,22 +96,70 @@ export const PackageForm = ( { id }: Props ) => {
                   { ...register( 'title' ) }
                 />
 
-                <UI.SelectConBuscador
-                  label="Propiedad"
-                  placeholder="Buscar propiedad..."
-                  selectedKeys={ watch( 'propertyId' ) ? [ watch( 'propertyId' ) ] : [] }
-                  onSelectionChange={ ( keys ) => {
-                    const value = Array.from( keys )[ 0 ];
-                    setValue( 'propertyId', value as string );
-                  } }
-                  variant="bordered"
-                  errorMessage={ errors.propertyId?.message }
-                  isInvalid={ !!errors.propertyId }
-                  options={ properties?.map( ( property ) => ( {
-                    key: property.id,
-                    label: property.isMain ? `🏠 ${ property.address }` : property.address,
-                    description: `${ property.user.lastName }, ${ property.user.name }${ property.isMain ? ' • Principal' : '' }`
-                  } ) ) || [] }
+                <div className="flex flex-col space-y-2">
+                  <label className="text-sm font-medium text-foreground">Propiedad</label>
+                  <UI.Button
+                    variant="bordered"
+                    onPress={onPropertyModalOpen}
+                    className="justify-start h-14 px-3"
+                    startContent={<Icons.IoHomeOutline size={20} />}
+                  >
+                    <div className="flex-1 text-left">
+                      {watch('propertyId') ? (
+                        (() => {
+                          const selectedProperty = properties?.find(p => p.id === watch('propertyId'));
+                          if (selectedProperty) {
+                            const normalizedProperty = {
+                              ...selectedProperty,
+                              users: selectedProperty.users || (selectedProperty.user ? [selectedProperty.user] : [])
+                            };
+                            return (
+                              <div className="flex flex-col">
+                                <span className="font-medium">
+                                  {selectedProperty.isMain ? '🏠 ' : ''}{selectedProperty.address}
+                                </span>
+                                <span className="text-xs text-default-500">
+                                  {normalizedProperty.users.map(user => `${user.lastName}, ${user.name}`).join(' • ')}
+                                  {selectedProperty.isMain ? ' • Principal' : ''}
+                                </span>
+                              </div>
+                            );
+                          }
+                          return <span className="text-default-400">Seleccionar propiedad...</span>;
+                        })()
+                      ) : (
+                        <span className="text-default-400">Seleccionar propiedad...</span>
+                      )}
+                    </div>
+                  </UI.Button>
+                  {errors.propertyId && (
+                    <p className="text-xs text-danger">{errors.propertyId.message}</p>
+                  )}
+                </div>
+
+                <SelectModal
+                  isOpen={isPropertyModalOpen}
+                  onClose={onPropertyModalClose}
+                  title="Seleccionar Propiedad"
+                  options={properties?.map((property) => {
+                    const normalizedProperty = {
+                      ...property,
+                      users: property.users || (property.user ? [property.user] : [])
+                    };
+
+                    return {
+                      key: property.id,
+                      label: property.isMain ? `🏠 ${property.address}` : property.address,
+                      description: `${normalizedProperty.users.map(user => `${user.lastName}, ${user.name}`).join(' • ')}${property.isMain ? ' • Principal' : ''}`
+                    };
+                  }) || []}
+                  selectedKeys={watch('propertyId') ? [watch('propertyId')] : []}
+                  onSelectionChange={(keys) => {
+                    const value = keys[0];
+                    setValue('propertyId', value as string);
+                  }}
+                  selectionMode="single"
+                  searchPlaceholder="Buscar propiedad..."
                 />
 
                 <UI.Textarea

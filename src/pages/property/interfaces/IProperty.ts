@@ -7,5 +7,5 @@ export interface IProperty {
   address:     string;
   description: string;
   isMain:      boolean;
-  user:        IUser;
+  users:       IUser[];
 }

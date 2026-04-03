@@ -25,7 +25,8 @@ export const usePropertyUpdate = () => {
         queryKey: [ 'properties' ]
       } );
 
-      toast.success( `Propiedad actualizada correctamente: ${ data.address }. ${ data.user.lastName }, ${ data.user.name }` );
+      const ownerNames = data.users?.map(user => `${user.lastName}, ${user.name}`).join(' • ') || 'Sin propietarios';
+      toast.success( `Propiedad actualizada correctamente: ${ data.address }. Propietarios: ${ ownerNames }` );
       return data;
     },
 

@@ -7,6 +7,7 @@ import { PropertyInputs, propertySchema } from '../validators';
 import { useAddProperty, useProperty, usePropertyUpdate } from '../hooks';
 import { useInputIcon } from '../../../shared';
 import { useUsers } from '../../users';
+import { SelectModal } from '../../../shared/components/ui/components/custom/select-modal/SelectModal';
 
 interface Props {
   id?: string;
@@ -15,6 +16,7 @@ interface Props {
 export const PropertyForm = ( { id }: Props ) => {
 
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { isOpen: isSelectModalOpen, onOpen: onSelectModalOpen, onClose: onSelectModalClose } = useDisclosure();
   const { addProperty, isPending: isAddingProperty } = useAddProperty();
   const { propertyUpdate, isPending: isUpdatingProperty } = usePropertyUpdate();
   const { users } = useUsers();
@@ -35,14 +37,20 @@ export const PropertyForm = ( { id }: Props ) => {
 
   useEffect( () => {
     if ( id && property ) {
+      // Compatibilidad: convertir estructura antigua a nueva
+      const normalizedProperty = {
+        ...property,
+        users: property.users || (property.user ? [property.user] : [])
+      };
+
       reset( {
-        address: property.address,
-        description: property.description,
-        user: property.user.id,
-        isMain: property.isMain,
+        address: normalizedProperty.address,
+        description: normalizedProperty.description,
+        users: normalizedProperty.users.map(user => user.id),
+        isMain: normalizedProperty.isMain,
       } );
-      setValue( 'user', property.user.id );
-      setIsMainProperty( property.isMain );
+      setValue( 'users', normalizedProperty.users.map(user => user.id) );
+      setIsMainProperty( normalizedProperty.isMain );
     }
   }, [ id, property, reset, setValue ] );
 
@@ -110,22 +118,56 @@ export const PropertyForm = ( { id }: Props ) => {
                   { ...register( 'description' ) }
                 />
 
-                <UI.SelectConBuscador
-                  label="Propietario"
-                  placeholder="Buscar propietario..."
-                  selectedKeys={ watch( 'user' ) ? [ watch( 'user' ) ] : [] }
-                  onSelectionChange={ ( keys ) => {
-                    const value = Array.from( keys )[ 0 ];
-                    setValue( 'user', value as string );
-                  } }
-                  variant="bordered"
-                  errorMessage={ errors.user?.message }
-                  isInvalid={ !!errors.user }
-                  options={ users?.map( ( user ) => ( {
+                <div className="flex flex-col space-y-2">
+                  <label className="text-sm font-medium text-foreground">Propietarios</label>
+                  <UI.Button
+                    variant="bordered"
+                    onPress={onSelectModalOpen}
+                    className="justify-start h-14 px-3"
+                    startContent={<Icons.IoPersonOutline size={20} />}
+                  >
+                    <div className="flex-1 text-left">
+                      {watch('users')?.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {watch('users').slice(0, 2).map(userId => {
+                            const user = users?.find(u => u.id === userId);
+                            return user ? (
+                              <UI.Chip key={userId} size="sm" color="primary" variant="flat">
+                                {`${user.lastName}, ${user.name}`}
+                              </UI.Chip>
+                            ) : null;
+                          })}
+                          {watch('users').length > 2 && (
+                            <UI.Chip size="sm" color="default" variant="flat">
+                              +{watch('users').length - 2} más
+                            </UI.Chip>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-default-400">Seleccionar propietarios...</span>
+                      )}
+                    </div>
+                  </UI.Button>
+                  {errors.users && (
+                    <p className="text-xs text-danger">{errors.users.message}</p>
+                  )}
+                </div>
+
+                <SelectModal
+                  isOpen={isSelectModalOpen}
+                  onClose={onSelectModalClose}
+                  title="Seleccionar Propietarios"
+                  options={users?.map(user => ({
                     key: user.id,
-                    label: `${ user.lastName }, ${ user.name }`,
+                    label: `${user.lastName}, ${user.name}`,
                     description: user.username
-                  } ) ) || [] }
+                  })) || []}
+                  selectedKeys={watch('users') || []}
+                  onSelectionChange={(keys) => {
+                    setValue('users', keys);
+                  }}
+                  selectionMode="multiple"
+                  searchPlaceholder="Buscar propietarios..."
                 />
 
                 <div className="flex flex-col space-y-2">

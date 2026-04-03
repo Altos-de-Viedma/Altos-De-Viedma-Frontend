@@ -19,21 +19,29 @@ export const PropertiesList = () => {
   const filteredProperties = useMemo(() => {
     if (!properties) return [];
 
-    // Si es usuario normal, solo mostrar sus propias propiedades
+    // Convertir estructura antigua a nueva (compatibilidad temporal)
+    const normalizedProperties = properties.map(property => ({
+      ...property,
+      users: property.users || (property.user ? [property.user] : [])
+    }));
+
+    // Si es usuario normal, solo mostrar propiedades donde es propietario
     if (!user?.roles?.includes('admin') && !user?.roles?.includes('security')) {
-      return properties.filter(property => property.user.id === user?.id);
+      return normalizedProperties.filter(property =>
+        property.users.some(owner => owner.id === user?.id)
+      );
     }
 
     // Admin y security ven todas las propiedades
-    return properties;
+    return normalizedProperties;
   }, [properties, user]);
 
   const columns = [
     { name: "Principal", uid: "isMain" },
     { name: "Dirección", uid: "address" },
     { name: "Descripción", uid: "description" },
-    { name: "Propietario", uid: "property" },
-    { name: "Teléfono", uid: "phone" },
+    { name: "Propietarios", uid: "owners" },
+    { name: "Teléfonos", uid: "phones" },
     ...(user?.roles?.includes('admin') ? [{ name: "Opciones", uid: "actions" }] : [])
   ];
 
@@ -77,21 +85,45 @@ export const PropertiesList = () => {
         )
       ),
       address: property.isMain ? `🏠 ${property.address}` : property.address,
-      property: (
-        <UserModal user={property.user}>
-          {`${property.user.lastName}, ${property.user.name}`}
-        </UserModal>
+      owners: (
+        <div className="flex flex-wrap gap-1">
+          {property.users.map((owner, index) => (
+            <UserModal key={owner.id} user={owner}>
+              <UI.Chip
+                size="sm"
+                color="primary"
+                variant="flat"
+                className="cursor-pointer hover:bg-primary-100"
+              >
+                {`${owner.lastName}, ${owner.name}`}
+              </UI.Chip>
+            </UserModal>
+          ))}
+        </div>
       ),
-      phone: generateWhatsAppLink(property.user.phone),
+      phones: (
+        <div className="flex flex-col gap-1">
+          {property.users.map((owner, index) => (
+            <div key={owner.id}>
+              {generateWhatsAppLink(owner.phone)}
+            </div>
+          ))}
+        </div>
+      ),
       description: property.description,
+      // Campos adicionales para búsqueda (no se muestran en la tabla)
+      ownerNames: property.users.map(user => user.name).join(' '),
+      ownerLastNames: property.users.map(user => user.lastName).join(' '),
+      ownerUsernames: property.users.map(user => user.username).join(' '),
+      ownerFullNames: property.users.map(user => `${user.lastName}, ${user.name}`).join(' '),
       ...(user?.roles?.includes('admin') && { actions: <PropertyForm id={property.id} /> })
     }));
 
   const addButtonComponent = user?.roles?.includes('admin') ? <PropertyForm /> : null;
 
   const visibleColumns = user?.roles?.includes('admin')
-    ? ["isMain", "address", "description", "property", "phone", "actions"]
-    : ["isMain", "address", "description", "property", "phone"];
+    ? ["isMain", "address", "description", "owners", "phones", "actions"]
+    : ["isMain", "address", "description", "owners", "phones"];
 
   return (
     <div className="w-full">

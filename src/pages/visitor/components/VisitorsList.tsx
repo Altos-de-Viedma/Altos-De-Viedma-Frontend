@@ -67,46 +67,71 @@ export const VisitorsList = () => {
   };
 
   const canCompleteVisit = ( visitor: IVisitor ) => {
+    // Compatibilidad: convertir estructura antigua a nueva
+    const normalizedProperty = {
+      ...visitor.property,
+      users: visitor.property.users || (visitor.property.user ? [visitor.property.user] : [])
+    };
+
     return user.roles?.includes( 'admin' ) ||
       user.roles?.includes( 'security' ) ||
-      visitor.property.user.id === user.id;
+      normalizedProperty.users.some(owner => owner.id === user.id);
   };
 
-  const transformVisitor = ( visitor: IVisitor ) => ( {
-    ...visitor,
-    date: formatDate( visitor.date.toString() ),
-    profilePicture: <UI.Avatar className="w-10 h-10 text-tiny" src={ visitor.profilePicture } />,
-    dateAndTimeOfVisit: formatDate( visitor.dateAndTimeOfVisit ),
-    property: visitor.property.isMain ? `🏠 ${ visitor.property.address }` : visitor.property.address,
-    propertyOwner: (
-      <UserModal user={visitor.property.user}>
-        {`${ visitor.property.user.lastName }, ${ visitor.property.user.name }`}
-      </UserModal>
-    ),
-    phone: generateWhatsAppLink( visitor.phone ),
-    visitCompleted: visitor.visitCompleted
-      ? <UI.Chip color="success" startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> } variant="flat">Finalizada</UI.Chip>
-      : <UI.Chip color="secondary" startContent={ <Icons.IoAlertCircleOutline size={ 18 } /> } variant="flat">En curso</UI.Chip>,
-    actions: (
-      <div className="flex flex-row space-x-2">
-        <VisitorForm id={ visitor.id } />
-        { !visitor.visitCompleted && canCompleteVisit( visitor ) && (
-          <UI.Button
-            color="success"
-            variant="solid"
-            onPress={ () => {
-              setVisitorToComplete( visitor );
-              onOpen();
-            } }
-            startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> }
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
-          >
-            Finalizar visita
-          </UI.Button>
-        ) }
-      </div>
-    )
-  } );
+  const transformVisitor = ( visitor: IVisitor ) => {
+    // Compatibilidad: convertir estructura antigua a nueva
+    const normalizedProperty = {
+      ...visitor.property,
+      users: visitor.property.users || (visitor.property.user ? [visitor.property.user] : [])
+    };
+
+    return {
+      ...visitor,
+      date: formatDate( visitor.date.toString() ),
+      profilePicture: <UI.Avatar className="w-10 h-10 text-tiny" src={ visitor.profilePicture } />,
+      dateAndTimeOfVisit: formatDate( visitor.dateAndTimeOfVisit ),
+      property: normalizedProperty.isMain ? `🏠 ${ normalizedProperty.address }` : normalizedProperty.address,
+      propertyOwner: (
+        <div className="flex flex-wrap gap-1">
+          {normalizedProperty.users.map((owner, index) => (
+            <UserModal key={owner.id} user={owner}>
+              <UI.Chip
+                size="sm"
+                color="primary"
+                variant="flat"
+                className="cursor-pointer hover:bg-primary-100"
+              >
+                {`${owner.lastName}, ${owner.name}`}
+              </UI.Chip>
+            </UserModal>
+          ))}
+        </div>
+      ),
+      phone: generateWhatsAppLink( visitor.phone ),
+      visitCompleted: visitor.visitCompleted
+        ? <UI.Chip color="success" startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> } variant="flat">Finalizada</UI.Chip>
+        : <UI.Chip color="secondary" startContent={ <Icons.IoAlertCircleOutline size={ 18 } /> } variant="flat">En curso</UI.Chip>,
+      actions: (
+        <div className="flex flex-row space-x-2">
+          <VisitorForm id={ visitor.id } />
+          { !visitor.visitCompleted && canCompleteVisit( visitor ) && (
+            <UI.Button
+              color="success"
+              variant="solid"
+              onPress={ () => {
+                setVisitorToComplete( visitor );
+                onOpen();
+              } }
+              startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> }
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+            >
+              Finalizar visita
+            </UI.Button>
+          ) }
+        </div>
+      )
+    };
+  };
 
   const getFilteredVisitors = ( filter: string | number ) => {
     const sortedVisitors = visitors.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
