@@ -22,7 +22,7 @@ export const PropertiesList = () => {
     // Convertir estructura antigua a nueva (compatibilidad temporal)
     const normalizedProperties = properties.map(property => ({
       ...property,
-      users: property.users || (property.user ? [property.user] : [])
+      users: property.users || (property.users ? [property.users] : [])
     }));
 
     // Si es usuario normal, solo mostrar propiedades donde es propietario
@@ -87,7 +87,7 @@ export const PropertiesList = () => {
       address: property.isMain ? `🏠 ${property.address}` : property.address,
       owners: (
         <div className="flex flex-wrap gap-1">
-          {property.users.map((owner, index) => (
+          {property.users.map((owner) => (
             <UserModal key={owner.id} user={owner}>
               <UI.Chip
                 size="sm"
@@ -103,7 +103,7 @@ export const PropertiesList = () => {
       ),
       phones: (
         <div className="flex flex-col gap-1">
-          {property.users.map((owner, index) => (
+          {property.users.map((owner) => (
             <div key={owner.id}>
               {generateWhatsAppLink(owner.phone)}
             </div>

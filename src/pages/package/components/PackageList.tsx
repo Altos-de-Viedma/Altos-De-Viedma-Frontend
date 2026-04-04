@@ -21,17 +21,24 @@ export const PackageList = () => {
 
   // Handle marking package as received - integrate with notification system
   const handleMarkAsReceived = async () => {
+    console.log('🔥 BUTTON CLICKED - handleMarkAsReceived called');
+    console.log('🔥 packageToMark:', packageToMark);
+
     if ( packageToMark ) {
       try {
+        console.log('🔥 About to call markAsReceived with ID:', packageToMark.id);
         // Mark as received in the backend
         await markAsReceived( packageToMark.id );
+        console.log('🔥 markAsReceived SUCCESS');
         // Also mark as seen in the notification system (removes notification)
         markAsSeen('packages', packageToMark.id);
         onClose();
         setPackageToMark( null );
       } catch (error) {
-        console.error('Error marking package as received:', error);
+        console.error('🔥 ERROR in markAsReceived:', error);
       }
+    } else {
+      console.log('🔥 NO packageToMark - button should not have been clickable');
     }
   };
 

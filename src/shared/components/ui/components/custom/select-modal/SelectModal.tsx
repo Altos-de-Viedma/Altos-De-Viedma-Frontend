@@ -22,7 +22,6 @@ export const SelectModal = ({
   isOpen,
   onClose,
   title,
-  placeholder = "Seleccionar...",
   options,
   selectedKeys,
   onSelectionChange,
@@ -66,13 +65,6 @@ export const SelectModal = ({
     setTempSelectedKeys(selectedKeys);
     onClose();
     setSearchValue('');
-  };
-
-  const getSelectedLabels = () => {
-    return selectedKeys
-      .map(key => options.find(opt => opt.key === key)?.label)
-      .filter(Boolean)
-      .join(', ');
   };
 
   return (
@@ -150,8 +142,8 @@ export const SelectModal = ({
                           color="primary"
                           size="lg"
                           classNames={{
-                            wrapper: "after:bg-primary after:text-primary-foreground before:border-default-300",
-                            icon: "text-white"
+                            wrapper: "after:bg-primary before:border-default-300",
+                            icon: "text-black"
                           }}
                         />
                       </div>

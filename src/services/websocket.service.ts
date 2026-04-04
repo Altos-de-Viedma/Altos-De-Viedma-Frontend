@@ -40,11 +40,14 @@ class WebSocketService {
         }
 
         this.socket = io(config.url, {
-          transports: ['websocket', 'polling'],
-          upgrade: true,
-          rememberUpgrade: true,
-          timeout: 10000,
+          transports: ['websocket'],
+          upgrade: false,
+          timeout: 20000,
           forceNew: true,
+          autoConnect: true,
+          reconnection: true,
+          reconnectionAttempts: 3,
+          reconnectionDelay: 2000,
           extraHeaders: {
             authentication: config.token || '',
           },

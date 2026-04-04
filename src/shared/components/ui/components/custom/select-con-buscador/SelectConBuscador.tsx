@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Input } from '@heroui/react';
+import { Input } from '@heroui/react';
 import { IoChevronDownOutline, IoCloseOutline } from 'react-icons/io5';
 import { SelectModal } from '../select-modal/SelectModal';
 

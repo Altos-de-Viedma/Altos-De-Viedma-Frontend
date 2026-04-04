@@ -18,7 +18,7 @@ export const useVisitors = () => {
     // Compatibilidad: convertir estructura antigua a nueva
     const normalizedProperty = {
       ...visitor.property,
-      users: visitor.property.users || (visitor.property.user ? [visitor.property.user] : [])
+      users: visitor.property.users || (visitor.property.users ? [visitor.property.users] : [])
     };
 
     return user?.roles?.includes( 'admin' ) ||

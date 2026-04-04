@@ -40,7 +40,7 @@ export const PropertyForm = ( { id }: Props ) => {
       // Compatibilidad: convertir estructura antigua a nueva
       const normalizedProperty = {
         ...property,
-        users: property.users || (property.user ? [property.user] : [])
+        users: property.users || (property.users ? [property.users] : [])
       };
 
       reset( {
@@ -179,8 +179,9 @@ export const PropertyForm = ( { id }: Props ) => {
                     className="text-foreground"
                     classNames={{
                       base: "inline-flex max-w-full w-full bg-content1 m-0",
-                      wrapper: "before:border-gray-300 after:bg-primary after:text-primary-foreground",
-                      label: "text-foreground font-medium"
+                      wrapper: "before:border-gray-300 after:bg-primary",
+                      label: "text-foreground font-medium",
+                      icon: "text-black"
                     }}
                   >
                     <span className="font-medium text-foreground">

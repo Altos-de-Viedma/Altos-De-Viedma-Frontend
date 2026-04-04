@@ -70,7 +70,7 @@ export const VisitorsList = () => {
     // Compatibilidad: convertir estructura antigua a nueva
     const normalizedProperty = {
       ...visitor.property,
-      users: visitor.property.users || (visitor.property.user ? [visitor.property.user] : [])
+      users: visitor.property.users || (visitor.property.users ? [visitor.property.users] : [])
     };
 
     return user.roles?.includes( 'admin' ) ||
@@ -82,7 +82,7 @@ export const VisitorsList = () => {
     // Compatibilidad: convertir estructura antigua a nueva
     const normalizedProperty = {
       ...visitor.property,
-      users: visitor.property.users || (visitor.property.user ? [visitor.property.user] : [])
+      users: visitor.property.users || (visitor.property.users ? [visitor.property.users] : [])
     };
 
     return {
@@ -93,7 +93,7 @@ export const VisitorsList = () => {
       property: normalizedProperty.isMain ? `🏠 ${ normalizedProperty.address }` : normalizedProperty.address,
       propertyOwner: (
         <div className="flex flex-wrap gap-1">
-          {normalizedProperty.users.map((owner, index) => (
+          {normalizedProperty.users.map((owner) => (
             <UserModal key={owner.id} user={owner}>
               <UI.Chip
                 size="sm"

@@ -111,7 +111,7 @@ export const PackageForm = ( { id }: Props ) => {
                           if (selectedProperty) {
                             const normalizedProperty = {
                               ...selectedProperty,
-                              users: selectedProperty.users || (selectedProperty.user ? [selectedProperty.user] : [])
+                              users: selectedProperty.users || (selectedProperty.users ? [selectedProperty.users] : [])
                             };
                             return (
                               <div className="flex flex-col">
@@ -144,7 +144,7 @@ export const PackageForm = ( { id }: Props ) => {
                   options={properties?.map((property) => {
                     const normalizedProperty = {
                       ...property,
-                      users: property.users || (property.user ? [property.user] : [])
+                      users: property.users || (property.users ? [property.users] : [])
                     };
 
                     return {

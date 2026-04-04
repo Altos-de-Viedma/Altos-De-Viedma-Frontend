@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 
-import { CustomTable, Icons, StatusColorMap, UI, useDisclosure, IconContainer, UserModal } from '../../../shared';
+import { CustomTable, Icons, StatusColorMap, UI, useDisclosure, IconContainer } from '../../../shared';
 import { InvoiceForm } from './InvoiceForm';
 import { InvoiceSearch } from './InvoiceSearch';
 import { useInvoices, useConfirmInvoice } from '../hooks';

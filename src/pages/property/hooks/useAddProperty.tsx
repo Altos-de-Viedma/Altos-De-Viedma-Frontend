@@ -37,7 +37,7 @@ export const useAddProperty = () => {
   const addProperty = ( newProperty: PropertyInputs ) => {
     mutate( newProperty, {
       onSuccess: ( data ) => {
-        toast.success( `Propiedad creada correctamente: ${ data.address }. ${ data.user.lastName }, ${ data.user.name }` );
+        toast.success( `Propiedad creada correctamente: ${ data.address }. ${ data.users[0]?.lastName }, ${ data.users[0]?.name }` );
       },
       onError: () => {
         toast.error( 'No se pudo crear la propiedad. Por favor, intente nuevamente.' );

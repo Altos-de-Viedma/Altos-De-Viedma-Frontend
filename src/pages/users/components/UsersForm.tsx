@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Icons, UI, useDisclosure } from '../../../shared';
 import { userInputs, updateInputs, createUserSchema, updateUserSchema } from '../validators';
-import { useStringToArray, useInputIcon } from '../../../shared';
+import { useInputIcon } from '../../../shared';
 import { useUser, useUserAdd, useUserUpdate } from '../hooks';
 import { ChangePasswordModal } from './ChangePasswordModal';
 import { SelectModal } from '../../../shared/components/ui/components/custom/select-modal/SelectModal';
@@ -76,11 +76,6 @@ export const UsersForm = ( { id }: Props ) => {
       reset();
       onClose();
     }
-  };
-
-  const handleRolesChange = ( value: string ) => {
-    const rolesArray = useStringToArray( value );
-    setValue( 'roles', rolesArray );
   };
 
   const isPending = isAdding || isUpdating;
@@ -244,7 +239,7 @@ export const UsersForm = ( { id }: Props ) => {
                             };
                             return (
                               <UI.Chip key={role} size="sm" color="primary" variant="flat">
-                                {roleLabels[role] || role}
+                                {roleLabels[role as keyof typeof roleLabels] || role}
                               </UI.Chip>
                             );
                           })}
