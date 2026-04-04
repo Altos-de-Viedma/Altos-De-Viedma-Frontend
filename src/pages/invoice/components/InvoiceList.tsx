@@ -48,7 +48,7 @@ export const InvoiceList = () => {
     if (invoiceToConfirm) {
       try {
         // Confirm invoice in the backend
-        await confirmInvoiceMutation.confirmInvoiceMutation(invoiceToConfirm.id);
+        await confirmInvoiceMutation.confirmInvoiceMutation({ id: invoiceToConfirm.id, invoice: invoiceToConfirm });
         // Also mark as seen in the notification system
         markAsSeen('invoices', invoiceToConfirm.id);
         onClose();
@@ -62,7 +62,7 @@ export const InvoiceList = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       refetch();
-    }, 5000);
+    }, 30000); // Reducido de 5s a 30s para evitar conflictos con mutations
 
     return () => clearInterval(interval);
   }, [refetch]);
@@ -81,7 +81,8 @@ export const InvoiceList = () => {
     { name: "Título", uid: "title" },
     { name: "Estado", uid: "state" },
     { name: "Fecha", uid: "date" },
-    { name: "Descripción", uid: "description" },
+    { name: "Propiedad", uid: "property" },
+    { name: "Teléfono notificación", uid: "phone" },
     { name: "URL", uid: "invoiceUrl" },
     { name: "Opciones", uid: "actions" }
   ];
@@ -107,6 +108,10 @@ export const InvoiceList = () => {
       .map(invoice => ({
         ...invoice,
         date: formatDate(invoice.date),
+        property: invoice.property ? (invoice.property.isMain ? `🏠 ${invoice.property.address}` : invoice.property.address) : 'N/A',
+        phone: (invoice.property?.users && invoice.property.users.length > 0)
+          ? invoice.property.users.map((user: any) => user.phone).filter((phone: any) => phone).join(', ') || 'Sin teléfono'
+          : 'Sin propietarios',
         state: invoice.state === 'confirmed'
           ? <UI.Chip color="success" startContent={<Icons.IoCheckmarkOutline size={18} />} variant="flat">Aprobada</UI.Chip>
           : <UI.Chip color="warning" startContent={<Icons.IoTimeOutline size={18} />} variant="flat">Pendiente</UI.Chip>,
@@ -159,7 +164,7 @@ export const InvoiceList = () => {
     in_progress: "warning",
   };
 
-  const visibleColumns = ["title", "state", "date", "description", "invoiceUrl", "actions"];
+  const visibleColumns = ["title", "state", "date", "property", "phone", "invoiceUrl", "actions"];
 
   return (
     <div className="flex w-full flex-col space-y-6 lg:space-y-8">

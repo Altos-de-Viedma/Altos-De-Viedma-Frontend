@@ -16,11 +16,12 @@ export const getInvoice = async (id: string): Promise<IInvoice> => {
   return data;
 };
 
-export const createInvoice = async (invoice: { title: string; description?: string; invoiceUrl: string }): Promise<IInvoice> => {
+export const createInvoice = async (invoice: { title: string; description?: string; invoiceUrl: string; propertyId: string }): Promise<IInvoice> => {
   // Limpiar los datos antes de enviarlos
-  const cleanData: { title: string; description?: string; invoiceUrl: string } = {
+  const cleanData: { title: string; description?: string; invoiceUrl: string; propertyId: string } = {
     title: invoice.title.trim(),
     invoiceUrl: invoice.invoiceUrl.trim(),
+    propertyId: invoice.propertyId.trim(),
   };
 
   // Solo incluir description si no está vacía

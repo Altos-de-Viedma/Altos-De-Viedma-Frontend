@@ -9,12 +9,9 @@ export const useUpdateInvoice = () => {
   const { mutateAsync: invoiceUpdate, isPending } = useMutation({
     mutationFn: ({ invoice, id }: { invoice: InvoiceInputs; id: string }) => updateInvoice(id, invoice),
     onSuccess: () => {
-      // Invalidar múltiples queries relacionadas
+      // Invalidar queries (esto ya triggerea el refetch automáticamente)
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       queryClient.invalidateQueries({ queryKey: ['invoice'] });
-
-      // Forzar refetch inmediato
-      queryClient.refetchQueries({ queryKey: ['invoices'] });
 
       toast.success('Factura actualizada exitosamente');
     },

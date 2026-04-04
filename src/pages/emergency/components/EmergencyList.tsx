@@ -40,7 +40,7 @@ export const EmergencyList = () => {
   useEffect( () => {
     const interval = setInterval( () => {
       refetch();
-    }, 5000 );
+    }, 30000 ); // Reducido de 5s a 30s para evitar conflictos con mutations
 
     return () => clearInterval( interval );
   }, [ refetch ] );

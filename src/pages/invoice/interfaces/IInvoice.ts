@@ -12,4 +12,15 @@ export interface IInvoice {
     lastName: string;
     phone: string;
   };
+  property?: {
+    id: string;
+    address: string;
+    isMain: boolean;
+    users?: {
+      id: string;
+      name: string;
+      lastName: string;
+      phone: string;
+    }[];
+  };
 }

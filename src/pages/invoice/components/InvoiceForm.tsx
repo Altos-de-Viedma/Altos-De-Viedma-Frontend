@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Icons, UI, useDisclosure } from '../../../shared';
 import { InvoiceInputs, invoiceSchema } from '../validators';
 import { useAddInvoice, useInvoice, useUpdateInvoice } from '../hooks';
+import { useProperties } from '../../property/hooks';
 
 interface Props {
   id?: string;
@@ -14,6 +15,7 @@ export const InvoiceForm = ({ id }: Props) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const { addInvoice, isPending: isAddingInvoice } = useAddInvoice();
   const { invoiceUpdate, isPending: isUpdatingInvoice } = useUpdateInvoice();
+  const { properties } = useProperties();
 
   const { invoice, isLoading } = id ? useInvoice(id) : { invoice: null, isLoading: false };
 
@@ -32,6 +34,7 @@ export const InvoiceForm = ({ id }: Props) => {
         title: invoice.title,
         description: invoice.description || '',
         invoiceUrl: invoice.invoiceUrl,
+        propertyId: invoice.property?.id || '',
       });
     }
   }, [id, invoice, reset]);
@@ -81,6 +84,21 @@ export const InvoiceForm = ({ id }: Props) => {
               </UI.ModalHeader>
 
               <UI.ModalBody>
+                <UI.Select
+                  label="Propiedad"
+                  placeholder="Seleccione una propiedad"
+                  variant="bordered"
+                  errorMessage={errors.propertyId?.message}
+                  isInvalid={!!errors.propertyId}
+                  {...register('propertyId')}
+                >
+                  {properties.map((property) => (
+                    <UI.SelectItem key={property.id}>
+                      {property.isMain ? `🏠 ${property.address}` : property.address}
+                    </UI.SelectItem>
+                  ))}
+                </UI.Select>
+
                 <UI.Input
                   label="Título"
                   placeholder="Ingrese el título de la factura"

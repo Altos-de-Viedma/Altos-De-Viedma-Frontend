@@ -4,29 +4,44 @@ import axios from 'axios';
 
 import { confirmInvoice } from '../services/actions';
 import { useAuthStore } from '../../auth';
-import { formatPhoneNumber } from '../../../shared/utils';
 
 export const useConfirmInvoice = () => {
   const queryClient = useQueryClient();
   const { token } = useAuthStore();
 
   const { mutateAsync: confirmInvoiceMutation, isPending } = useMutation({
-    mutationFn: (id: string) => confirmInvoice(id),
-    onSuccess: async (data: any) => {
-      // Invalidar múltiples queries relacionadas
+    mutationFn: ({ id }: { id: string; invoice: any }) => confirmInvoice(id),
+    onSuccess: async (data: any, variables: { id: string; invoice: any }) => {
+      // Invalidar queries (esto ya triggerea el refetch automáticamente)
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       queryClient.invalidateQueries({ queryKey: ['invoice'] });
 
-      // Forzar refetch inmediato
-      queryClient.refetchQueries({ queryKey: ['invoices'] });
-
       // Send notification webhook
       try {
-        const rawPhone = data.property?.users?.[0]?.phone || data.user?.phone || "";
-        console.log('🔥🔥🔥 INVOICE - RAW PHONE:', rawPhone);
+        // Get first property owner's phone number from the frontend invoice data
+        const propertyOwners = variables.invoice.property?.users || [];
+        const firstOwnerPhone = propertyOwners.find((user: any) => user.phone)?.phone || "";
 
-        // Format phone number consistently with backend logic
-        const formattedPhone = formatPhoneNumber(rawPhone);
+        console.log('🔥🔥🔥 INVOICE - FIRST OWNER PHONE:', firstOwnerPhone);
+
+        if (!firstOwnerPhone) {
+          console.log('❌ No phone number found for property owners');
+          toast.success('Factura confirmada exitosamente');
+          return;
+        }
+
+        // Ensure phone starts with 549
+        let formattedPhone = firstOwnerPhone.replace(/[\s\-\(\)]/g, ''); // Remove spaces and special chars
+        if (!formattedPhone.startsWith('549')) {
+          if (formattedPhone.startsWith('+549')) {
+            formattedPhone = formattedPhone.substring(1); // Remove +
+          } else if (formattedPhone.startsWith('54') && !formattedPhone.startsWith('549')) {
+            formattedPhone = '549' + formattedPhone.substring(2); // Replace 54 with 549
+          } else {
+            formattedPhone = '549' + formattedPhone; // Add 549 prefix
+          }
+        }
+
         console.log('🔥🔥🔥 INVOICE - FORMATTED PHONE:', formattedPhone);
 
         const webhookPayload = {
@@ -36,7 +51,6 @@ export const useConfirmInvoice = () => {
 
 📌 Su factura ha sido aprobada exitosamente
 📝 ${data.title || 'Factura'}
-💵 Monto: $${data.amount || 'N/A'}
 📅 Fecha de aprobación: ${new Date().toLocaleDateString('es-AR')}
 🏠 Propiedad: ${data.property?.address || 'N/A'}
 
