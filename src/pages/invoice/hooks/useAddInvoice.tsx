@@ -13,10 +13,10 @@ export const useAddInvoice = () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       queryClient.invalidateQueries({ queryKey: ['invoice'] });
 
-      toast.success('Factura creada exitosamente');
+      toast.success('Expensa creada exitosamente');
     },
     onError: (error: any) => {
-      toast.error(error?.response?.data?.message || 'Error al crear la factura');
+      toast.error(error?.response?.data?.message || 'Error al crear la expensa');
     },
   });
 

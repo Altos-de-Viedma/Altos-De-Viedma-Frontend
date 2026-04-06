@@ -11,7 +11,7 @@ import { useSeenNotifications } from '../../../hooks/useSeenNotifications';
 
 interface Props {
   Icon: ElementType;
-  type?: 'emergencies' | 'packages' | 'visitors' | 'invoices';
+  type?: 'emergencies' | 'packages' | 'visitors' | 'invoices' | 'cash';
   onBadgeCountChange?: (count: number) => void;
 }
 

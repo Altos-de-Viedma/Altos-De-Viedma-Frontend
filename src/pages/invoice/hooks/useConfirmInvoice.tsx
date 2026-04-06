@@ -26,7 +26,7 @@ export const useConfirmInvoice = () => {
 
         if (!firstOwnerPhone) {
           console.log('❌ No phone number found for property owners');
-          toast.success('Factura confirmada exitosamente');
+          toast.success('Expensa confirmada exitosamente');
           return;
         }
 
@@ -47,16 +47,16 @@ export const useConfirmInvoice = () => {
         const webhookPayload = {
           phoneNumber: formattedPhone,
           serverUrl: "https://evolution-api.altosdeviedma.com",
-          message: `💰 Factura aprobada
+          message: `💰 Expensa aprobada
 
-📌 Su factura ha sido aprobada exitosamente
-📝 ${data.title || 'Factura'}
+📌 Su expensa ha sido aprobada exitosamente
+📝 ${data.title || 'Expensa'}
 📅 Fecha de aprobación: ${new Date().toLocaleDateString('es-AR')}
 🏠 Propiedad: ${data.property?.address || 'N/A'}
 
-La factura fue revisada y aprobada por el personal administrativo.
+La expensa fue revisada y aprobada por el personal administrativo.
 
-Gracias por utilizar nuestro sistema de facturación.`,
+Gracias por utilizar nuestro sistema de expensas.`,
           instanceName: "AltosDeViedmaProduccion",
           apikey: "782A3BE06AAC-47C5-AE61-4985CB15631E"
         };
@@ -75,10 +75,10 @@ Gracias por utilizar nuestro sistema de facturación.`,
         console.error('❌ Error details:', webhookError.response?.data);
       }
 
-      toast.success('Factura confirmada exitosamente');
+      toast.success('Expensa confirmada exitosamente');
     },
     onError: (error: any) => {
-      toast.error(error?.response?.data?.message || 'Error al confirmar la factura');
+      toast.error(error?.response?.data?.message || 'Error al confirmar la expensa');
     },
   });
 

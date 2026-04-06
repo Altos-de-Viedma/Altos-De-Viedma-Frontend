@@ -12,6 +12,7 @@ const UsersPage = lazy(() => import('../pages/users/pages/UsersPage').then(m => 
 const VisitorsPage = lazy(() => import('../pages/visitor/pages/VisitorsPage').then(m => ({ default: m.VisitorsPage })));
 const EmergenciesPage = lazy(() => import('../pages/emergency/pages/EmergenciesPage').then(m => ({ default: m.EmergenciesPage })));
 const InvoicePage = lazy(() => import('../pages/invoice/pages/InvoicePage').then(m => ({ default: m.InvoicePage })));
+const CashPage = lazy(() => import('../pages/cash/pages/CashPage').then(m => ({ default: m.CashPage })));
 const DashboardLayoutPage = lazy(() => import('../pages/dashboard/dashboard-layout/DashboardPage').then(m => ({ default: m.DashboardLayoutPage })));
 
 // Loading component
@@ -102,6 +103,14 @@ export const router = createBrowserRouter( [
         element: (
           <Suspense fallback={<PageLoader />}>
             <InvoicePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'caja',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <CashPage />
           </Suspense>
         ),
       },

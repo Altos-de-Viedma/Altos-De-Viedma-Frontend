@@ -21,11 +21,11 @@ export const InvoiceList = () => {
 
   const isConfirmingInvoice = confirmInvoiceMutation.isPending;
 
-  // Filtrar facturas por usuario y búsqueda
+  // Filtrar expensas por usuario y búsqueda
   const filteredInvoices = useMemo(() => {
     if (!invoices) return [];
 
-    // Si es usuario normal (no admin), solo mostrar sus propias facturas
+    // Si es usuario normal (no admin), solo mostrar sus propias expensas
     let userFilteredInvoices = invoices;
     if (!user?.roles?.includes('admin')) {
       userFilteredInvoices = invoices.filter(invoice => invoice.user.id === user?.id);
@@ -126,7 +126,7 @@ export const InvoiceList = () => {
             startContent={<Icons.IoLinkOutline size={18} />}
             className="text-blue-600 hover:text-blue-800"
           >
-            Ver Factura
+            Ver Expensa
           </UI.Button>
         ),
         actions: (
@@ -142,7 +142,7 @@ export const InvoiceList = () => {
                 startContent={<Icons.IoCheckmarkOutline size={18} />}
                 className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
               >
-                Aprobar Factura
+                Aprobar Expensa
               </UI.Button>
             )}
             {(user?.roles?.includes('admin') || invoice.user.id === user?.id) && (
@@ -180,8 +180,8 @@ export const InvoiceList = () => {
           <Icons.IoReceiptOutline size={16} />
           <span>
             {searchTerm ?
-              `${filteredInvoices.length} de ${invoices?.length || 0} facturas` :
-              `${filteredInvoices.length} facturas`
+              `${filteredInvoices.length} de ${invoices?.length || 0} expensas` :
+              `${filteredInvoices.length} expensas`
             }
           </span>
         </div>
@@ -231,7 +231,7 @@ export const InvoiceList = () => {
             statusColorMap={statusColorMap}
             initialVisibleColumns={visibleColumns}
             addButtonComponent={addButtonComponent}
-            title={selectedTab === 'in_progress' ? "facturas pendientes" : "facturas aprobadas"}
+            title={selectedTab === 'in_progress' ? "expensas pendientes" : "expensas aprobadas"}
             className="w-full"
           />
         </div>
@@ -242,10 +242,10 @@ export const InvoiceList = () => {
           <>
             <UI.ModalHeader className="flex justify-center flex-row space-x-2 items-center">
               <IconContainer children={<Icons.IoReceiptOutline size={24} />} />
-              <h2>Aprobar factura</h2>
+              <h2>Aprobar expensa</h2>
             </UI.ModalHeader>
             <UI.ModalBody>
-              <p className="text-2xl text-center">¿Estás seguro de que deseas aprobar esta factura?</p>
+              <p className="text-2xl text-center">¿Estás seguro de que deseas aprobar esta expensa?</p>
               <div className="mt-4 flex flex-col justify-center">
                 <h2 className="text-xl font-bold">{invoiceToConfirm?.title}</h2>
                 <p>{invoiceToConfirm?.description}</p>

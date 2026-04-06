@@ -6,7 +6,7 @@ export const InvoicePage = () => {
     <GenericPage
       backUrl="/home"
       icon={<Icons.IoReceiptOutline size={26} />}
-      title="Facturas"
+      title="Expensas"
       bodyContent={<InvoiceList />}
     />
   );

@@ -13,10 +13,10 @@ export const useUpdateInvoice = () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       queryClient.invalidateQueries({ queryKey: ['invoice'] });
 
-      toast.success('Factura actualizada exitosamente');
+      toast.success('Expensa actualizada exitosamente');
     },
     onError: (error: any) => {
-      toast.error(error?.response?.data?.message || 'Error al actualizar la factura');
+      toast.error(error?.response?.data?.message || 'Error al actualizar la expensa');
     },
   });
 

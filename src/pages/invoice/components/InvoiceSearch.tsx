@@ -6,7 +6,7 @@ interface Props {
   placeholder?: string;
 }
 
-export const InvoiceSearch = ({ onSearch, placeholder = "Buscar facturas..." }: Props) => {
+export const InvoiceSearch = ({ onSearch, placeholder = "Buscar expensas..." }: Props) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = (value: string) => {

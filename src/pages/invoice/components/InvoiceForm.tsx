@@ -64,7 +64,7 @@ export const InvoiceForm = ({ id }: Props) => {
         variant="solid"
         className="bg-primary-600 hover:bg-primary-700 text-white font-medium"
       >
-        {id ? <><Icons.IoPencilOutline size={24} /> Editar</> : 'Nueva Factura'}
+        {id ? <><Icons.IoPencilOutline size={24} /> Editar</> : 'Nueva Expensa'}
       </UI.Button>
 
       <UI.Modal
@@ -79,7 +79,7 @@ export const InvoiceForm = ({ id }: Props) => {
               <UI.ModalHeader className="flex items-center justify-center px-4 py-3">
                 <div className="flex items-center space-x-2 font-bold text-2xl">
                   <Icons.IoReceiptOutline size={24} className="text-gray-500" />
-                  <h2>{id ? 'Editar factura' : 'Nueva factura'}</h2>
+                  <h2>{id ? 'Editar expensa' : 'Nueva expensa'}</h2>
                 </div>
               </UI.ModalHeader>
 
@@ -101,7 +101,7 @@ export const InvoiceForm = ({ id }: Props) => {
 
                 <UI.Input
                   label="Título"
-                  placeholder="Ingrese el título de la factura"
+                  placeholder="Ingrese el título de la expensa"
                   variant="bordered"
                   errorMessage={errors.title?.message}
                   isInvalid={!!errors.title}
@@ -110,7 +110,7 @@ export const InvoiceForm = ({ id }: Props) => {
 
                 <UI.Textarea
                   label="Descripción (Opcional)"
-                  placeholder="Ingrese una descripción de la factura"
+                  placeholder="Ingrese una descripción de la expensa"
                   variant="bordered"
                   errorMessage={errors.description?.message}
                   isInvalid={!!errors.description}
@@ -118,8 +118,8 @@ export const InvoiceForm = ({ id }: Props) => {
                 />
 
                 <UI.Input
-                  label="URL de la Factura"
-                  placeholder="https://ejemplo.com/factura.pdf"
+                  label="URL de la Expensa"
+                  placeholder="https://ejemplo.com/expensa.pdf"
                   variant="bordered"
                   errorMessage={errors.invoiceUrl?.message}
                   isInvalid={!!errors.invoiceUrl}

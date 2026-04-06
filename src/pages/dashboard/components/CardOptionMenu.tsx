@@ -8,7 +8,7 @@ interface Props {
   title: string;
   route: string;
   Icon: ElementType;
-  type?: 'emergencies' | 'packages' | 'visitors' | 'invoices';
+  type?: 'emergencies' | 'packages' | 'visitors' | 'invoices' | 'cash';
 }
 
 export const CardOptionMenu = ({ title, Icon, route, type }: Props) => {

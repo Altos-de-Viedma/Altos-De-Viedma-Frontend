@@ -15,7 +15,8 @@ export const HomePage: React.FC = () => {
   const filteredCardOptions = cardOptions.filter((option) =>
     (option.title !== 'Usuarios' || user?.roles?.includes('admin')) &&
     (option.title !== 'Propiedades' || hasOnlyUserRole || user?.roles?.includes('admin') || user?.roles?.includes('security')) &&
-    (option.title !== 'Facturas' || !user?.roles?.includes('security'))
+    (option.title !== 'Expensas' || !user?.roles?.includes('security')) &&
+    (option.title !== 'Caja' || !user?.roles?.includes('security'))
   );
 
   return (
