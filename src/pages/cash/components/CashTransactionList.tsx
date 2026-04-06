@@ -5,7 +5,6 @@ import { CashTransactionForm } from './CashTransactionForm';
 import { useDailySummary } from '../hooks';
 import { useAuthStore } from '../../auth';
 import {
-  ICashTransaction,
   TransactionType,
   TRANSACTION_CATEGORY_LABELS,
   TRANSACTION_TYPE_LABELS,
@@ -327,15 +326,7 @@ export const CashTransactionList = () => {
           initialVisibleColumns={visibleColumns}
           addButtonComponent={isAdmin ? <CashTransactionForm onSuccess={() => refetch()} /> : undefined}
           title="Transacciones de Caja"
-          className="w-full"
-          classNames={{
-            wrapper: "shadow-lg border border-gray-200 dark:border-gray-700",
-            th: "bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-semibold",
-            td: "border-b border-gray-100 dark:border-gray-700",
-            table: "min-w-full",
-            thead: "bg-gray-50 dark:bg-gray-800",
-            tbody: "bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-700"
-          }}
+          className="w-full shadow-lg border border-gray-200 dark:border-gray-700"
         />
       </div>
 
