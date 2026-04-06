@@ -29,6 +29,7 @@ export const MonthlyPropertyStatus = () => {
   const { invoices, isLoading: invoicesLoading } = useInvoices();
   const { properties, isLoading: propertiesLoading } = useProperties();
   const [selectedMonth, setSelectedMonth] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
 
   const isLoading = invoicesLoading || propertiesLoading;
 
@@ -135,8 +136,20 @@ export const MonthlyPropertyStatus = () => {
     monthlyData.find(m => `${m.year}-${m.month}` === selectedMonth) :
     monthlyData[0];
 
-  // Prepare table data
-  const tableData = selectedMonthData ? selectedMonthData.properties
+  // Prepare table data with filtering
+  const getFilteredProperties = (properties: PropertyStatus[], filter: string) => {
+    switch (filter) {
+      case 'approved':
+        return properties.filter(p => p.status === 'approved');
+      case 'pending':
+        return properties.filter(p => p.status === 'pending' || p.status === 'not_submitted');
+      case 'all':
+      default:
+        return properties;
+    }
+  };
+
+  const tableData = selectedMonthData ? getFilteredProperties(selectedMonthData.properties, statusFilter)
     .sort((a, b) => {
       // Sort by completion: approved first, then all pending (both pending and not_submitted)
       const aCompleted = a.status === 'approved';
@@ -308,13 +321,70 @@ export const MonthlyPropertyStatus = () => {
             </div>
           </div>
 
-          {/* Properties Table */}
-          <div className="w-full">
+          {/* Properties Table with Status Filter */}
+          <div className="w-full space-y-4">
+            {/* Status Filter Tabs */}
+            <div className="flex justify-center w-full">
+              <UI.Tabs
+                selectedKey={statusFilter}
+                onSelectionChange={(key) => setStatusFilter(key as string)}
+                aria-label="Property status filter"
+                size="md"
+                classNames={{
+                  tabList: "gap-2 border border-gray-200 dark:border-gray-700 p-1 rounded-lg w-auto",
+                  cursor: "border border-gray-200 dark:border-gray-700 shadow-sm rounded-md",
+                  tab: "px-4 py-2 text-gray-600 dark:text-gray-300 data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white text-sm",
+                  tabContent: "group-data-[selected=true]:text-gray-900 dark:group-data-[selected=true]:text-white font-medium"
+                }}
+              >
+                <UI.Tab
+                  key="all"
+                  title={
+                    <div className="flex items-center gap-2">
+                      <Icons.IoGridOutline size={16} />
+                      <span>Todas</span>
+                      <span className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-0.5 rounded-full text-xs font-semibold">
+                        {selectedMonthData?.totalProperties || 0}
+                      </span>
+                    </div>
+                  }
+                />
+                <UI.Tab
+                  key="approved"
+                  title={
+                    <div className="flex items-center gap-2">
+                      <Icons.IoCheckmarkCircleOutline size={16} />
+                      <span>Aprobadas</span>
+                      <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full text-xs font-semibold">
+                        {selectedMonthData?.approvedCount || 0}
+                      </span>
+                    </div>
+                  }
+                />
+                <UI.Tab
+                  key="pending"
+                  title={
+                    <div className="flex items-center gap-2">
+                      <Icons.IoTimeOutline size={16} />
+                      <span>Pendientes</span>
+                      <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 px-2 py-0.5 rounded-full text-xs font-semibold">
+                        {selectedMonthData ? (selectedMonthData.totalProperties - selectedMonthData.approvedCount) : 0}
+                      </span>
+                    </div>
+                  }
+                />
+              </UI.Tabs>
+            </div>
+
             <CustomTable
               data={tableData}
               columns={columns}
               initialVisibleColumns={visibleColumns}
-              title={`Estado Propiedades - ${selectedMonthData.monthName} ${selectedMonthData.year}`}
+              title={`${
+                statusFilter === 'approved' ? 'Propiedades Aprobadas' :
+                statusFilter === 'pending' ? 'Propiedades Pendientes' :
+                'Todas las Propiedades'
+              } - ${selectedMonthData.monthName} ${selectedMonthData.year}`}
               className="w-full"
             />
           </div>
