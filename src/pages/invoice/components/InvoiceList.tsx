@@ -145,7 +145,7 @@ export const InvoiceList = () => {
                 Aprobar Expensa
               </UI.Button>
             )}
-            {(user?.roles?.includes('admin') || invoice.user.id === user?.id) && (
+            {user?.roles?.includes('admin') && (
               <InvoiceForm id={invoice.id} />
             )}
           </div>
@@ -153,7 +153,7 @@ export const InvoiceList = () => {
       }));
   };
 
-  const addButtonComponent = <InvoiceForm />;
+  const addButtonComponent = user?.roles?.includes('admin') ? <InvoiceForm /> : undefined;
 
   const handleConfirm = () => {
     handleConfirmInvoice();

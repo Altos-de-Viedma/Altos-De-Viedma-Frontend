@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Icons, UI, CustomTable } from '../../../shared';
 import { useInvoices } from '../hooks';
-import { useProperties } from '../../property/hooks';
+import { useAllProperties } from '../../property/hooks';
 import { IInvoice } from '../interfaces/IInvoice';
 
 interface MonthlyData {
@@ -27,7 +27,7 @@ interface PropertyStatus {
 
 export const MonthlyPropertyStatus = () => {
   const { invoices, isLoading: invoicesLoading } = useInvoices();
-  const { properties, isLoading: propertiesLoading } = useProperties();
+  const { properties, isLoading: propertiesLoading } = useAllProperties(); // Always get ALL properties for monthly status
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
