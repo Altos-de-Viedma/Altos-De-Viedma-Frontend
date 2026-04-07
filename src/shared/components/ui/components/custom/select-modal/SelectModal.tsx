@@ -126,10 +126,10 @@ export const SelectModal = ({
               filteredOptions.map(option => (
                 <div
                   key={option.key}
-                  className={`p-3 rounded-lg border cursor-pointer transition-all hover:bg-default-50 ${
+                  className={`p-3 rounded-lg border cursor-pointer transition-all hover:bg-gray-100 dark:hover:bg-gray-700 ${
                     tempSelectedKeys.includes(option.key)
-                      ? 'border-primary-300 bg-primary-50'
-                      : 'border-default-200'
+                      ? 'border-primary-500 bg-primary-100 dark:bg-primary-900/30 dark:border-primary-400'
+                      : 'border-default-300 dark:border-default-600'
                   }`}
                   onClick={() => handleOptionToggle(option.key)}
                 >
@@ -142,19 +142,19 @@ export const SelectModal = ({
                           color="primary"
                           size="lg"
                           classNames={{
-                            wrapper: "after:bg-primary before:border-default-300",
-                            icon: "text-black"
+                            wrapper: "after:bg-primary before:border-default-400 dark:before:border-default-500",
+                            icon: "text-white dark:text-white"
                           }}
                         />
                       </div>
                     ) : (
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center mt-0.5 ${
                         tempSelectedKeys.includes(option.key)
-                          ? 'border-primary-500 bg-primary-500'
-                          : 'border-default-300'
+                          ? 'border-primary-500 bg-primary-500 dark:border-primary-400 dark:bg-primary-400'
+                          : 'border-default-400 dark:border-default-500'
                       }`}>
                         {tempSelectedKeys.includes(option.key) && (
-                          <IoCheckmarkOutline size={12} className="text-white" />
+                          <IoCheckmarkOutline size={12} className="text-white dark:text-white" />
                         )}
                       </div>
                     )}

@@ -158,7 +158,7 @@ export const InvoiceList = () => {
           : 'Sin propietarios',
         state: invoice.state === 'confirmed'
           ? <UI.Chip color="success" startContent={<Icons.IoCheckmarkOutline size={18} />} variant="flat">Aprobada</UI.Chip>
-          : <UI.Chip color="warning" startContent={<Icons.IoTimeOutline size={18} />} variant="flat">Pendiente</UI.Chip>,
+          : <UI.Chip color="warning" startContent={<Icons.IoTimeOutline size={18} />} variant="flat">Pendiente de Aprobación</UI.Chip>,
         invoiceUrl: (
           <UI.Button
             as="a"
@@ -248,8 +248,8 @@ export const InvoiceList = () => {
             <UI.Tab key="in_progress" title={
               <div className="flex items-center gap-2 sm:gap-3">
                 <Icons.IoTimeOutline size={18} className="sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline">Pendientes</span>
-                <span className="sm:hidden">Pend.</span>
+                <span className="hidden sm:inline">Pendientes de Aprobar</span>
+                <span className="sm:hidden">P. Aprobar</span>
                 <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
                   {getFilteredInvoices("in_progress").length}
                 </span>
@@ -275,7 +275,7 @@ export const InvoiceList = () => {
             statusColorMap={statusColorMap}
             initialVisibleColumns={visibleColumns}
             addButtonComponent={addButtonComponent}
-            title={selectedTab === 'in_progress' ? "expensas pendientes" : "expensas aprobadas"}
+            title={selectedTab === 'in_progress' ? "expensas pendientes de aprobar" : "expensas aprobadas"}
             className="w-full"
           />
         </div>

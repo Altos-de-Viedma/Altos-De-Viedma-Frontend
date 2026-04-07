@@ -186,7 +186,7 @@ export const MonthlyPropertyStatus = () => {
       </UI.Chip>
     ) : property.status === 'pending' ? (
       <UI.Chip color="warning" variant="flat" startContent={<Icons.IoTimeOutline size={16} />}>
-        Pendiente
+        Pago Pendiente
       </UI.Chip>
     ) : (
       <UI.Chip color="danger" variant="flat" startContent={<Icons.IoCloseOutline size={16} />}>
@@ -315,7 +315,7 @@ export const MonthlyPropertyStatus = () => {
                   <p className="text-xl font-bold text-orange-600 dark:text-orange-400">
                     {selectedMonthData.pendingCount}
                   </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">Pendientes</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Pagos Pendientes</p>
                 </div>
               </div>
             </div>
@@ -366,7 +366,7 @@ export const MonthlyPropertyStatus = () => {
                   title={
                     <div className="flex items-center gap-2">
                       <Icons.IoTimeOutline size={16} />
-                      <span>Pendientes</span>
+                      <span>Pagos Pendientes</span>
                       <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 px-2 py-0.5 rounded-full text-xs font-semibold">
                         {selectedMonthData ? (selectedMonthData.totalProperties - selectedMonthData.approvedCount) : 0}
                       </span>
@@ -382,7 +382,7 @@ export const MonthlyPropertyStatus = () => {
               initialVisibleColumns={visibleColumns}
               title={`${
                 statusFilter === 'approved' ? 'Propiedades Aprobadas' :
-                statusFilter === 'pending' ? 'Propiedades Pendientes' :
+                statusFilter === 'pending' ? 'Propiedades con Pagos Pendientes' :
                 'Todas las Propiedades'
               } - ${selectedMonthData.monthName} ${selectedMonthData.year}`}
               className="w-full"

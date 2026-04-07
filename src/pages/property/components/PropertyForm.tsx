@@ -132,13 +132,30 @@ export const PropertyForm = ( { id }: Props ) => {
                           {watch('users').slice(0, 2).map(userId => {
                             const user = users?.find(u => u.id === userId);
                             return user ? (
-                              <UI.Chip key={userId} size="sm" color="primary" variant="flat">
+                              <UI.Chip
+                                key={userId}
+                                size="sm"
+                                color="primary"
+                                variant="flat"
+                                classNames={{
+                                  base: "bg-blue-100 dark:bg-blue-900/40 border border-blue-300 dark:border-blue-600",
+                                  content: "text-blue-800 dark:text-blue-200 font-medium"
+                                }}
+                              >
                                 {`${user.lastName}, ${user.name}`}
                               </UI.Chip>
                             ) : null;
                           })}
                           {watch('users').length > 2 && (
-                            <UI.Chip size="sm" color="default" variant="flat">
+                            <UI.Chip
+                              size="sm"
+                              color="default"
+                              variant="flat"
+                              classNames={{
+                                base: "bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600",
+                                content: "text-gray-700 dark:text-gray-300 font-medium"
+                              }}
+                            >
                               +{watch('users').length - 2} más
                             </UI.Chip>
                           )}
@@ -179,9 +196,9 @@ export const PropertyForm = ( { id }: Props ) => {
                     className="text-foreground"
                     classNames={{
                       base: "inline-flex max-w-full w-full bg-content1 m-0",
-                      wrapper: "before:border-gray-300 after:bg-primary",
+                      wrapper: "before:border-default-400 dark:before:border-default-500 after:bg-primary",
                       label: "text-foreground font-medium",
-                      icon: "text-black"
+                      icon: "text-white dark:text-white"
                     }}
                   >
                     <span className="font-medium text-foreground">

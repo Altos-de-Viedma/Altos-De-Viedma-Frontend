@@ -616,4 +616,360 @@ body, #root {
   [role="checkbox"] [data-slot="wrapper"][data-selected="false"] {
     @apply !bg-white !border-gray-400 dark:!bg-gray-700 dark:!border-gray-500;
   }
+
+  /* ========================================
+     FIX UGLY INPUT FOCUS BORDERS AND PADDING
+     ======================================== */
+
+  /* Remove internal ugly borders but keep external ones */
+  input:focus,
+  input:focus-visible,
+  textarea:focus,
+  textarea:focus-visible,
+  [data-slot="input"]:focus,
+  [data-slot="input"]:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    --tw-ring-shadow: none !important;
+    --tw-ring-offset-shadow: none !important;
+  }
+
+  /* DECENT ACTIVE BORDER - around the input box, looks professional */
+  [data-slot="input-wrapper"]:focus-within,
+  .nextui-input-wrapper:focus-within,
+  .heroui-input-wrapper:focus-within,
+  [data-focus="true"] [data-slot="input-wrapper"],
+  .nextui-input[data-focus="true"],
+  .heroui-input[data-focus="true"] {
+    @apply !border-2 !border-blue-500 dark:!border-blue-400 !rounded-xl !shadow-sm;
+    transition: all 0.2s ease-in-out !important;
+    background-color: transparent !important;
+  }
+
+  /* Normal state - clean visible border */
+  [data-slot="input-wrapper"],
+  .nextui-input-wrapper,
+  .heroui-input-wrapper,
+  .nextui-input,
+  .heroui-input {
+    @apply !border !border-gray-300 dark:!border-gray-600 !rounded-xl;
+    transition: all 0.2s ease-in-out !important;
+    background-color: transparent !important;
+  }
+
+  /* Hover state - subtle improvement */
+  [data-slot="input-wrapper"]:hover,
+  .nextui-input-wrapper:hover,
+  .heroui-input-wrapper:hover,
+  .nextui-input:hover,
+  .heroui-input:hover {
+    @apply !border-gray-400 dark:!border-gray-500 !rounded-xl;
+  }
+
+  /* Ensure inputs always have visible borders */
+  input,
+  textarea,
+  [role="textbox"],
+  [role="combobox"] {
+    @apply !border !border-gray-300 dark:!border-gray-600 !rounded-xl;
+  }
+
+  input:focus,
+  textarea:focus,
+  [role="textbox"]:focus,
+  [role="combobox"]:focus {
+    @apply !border-2 !border-blue-500 dark:!border-blue-400 !rounded-xl !shadow-sm;
+  }
+
+  /* ========================================
+     GLOBAL FIX: NO MORE DARK TEXT ON DARK BACKGROUNDS
+     ======================================== */
+
+  /* Force proper text contrast in dark theme for ALL elements */
+  .dark * {
+    /* Override any dark text colors in dark theme */
+    color: inherit !important;
+  }
+
+  /* Ensure all text elements have proper contrast in dark theme */
+  .dark [data-slot="content"],
+  .dark .text-foreground,
+  .dark .text-default-foreground,
+  .dark td,
+  .dark th,
+  .dark p,
+  .dark span,
+  .dark div,
+  .dark label,
+  .dark [role="cell"],
+  .dark [role="columnheader"],
+  .dark [role="gridcell"] {
+    @apply !text-gray-100 dark:!text-gray-100;
+  }
+
+  /* Fix table text specifically */
+  .dark table,
+  .dark table *,
+  .dark [role="table"],
+  .dark [role="table"] *,
+  .dark [role="grid"],
+  .dark [role="grid"] * {
+    @apply !text-gray-100;
+  }
+
+  /* Fix chip text content */
+  .dark [data-slot="content"],
+  .dark .nextui-chip,
+  .dark .heroui-chip,
+  .dark [role="status"] {
+    @apply !text-gray-100;
+  }
+
+  /* Override any component that forces dark text */
+  .dark .text-gray-900,
+  .dark .text-gray-800,
+  .dark .text-gray-700,
+  .dark .text-black,
+  .dark .text-slate-900,
+  .dark .text-slate-800 {
+    @apply !text-gray-100 !important;
+  }
+
+  /* Fix specific UI library components */
+  .dark .nextui-table-cell,
+  .dark .heroui-table-cell,
+  .dark [data-slot="cell"],
+  .dark [data-slot="header"] {
+    @apply !text-gray-100 !important;
+  }
+
+  /* Ensure buttons have proper text contrast */
+  .dark button,
+  .dark [role="button"] {
+    color: inherit !important;
+  }
+
+  /* Fix modal and form text */
+  .dark .modal-content,
+  .dark .modal-content *,
+  .dark form,
+  .dark form * {
+    @apply !text-gray-100;
+  }
+
+  /* Nuclear option for any remaining dark text */
+  .dark * {
+    --tw-text-opacity: 1 !important;
+  }
+
+  .dark *:not([class*="bg-"]):not([class*="text-white"]):not([class*="text-blue"]):not([class*="text-green"]):not([class*="text-red"]):not([class*="text-yellow"]):not([class*="text-purple"]) {
+    @apply !text-gray-100;
+  }
+
+  /* Specific fix for table headers and cells */
+  .dark th,
+  .dark td,
+  .dark [role="columnheader"],
+  .dark [role="cell"],
+  .dark [role="gridcell"] {
+    @apply !text-gray-100 !important;
+  }
+
+  /* Fix any remaining text elements */
+  .dark .text-content,
+  .dark .content,
+  .dark [data-testid*="cell"],
+  .dark [data-testid*="header"] {
+    @apply !text-gray-100 !important;
+  }
 }
+
+  /* Fix padding - remove excessive padding but preserve internal layout */
+  [data-slot="input"],
+  [data-slot="input-wrapper"] input,
+  [data-slot="input-wrapper"] textarea,
+  .nextui-input input,
+  .nextui-textarea textarea,
+  .heroui-input input,
+  .heroui-textarea textarea {
+    margin: 0 !important;
+  }
+
+  /* Don't break internal wrapper padding - only target the outer wrapper */
+  [data-slot="input-wrapper"] {
+    /* Remove this line that was breaking layout: @apply !p-0; */
+  }
+
+  /* Preserve internal layout - don't force zero padding on internal divs */
+  /* Removed the problematic rule that was breaking alignment */
+
+  /* Fix textarea specifically */
+  [data-slot="input-wrapper"] textarea,
+  .nextui-textarea textarea,
+  .heroui-textarea textarea {
+    @apply !px-3 !py-2 !resize-none;
+    min-height: 80px !important;
+  }
+
+  /* Remove any weird internal shadows or effects */
+  [data-slot="input"],
+  [data-slot="input-wrapper"] *,
+  .nextui-input *,
+  .nextui-textarea *,
+  .heroui-input *,
+  .heroui-textarea * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Override any component-specific focus styles */
+  .nextui-input[data-focus="true"],
+  .nextui-textarea[data-focus="true"],
+  .heroui-input[data-focus="true"],
+  .heroui-textarea[data-focus="true"],
+  [data-focus="true"] [data-slot="input-wrapper"],
+  [data-focus="true"] [data-slot="input"] {
+    outline: none !important;
+    box-shadow: none !important;
+    --tw-ring-shadow: none !important;
+  }
+
+  /* Clean focus for the wrapper when input is focused */
+  [data-focus="true"] [data-slot="input-wrapper"],
+  .nextui-input[data-focus="true"],
+  .nextui-textarea[data-focus="true"],
+  .heroui-input[data-focus="true"],
+  .heroui-textarea[data-focus="true"] {
+    @apply !border-2 !border-blue-500 dark:!border-blue-400;
+  }
+
+  /* Remove any internal rings or glows */
+  * {
+    --tw-ring-inset: initial !important;
+    --tw-ring-offset-width: 0px !important;
+    --tw-ring-offset-color: transparent !important;
+    --tw-ring-color: transparent !important;
+    --tw-ring-offset-shadow: none !important;
+    --tw-ring-shadow: none !important;
+  }
+
+  /* Nuclear option - remove ALL focus rings from inputs */
+  input,
+  textarea,
+  select,
+  [role="textbox"],
+  [role="combobox"] {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* But add clean external focus for accessibility */
+  input:focus,
+  textarea:focus,
+  select:focus,
+  [role="textbox"]:focus,
+  [role="combobox"]:focus {
+    @apply !border-2 !border-blue-500 dark:!border-blue-400;
+  }
+
+  /* ========================================
+     GLOBAL FIX: NO MORE DARK TEXT ON DARK BACKGROUNDS
+     ======================================== */
+
+  /* Force proper text contrast in dark theme for ALL elements */
+  .dark * {
+    /* Override any dark text colors in dark theme */
+    color: inherit !important;
+  }
+
+  /* Ensure all text elements have proper contrast in dark theme */
+  .dark [data-slot="content"],
+  .dark .text-foreground,
+  .dark .text-default-foreground,
+  .dark td,
+  .dark th,
+  .dark p,
+  .dark span,
+  .dark div,
+  .dark label,
+  .dark [role="cell"],
+  .dark [role="columnheader"],
+  .dark [role="gridcell"] {
+    @apply !text-gray-100 dark:!text-gray-100;
+  }
+
+  /* Fix table text specifically */
+  .dark table,
+  .dark table *,
+  .dark [role="table"],
+  .dark [role="table"] *,
+  .dark [role="grid"],
+  .dark [role="grid"] * {
+    @apply !text-gray-100;
+  }
+
+  /* Fix chip text content */
+  .dark [data-slot="content"],
+  .dark .nextui-chip,
+  .dark .heroui-chip,
+  .dark [role="status"] {
+    @apply !text-gray-100;
+  }
+
+  /* Override any component that forces dark text */
+  .dark .text-gray-900,
+  .dark .text-gray-800,
+  .dark .text-gray-700,
+  .dark .text-black,
+  .dark .text-slate-900,
+  .dark .text-slate-800 {
+    @apply !text-gray-100 !important;
+  }
+
+  /* Fix specific UI library components */
+  .dark .nextui-table-cell,
+  .dark .heroui-table-cell,
+  .dark [data-slot="cell"],
+  .dark [data-slot="header"] {
+    @apply !text-gray-100 !important;
+  }
+
+  /* Ensure buttons have proper text contrast */
+  .dark button,
+  .dark [role="button"] {
+    color: inherit !important;
+  }
+
+  /* Fix modal and form text */
+  .dark .modal-content,
+  .dark .modal-content *,
+  .dark form,
+  .dark form * {
+    @apply !text-gray-100;
+  }
+
+  /* Nuclear option for any remaining dark text */
+  .dark * {
+    --tw-text-opacity: 1 !important;
+  }
+
+  .dark *:not([class*="bg-"]):not([class*="text-white"]):not([class*="text-blue"]):not([class*="text-green"]):not([class*="text-red"]):not([class*="text-yellow"]):not([class*="text-purple"]) {
+    @apply !text-gray-100;
+  }
+
+  /* Specific fix for table headers and cells */
+  .dark th,
+  .dark td,
+  .dark [role="columnheader"],
+  .dark [role="cell"],
+  .dark [role="gridcell"] {
+    @apply !text-gray-100 !important;
+  }
+
+  /* Fix any remaining text elements */
+  .dark .text-content,
+  .dark .content,
+  .dark [data-testid*="cell"],
+  .dark [data-testid*="header"] {
+    @apply !text-gray-100 !important;
+  }
