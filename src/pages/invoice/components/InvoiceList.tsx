@@ -25,14 +25,22 @@ export const InvoiceList = () => {
   const filteredInvoices = useMemo(() => {
     if (!invoices) return [];
 
-    // Si es usuario normal (no admin), solo mostrar sus propias expensas
+    // Si es usuario normal (no admin), solo mostrar expensas de SUS propiedades
     let userFilteredInvoices = invoices;
     if (!user?.roles?.includes('admin')) {
       userFilteredInvoices = invoices.filter(invoice => {
-        // Convert both IDs to strings for comparison to handle type mismatches
-        const invoiceUserId = String(invoice.user.id);
+        // Si la expensa no tiene propiedad, no la mostramos
+        if (!invoice.property || !invoice.property.users) {
+          return false;
+        }
+
+        // Verificar si el usuario actual es dueño de la propiedad
         const currentUserId = String(user?.id);
-        return invoiceUserId === currentUserId;
+        const isPropertyOwner = invoice.property.users.some(propertyUser =>
+          String(propertyUser.id) === currentUserId
+        );
+
+        return isPropertyOwner;
       });
     }
 
