@@ -8,6 +8,9 @@ import { useAuthStore } from '../../auth';
 import { IInvoice } from '../interfaces/IInvoice';
 import { formatDate } from '../helper';
 import { useSeenNotifications } from '../../../hooks/useSeenNotifications';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createCashTransaction } from '../../cash/services';
+import { TransactionType, TransactionCategory } from '../../cash/interfaces/ICashTransaction';
 
 export const InvoiceList = () => {
   const { invoices, isLoading, refetch } = useInvoices();
@@ -16,10 +19,23 @@ export const InvoiceList = () => {
   const [invoiceToConfirm, setInvoiceToConfirm] = useState<IInvoice | null>(null);
   const [selectedTab, setSelectedTab] = useState("in_progress");
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [expenseAmount, setExpenseAmount] = useState<string>('');
   const confirmInvoiceMutation = useConfirmInvoice();
   const { markAsSeen } = useSeenNotifications();
+  const queryClient = useQueryClient();
 
-  const isConfirmingInvoice = confirmInvoiceMutation.isPending;
+  const createCashTransactionMutation = useMutation({
+    mutationFn: createCashTransaction,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cash-transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['cash-daily-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['cash-current-day'] });
+      queryClient.invalidateQueries({ queryKey: ['cash-total-balance'] });
+      queryClient.invalidateQueries({ queryKey: ['cash-transactions-by-date'] });
+    }
+  });
+
+  const isConfirmingInvoice = confirmInvoiceMutation.isPending || createCashTransactionMutation.isPending;
 
   // Filtrar expensas por usuario y búsqueda
   const filteredInvoices = useMemo(() => {
@@ -56,18 +72,33 @@ export const InvoiceList = () => {
     );
   }, [invoices, searchTerm, user]);
 
-  // Handle confirming invoice - integrate with notification system
+  // Handle confirming invoice - integrate with notification system and create cash transaction
   const handleConfirmInvoice = async () => {
-    if (invoiceToConfirm) {
+    if (invoiceToConfirm && expenseAmount.trim()) {
       try {
         // Confirm invoice in the backend
         await confirmInvoiceMutation.confirmInvoiceMutation({ id: invoiceToConfirm.id, invoice: invoiceToConfirm });
+
+        // Create cash transaction for the expense
+        const propertyAddress = invoiceToConfirm.property?.address || 'Propiedad desconocida';
+        const ownerName = invoiceToConfirm.property?.users?.[0]
+          ? `${invoiceToConfirm.property.users[0].name} ${invoiceToConfirm.property.users[0].lastName}`
+          : 'Propietario desconocido';
+
+        await createCashTransactionMutation.mutateAsync({
+          amount: parseFloat(expenseAmount),
+          type: TransactionType.ENTRY,
+          category: TransactionCategory.OTHER_INCOME,
+          description: `Expensas de ${propertyAddress} ${ownerName} entrada`
+        });
+
         // Also mark as seen in the notification system
         markAsSeen('invoices', invoiceToConfirm.id);
         onClose();
         setInvoiceToConfirm(null);
+        setExpenseAmount('');
       } catch (error) {
-        console.error('Error confirming invoice:', error);
+        console.error('Error confirming invoice or creating cash transaction:', error);
       }
     }
   };
@@ -258,14 +289,48 @@ export const InvoiceList = () => {
               <h2>Aprobar expensa</h2>
             </UI.ModalHeader>
             <UI.ModalBody>
-              <p className="text-2xl text-center">¿Estás seguro de que deseas aprobar esta expensa?</p>
+              <p className="text-lg text-center mb-4">¿Estás seguro de que deseas aprobar esta expensa?</p>
               <div className="mt-4 flex flex-col justify-center">
                 <h2 className="text-xl font-bold">{invoiceToConfirm?.title}</h2>
-                <p>{invoiceToConfirm?.description}</p>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">{invoiceToConfirm?.description}</p>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Monto pagado de la expensa *
+                  </label>
+                  <UI.Input
+                    type="number"
+                    placeholder="Ingrese el monto..."
+                    value={expenseAmount}
+                    onValueChange={setExpenseAmount}
+                    startContent={
+                      <div className="pointer-events-none flex items-center">
+                        <span className="text-default-400 text-small">$</span>
+                      </div>
+                    }
+                    classNames={{
+                      input: "text-right",
+                      inputWrapper: "border border-gray-300 dark:border-gray-600"
+                    }}
+                    isRequired
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Este monto se registrará automáticamente en la caja diaria como entrada
+                  </p>
+                </div>
               </div>
             </UI.ModalBody>
             <UI.ModalFooter className="flex justify-center flex-row space-x-2 items-center">
-              <UI.Button color="danger" variant="light" onPress={onClose} isDisabled={isConfirmingInvoice} startContent={<Icons.IoArrowBackOutline size={24} />}>
+              <UI.Button
+                color="danger"
+                variant="light"
+                onPress={() => {
+                  onClose();
+                  setExpenseAmount('');
+                }}
+                isDisabled={isConfirmingInvoice}
+                startContent={<Icons.IoArrowBackOutline size={24} />}
+              >
                 Cancelar
               </UI.Button>
               <UI.Button
@@ -273,10 +338,11 @@ export const InvoiceList = () => {
                 variant="solid"
                 onPress={handleConfirm}
                 isLoading={isConfirmingInvoice}
+                isDisabled={!expenseAmount.trim() || parseFloat(expenseAmount) <= 0}
                 startContent={!isConfirmingInvoice && <Icons.IoCheckmarkOutline size={24} />}
                 className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
               >
-                Aprobar
+                Aprobar y Registrar
               </UI.Button>
             </UI.ModalFooter>
           </>
