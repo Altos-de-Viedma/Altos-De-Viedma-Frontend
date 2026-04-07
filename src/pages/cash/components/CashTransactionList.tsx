@@ -163,6 +163,21 @@ export const CashTransactionList = () => {
     });
   }, [allTransactions, selectedDate]);
 
+  // Calculate totals
+  const totals = useMemo(() => {
+    const entries = filteredTransactions
+      .filter(t => t.type === TransactionType.ENTRY)
+      .reduce((sum, t) => sum + Number(t.amount), 0);
+
+    const exits = filteredTransactions
+      .filter(t => t.type === TransactionType.EXIT)
+      .reduce((sum, t) => sum + Number(t.amount), 0);
+
+    const netTotal = entries - exits;
+
+    return { entries, exits, netTotal };
+  }, [filteredTransactions]);
+
 
   if (isLoading) {
     return (
@@ -329,6 +344,85 @@ export const CashTransactionList = () => {
           className="w-full shadow-lg border border-gray-200 dark:border-gray-700"
         />
       </div>
+
+      {/* Totals Summary */}
+      {filteredTransactions.length > 0 && (
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+            <Icons.IoCalculatorOutline size={20} />
+            Resumen de Montos
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Total Entradas */}
+            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded-lg">
+                  <Icons.IoArrowUpOutline size={20} className="text-green-600 dark:text-green-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-green-700 dark:text-green-300 font-medium">Total Entradas</p>
+                  <p className="text-xl font-bold text-green-800 dark:text-green-200 font-mono">
+                    +{formatCurrency(totals.entries)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Total Salidas */}
+            <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 border border-red-200 dark:border-red-800">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-red-100 dark:bg-red-900/40 rounded-lg">
+                  <Icons.IoArrowDownOutline size={20} className="text-red-600 dark:text-red-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-red-700 dark:text-red-300 font-medium">Total Salidas</p>
+                  <p className="text-xl font-bold text-red-800 dark:text-red-200 font-mono">
+                    -{formatCurrency(totals.exits)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Balance Neto */}
+            <div className={`rounded-lg p-4 border ${
+              totals.netTotal >= 0
+                ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+                : 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800'
+            }`}>
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${
+                  totals.netTotal >= 0
+                    ? 'bg-blue-100 dark:bg-blue-900/40'
+                    : 'bg-orange-100 dark:bg-orange-900/40'
+                }`}>
+                  <Icons.IoWalletOutline size={20} className={
+                    totals.netTotal >= 0
+                      ? 'text-blue-600 dark:text-blue-400'
+                      : 'text-orange-600 dark:text-orange-400'
+                  } />
+                </div>
+                <div>
+                  <p className={`text-sm font-medium ${
+                    totals.netTotal >= 0
+                      ? 'text-blue-700 dark:text-blue-300'
+                      : 'text-orange-700 dark:text-orange-300'
+                  }`}>
+                    Balance Neto
+                  </p>
+                  <p className={`text-xl font-bold font-mono ${
+                    totals.netTotal >= 0
+                      ? 'text-blue-800 dark:text-blue-200'
+                      : 'text-orange-800 dark:text-orange-200'
+                  }`}>
+                    {totals.netTotal >= 0 ? '+' : ''}{formatCurrency(totals.netTotal)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
