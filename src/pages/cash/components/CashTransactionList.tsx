@@ -440,7 +440,7 @@ export const CashTransactionList = () => {
                       ? 'text-blue-700 dark:text-blue-300'
                       : 'text-orange-700 dark:text-orange-300'
                   }`}>
-                    Saldo Neto
+                    Total del día
                   </p>
                   <p className={`text-xl font-bold font-mono ${
                     totals.netTotal >= 0
