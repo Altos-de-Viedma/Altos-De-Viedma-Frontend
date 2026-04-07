@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Icons, UI, CustomTable } from '../../../shared';
-import { useInvoices } from '../hooks';
+import { useAllInvoices } from '../hooks';
 import { useAllProperties } from '../../property/hooks';
 import { IInvoice } from '../interfaces/IInvoice';
 
@@ -26,7 +26,7 @@ interface PropertyStatus {
 }
 
 export const MonthlyPropertyStatus = () => {
-  const { invoices, isLoading: invoicesLoading } = useInvoices();
+  const { invoices, isLoading: invoicesLoading } = useAllInvoices(); // Always get ALL invoices for monthly status
   const { properties, isLoading: propertiesLoading } = useAllProperties(); // Always get ALL properties for monthly status
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -73,7 +73,7 @@ export const MonthlyPropertyStatus = () => {
       });
 
       // Update properties that submitted invoices this month
-      monthInvoices.forEach(invoice => {
+      monthInvoices.forEach((invoice: IInvoice) => {
         if (invoice.property && propertyStatusMap.has(invoice.property.id)) {
           const existingProperty = propertyStatusMap.get(invoice.property.id)!;
           propertyStatusMap.set(invoice.property.id, {

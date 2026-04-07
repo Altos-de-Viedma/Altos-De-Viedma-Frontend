@@ -28,7 +28,12 @@ export const InvoiceList = () => {
     // Si es usuario normal (no admin), solo mostrar sus propias expensas
     let userFilteredInvoices = invoices;
     if (!user?.roles?.includes('admin')) {
-      userFilteredInvoices = invoices.filter(invoice => invoice.user.id === user?.id);
+      userFilteredInvoices = invoices.filter(invoice => {
+        // Convert both IDs to strings for comparison to handle type mismatches
+        const invoiceUserId = String(invoice.user.id);
+        const currentUserId = String(user?.id);
+        return invoiceUserId === currentUserId;
+      });
     }
 
     // Aplicar filtro de búsqueda
