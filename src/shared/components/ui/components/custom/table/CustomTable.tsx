@@ -45,6 +45,7 @@ export interface CustomTableProps {
   onRefresh?: () => void;
   emptyContent?: ReactNode;
   className?: string;
+  showAllRows?: boolean; // New prop to show all rows without pagination
 }
 
 interface Column {
@@ -66,7 +67,8 @@ export const CustomTable = ({
   isLoading = false,
   onRefresh,
   emptyContent,
-  className = ""
+  className = "",
+  showAllRows = false
 }: CustomTableProps) => {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
@@ -112,11 +114,15 @@ export const CustomTable = ({
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
   const items = useMemo(() => {
+    if (showAllRows) {
+      return filteredItems; // Show all items without pagination
+    }
+
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
     return filteredItems.slice(start, end);
-  }, [page, filteredItems, rowsPerPage]);
+  }, [page, filteredItems, rowsPerPage, showAllRows]);
 
   const defaultRenderCell = useCallback((item: any, columnKey: string) => {
     const cellValue = item[columnKey];
@@ -216,7 +222,7 @@ export const CustomTable = ({
         </div>
 
         {/* Action buttons - responsive layout */}
-        <div className="flex flex-wrap gap-2 sm:gap-2 justify-center sm:justify-end">
+        <div className="flex flex-wrap gap-2 sm:gap-2 justify-center sm:justify-end items-center">
           {onRefresh && (
             <Button
               isIconOnly
@@ -225,7 +231,7 @@ export const CustomTable = ({
               isLoading={isLoading}
               aria-label="Actualizar datos"
               size="lg"
-              className="min-w-[3rem] h-[3rem] sm:min-w-[3.5rem] sm:h-[3.5rem] border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+              className="min-w-[3rem] h-[3rem] sm:min-w-[3.5rem] sm:h-[3.5rem] border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 flex items-center justify-center"
             >
               <IoRefreshOutline size={20} />
             </Button>
@@ -239,7 +245,7 @@ export const CustomTable = ({
                   startContent={<IoFunnelOutline size={18} />}
                   endContent={<IoChevronDownOutline size={16} className="hidden sm:block" />}
                   size="lg"
-                  className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4"
+                  className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4 flex items-center justify-center"
                 >
                   <span className="hidden sm:inline">Estado</span>
                 </Button>
@@ -272,7 +278,7 @@ export const CustomTable = ({
                 startContent={<IoGridOutline size={18} />}
                 endContent={<IoChevronDownOutline size={16} className="hidden sm:block" />}
                 size="lg"
-                className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4"
+                className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 min-h-[3rem] sm:min-h-[3.5rem] px-3 sm:px-4 flex items-center justify-center"
               >
                 <span className="hidden sm:inline">Columnas</span>
               </Button>
@@ -297,7 +303,7 @@ export const CustomTable = ({
           </Dropdown>
 
           {addButtonComponent && (
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 flex items-center">
               {addButtonComponent}
             </div>
           )}
@@ -317,20 +323,22 @@ export const CustomTable = ({
           </span>
         </div>
 
-        <label className="flex items-center text-foreground/70 responsive-text-sm font-medium whitespace-nowrap">
-          Filas por página:
-          <select
-            className="border border-gray-200 dark:border-gray-700 rounded-md outline-none text-foreground responsive-text-sm ml-2 px-2 py-1 font-medium cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
-            value={rowsPerPage}
-            onChange={onRowsPerPageChange}
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
-        </label>
+        {!showAllRows && (
+          <label className="flex items-center text-foreground/70 responsive-text-sm font-medium whitespace-nowrap">
+            Filas por página:
+            <select
+              className="border border-gray-200 dark:border-gray-700 rounded-md outline-none text-foreground responsive-text-sm ml-2 px-2 py-1 font-medium cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
+              value={rowsPerPage}
+              onChange={onRowsPerPageChange}
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+          </label>
+        )}
       </div>
     </div>
   ), [
@@ -350,64 +358,71 @@ export const CustomTable = ({
     onRowsPerPageChange,
   ]);
 
-  const bottomContent = useMemo(() => (
-    <div className="py-1 sm:py-2 px-2 sm:px-3 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-between items-center border-t border-gray-200 dark:border-gray-700">
-      {/* Selection info - full width on mobile */}
-      {selectionMode !== "none" && (
-        <div className="w-full sm:w-auto text-center sm:text-left">
-          <span className="responsive-text-sm text-foreground/70 font-medium">
-            {selectedKeys === "all"
-              ? "Todos los elementos seleccionados"
-              : `${selectedKeys.size} de ${filteredItems.length} seleccionados`}
-          </span>
+  const bottomContent = useMemo(() => {
+    if (showAllRows) {
+      // Don't show pagination when showing all rows
+      return null;
+    }
+
+    return (
+      <div className="py-1 sm:py-2 px-2 sm:px-3 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-between items-center border-t border-gray-200 dark:border-gray-700">
+        {/* Selection info - full width on mobile */}
+        {selectionMode !== "none" && (
+          <div className="w-full sm:w-auto text-center sm:text-left">
+            <span className="responsive-text-sm text-foreground/70 font-medium">
+              {selectedKeys === "all"
+                ? "Todos los elementos seleccionados"
+                : `${selectedKeys.size} de ${filteredItems.length} seleccionados`}
+            </span>
+          </div>
+        )}
+
+        {/* Pagination - centered */}
+        <div className="flex-1 flex justify-center">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            color="primary"
+            page={page}
+            total={pages}
+            onChange={setPage}
+            size="sm"
+            classNames={{
+              wrapper: "gap-0 overflow-visible h-7 sm:h-8 rounded border border-gray-300 dark:border-gray-600",
+              item: "w-7 h-7 sm:w-8 sm:h-8 responsive-text-xs rounded-none border-transparent hover:border-gray-300 dark:hover:border-gray-600 transition-colors",
+              cursor: "bg-primary-500 shadow-md text-white font-semibold",
+              prev: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
+              next: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
+            }}
+          />
         </div>
-      )}
 
-      {/* Pagination - centered */}
-      <div className="flex-1 flex justify-center">
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-          size="sm"
-          classNames={{
-            wrapper: "gap-0 overflow-visible h-7 sm:h-8 rounded border border-gray-300 dark:border-gray-600",
-            item: "w-7 h-7 sm:w-8 sm:h-8 responsive-text-xs rounded-none border-transparent hover:border-gray-300 dark:hover:border-gray-600 transition-colors",
-            cursor: "bg-primary-500 shadow-md text-white font-semibold",
-            prev: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
-            next: "hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600",
-          }}
-        />
+        {/* Navigation buttons - hidden on mobile, shown on larger screens */}
+        <div className="hidden md:flex gap-2 flex-shrink-0">
+          <Button
+            size="sm"
+            variant="flat"
+            isDisabled={page === 1}
+            onPress={onPreviousPage}
+            className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors font-medium responsive-text-xs px-3"
+          >
+            Anterior
+          </Button>
+
+          <Button
+            size="sm"
+            variant="flat"
+            isDisabled={page === pages}
+            onPress={onNextPage}
+            className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors font-medium responsive-text-xs px-3"
+          >
+            Siguiente
+          </Button>
+        </div>
       </div>
-
-      {/* Navigation buttons - hidden on mobile, shown on larger screens */}
-      <div className="hidden md:flex gap-2 flex-shrink-0">
-        <Button
-          size="sm"
-          variant="flat"
-          isDisabled={page === 1}
-          onPress={onPreviousPage}
-          className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors font-medium responsive-text-xs px-3"
-        >
-          Anterior
-        </Button>
-
-        <Button
-          size="sm"
-          variant="flat"
-          isDisabled={page === pages}
-          onPress={onNextPage}
-          className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors font-medium responsive-text-xs px-3"
-        >
-          Siguiente
-        </Button>
-      </div>
-    </div>
-  ), [selectedKeys, filteredItems.length, page, pages, selectionMode, onPreviousPage, onNextPage]);
+    );
+  }, [selectedKeys, filteredItems.length, page, pages, selectionMode, onPreviousPage, onNextPage, showAllRows]);
 
   return (
     <div className={`w-full ${className}`}>

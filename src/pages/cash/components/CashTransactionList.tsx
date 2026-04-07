@@ -297,7 +297,7 @@ export const CashTransactionList = () => {
                 <button
                   type="button"
                   onClick={() => setIsCalendarOpen(!isCalendarOpen)}
-                  className="h-10 px-3 border border-l-0 border-gray-300 dark:border-gray-600 rounded-r-lg bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600"
+                  className="h-10 px-3 border border-l-0 border-gray-300 dark:border-gray-600 rounded-r-lg bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 flex items-center justify-center"
                 >
                   <Icons.IoCalendarOutline size={18} />
                 </button>
@@ -321,25 +321,27 @@ export const CashTransactionList = () => {
             </div>
           </div>
 
-          <UI.Button
-            variant="flat"
-            size="sm"
-            onPress={() => setSelectedDate(getArgentinaToday())}
-            startContent={<Icons.IoTimeOutline size={16} />}
-            className="bg-primary-50 hover:bg-primary-100 text-primary-700 border border-primary-200"
-          >
-            Hoy
-          </UI.Button>
+          <div className="flex gap-2 items-center">
+            <UI.Button
+              variant="flat"
+              size="sm"
+              onPress={() => setSelectedDate(getArgentinaToday())}
+              startContent={<Icons.IoTimeOutline size={16} />}
+              className="bg-primary-50 hover:bg-primary-100 text-primary-700 border border-primary-200 h-10 flex items-center justify-center"
+            >
+              Hoy
+            </UI.Button>
 
-          <UI.Button
-            variant="flat"
-            size="sm"
-            onPress={() => setSelectedDate('all')}
-            startContent={<Icons.IoGridOutline size={16} />}
-            className="bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200"
-          >
-            Todas
-          </UI.Button>
+            <UI.Button
+              variant="flat"
+              size="sm"
+              onPress={() => setSelectedDate('all')}
+              startContent={<Icons.IoGridOutline size={16} />}
+              className="bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 h-10 flex items-center justify-center"
+            >
+              Todas
+            </UI.Button>
+          </div>
         </div>
 
         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
@@ -371,6 +373,7 @@ export const CashTransactionList = () => {
           addButtonComponent={isAdmin ? <CashTransactionForm onSuccess={() => refetch()} /> : undefined}
           title="Transacciones de Caja"
           className="w-full shadow-lg border border-gray-200 dark:border-gray-700"
+          showAllRows={true}
         />
       </div>
 
