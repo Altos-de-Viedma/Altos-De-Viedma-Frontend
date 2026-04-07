@@ -229,6 +229,35 @@ export const CashTransactionList = () => {
 
   return (
     <div className="flex w-full flex-col space-y-6">
+      {/* Date Header - Prominent display of current viewing date */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-700">
+        <div className="flex items-center justify-center">
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <Icons.IoCalendarOutline size={32} className="text-blue-600 dark:text-blue-400" />
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                {selectedDate === 'all' ? 'Todas las Transacciones' : (() => {
+                  const [year, month, day] = selectedDate.split('-').map(Number);
+                  const displayDate = new Date(year, month - 1, day);
+                  return displayDate.toLocaleDateString('es-AR', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  });
+                })()}
+              </h2>
+            </div>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              {selectedDate === 'all'
+                ? `${filteredTransactions.length} transacciones en total`
+                : `${filteredTransactions.length} transacciones en este día`
+              }
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
