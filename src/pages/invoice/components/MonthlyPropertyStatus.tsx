@@ -94,7 +94,7 @@ export const MonthlyPropertyStatus = () => {
 
       const submittedCount = propertiesArray.filter(p => p.hasSubmitted).length;
       const approvedCount = propertiesArray.filter(p => p.status === 'approved').length;
-      const pendingCount = propertiesArray.filter(p => p.status === 'pending').length;
+      const pendingCount = propertiesArray.filter(p => p.status === 'pending' || p.status === 'not_submitted').length;
 
       monthlyDataArray.push({
         year,
