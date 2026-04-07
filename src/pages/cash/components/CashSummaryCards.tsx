@@ -34,7 +34,7 @@ export const CashSummaryCards = () => {
 
   const cards = [
     {
-      title: 'Balance Total',
+      title: 'Saldo Total',
       value: totalBalance || 0,
       loading: loadingBalance,
       icon: <Icons.IoCashOutline size={24} />,
@@ -44,7 +44,7 @@ export const CashSummaryCards = () => {
       formatter: formatCurrency
     },
     {
-      title: `Balance del Mes ${monthlyBalance ? `(${monthlyBalance.month}/${monthlyBalance.year})` : ''}`,
+      title: `Saldo de este mes ${monthlyBalance ? `(${monthlyBalance.month}/${monthlyBalance.year})` : ''}`,
       value: monthlyBalance?.balance || 0,
       loading: loadingMonthlyBalance,
       icon: <Icons.IoCalendarOutline size={24} />,
@@ -56,7 +56,7 @@ export const CashSummaryCards = () => {
       formatter: formatCurrency
     },
     {
-      title: 'Día Actual - Entradas',
+      title: `Entradas ${currentDay ? formatDate(currentDay.date) : 'Hoy'}`,
       value: currentDay?.entries || 0,
       loading: loadingCurrentDay,
       icon: <Icons.IoArrowBackOutline size={24} className="rotate-90" />,
@@ -66,7 +66,7 @@ export const CashSummaryCards = () => {
       formatter: formatCurrency
     },
     {
-      title: 'Día Actual - Salidas',
+      title: `Salidas ${currentDay ? formatDate(currentDay.date) : 'Hoy'}`,
       value: currentDay?.exits || 0,
       loading: loadingCurrentDay,
       icon: <Icons.IoArrowForwardOutline size={24} className="rotate-90" />,
@@ -76,7 +76,7 @@ export const CashSummaryCards = () => {
       formatter: formatCurrency
     },
     {
-      title: 'Balance del Día',
+      title: `Saldo del día ${currentDay ? formatDate(currentDay.date) : 'Hoy'}`,
       value: (currentDay?.entries || 0) - (currentDay?.exits || 0),
       loading: loadingCurrentDay,
       icon: <Icons.IoTimeOutline size={24} />,
