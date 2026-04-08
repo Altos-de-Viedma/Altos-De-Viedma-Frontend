@@ -618,71 +618,95 @@ body, #root {
   }
 
   /* ========================================
-     CLEAN INPUT STYLING - NO UGLY BORDERS
+     CLEAN INPUT STYLING - SHADCN STYLE
      ======================================== */
 
-  /* Remove ALL borders and focus effects from inputs */
-  input:focus,
-  input:focus-visible,
-  textarea:focus,
-  textarea:focus-visible,
-  [data-slot="input"]:focus,
-  [data-slot="input"]:focus-visible {
+  /* Clean, visible input styling similar to shadcn/ui */
+  input,
+  textarea,
+  [role="textbox"],
+  [role="combobox"],
+  [data-slot="input"],
+  [data-slot="input-wrapper"] input,
+  [data-slot="input-wrapper"] textarea {
+    @apply border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950;
+    @apply rounded-md px-3 py-2 text-sm;
+    @apply transition-colors duration-200;
     outline: none !important;
     box-shadow: none !important;
-    border: none !important;
-    --tw-ring-shadow: none !important;
-    --tw-ring-offset-shadow: none !important;
   }
 
-  /* Remove borders from input wrappers */
+  /* Focus state - clean blue accent */
+  input:focus,
+  textarea:focus,
+  [role="textbox"]:focus,
+  [role="combobox"]:focus,
+  [data-slot="input"]:focus,
+  [data-focus="true"] [data-slot="input-wrapper"],
+  [data-slot="input-wrapper"]:focus-within {
+    @apply border-blue-500 dark:border-blue-400 ring-1 ring-blue-500 dark:ring-blue-400;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  /* Hover state - subtle */
+  input:hover,
+  textarea:hover,
+  [role="textbox"]:hover,
+  [role="combobox"]:hover,
+  [data-slot="input-wrapper"]:hover {
+    @apply border-gray-300 dark:border-gray-700;
+  }
+
+  /* Input wrapper styling for NextUI/HeroUI */
+  [data-slot="input-wrapper"],
+  .nextui-input-wrapper,
+  .heroui-input-wrapper,
+  .nextui-input,
+  .heroui-input {
+    @apply border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950;
+    @apply rounded-md transition-colors duration-200;
+    box-shadow: none !important;
+  }
+
+  /* Focus state for wrappers */
   [data-slot="input-wrapper"]:focus-within,
   .nextui-input-wrapper:focus-within,
   .heroui-input-wrapper:focus-within,
   [data-focus="true"] [data-slot="input-wrapper"],
   .nextui-input[data-focus="true"],
   .heroui-input[data-focus="true"] {
-    border: none !important;
+    @apply border-blue-500 dark:border-blue-400 ring-1 ring-blue-500 dark:ring-blue-400;
     box-shadow: none !important;
-    background-color: transparent !important;
   }
 
-  /* Remove borders from normal state */
-  [data-slot="input-wrapper"],
-  .nextui-input-wrapper,
-  .heroui-input-wrapper,
-  .nextui-input,
-  .heroui-input {
-    border: none !important;
-    background-color: transparent !important;
-  }
-
-  /* Remove borders from hover state */
+  /* Hover state for wrappers */
   [data-slot="input-wrapper"]:hover,
   .nextui-input-wrapper:hover,
   .heroui-input-wrapper:hover,
   .nextui-input:hover,
   .heroui-input:hover {
-    border: none !important;
+    @apply border-gray-300 dark:border-gray-700;
   }
 
-  /* Remove ALL borders from inputs */
-  input,
-  textarea,
-  [role="textbox"],
-  [role="combobox"] {
-    border: none !important;
-    outline: none !important;
+  /* Remove any internal ugly shadows or effects */
+  [data-slot="input"],
+  [data-slot="input-wrapper"] *,
+  .nextui-input *,
+  .nextui-textarea *,
+  .heroui-input *,
+  .heroui-textarea * {
     box-shadow: none !important;
+    text-shadow: none !important;
   }
 
-  input:focus,
-  textarea:focus,
-  [role="textbox"]:focus,
-  [role="combobox"]:focus {
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
+  /* Disabled state */
+  input:disabled,
+  textarea:disabled,
+  [data-slot="input-wrapper"][data-disabled="true"],
+  .nextui-input[data-disabled="true"],
+  .heroui-input[data-disabled="true"] {
+    @apply opacity-50 cursor-not-allowed bg-gray-50 dark:bg-gray-900;
   }
 
   /* ========================================

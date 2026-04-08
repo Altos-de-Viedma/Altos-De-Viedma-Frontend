@@ -18,10 +18,6 @@ README.md
 .eslintrc.*
 .prettierrc
 .prettierignore
-tsconfig.json
-vite.config.ts
-postcss.config.js
-tailwind.config.js
 backup
 *.rar
 *.zip
