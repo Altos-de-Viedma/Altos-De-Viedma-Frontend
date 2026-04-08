@@ -455,167 +455,68 @@ body, #root {
   animation-play-state: paused;
 }
 
-/* Fix checkbox visibility - make them darker and more visible */
+/* Fix checkbox visibility - clean and simple approach */
 @layer components {
-  /* HeroUI/NextUI Checkbox overrides for better visibility */
+  /* Checkbox wrapper styling */
   [data-slot="wrapper"][data-selected="true"] {
-    @apply !bg-blue-600 !border-blue-600;
+    @apply !bg-white !border-gray-900;
+  }
+
+  .dark [data-slot="wrapper"][data-selected="true"] {
+    @apply !bg-gray-900 !border-gray-100;
   }
 
   [data-slot="wrapper"][data-selected="false"] {
-    @apply !bg-white !border-gray-400 dark:!bg-gray-700 dark:!border-gray-500;
+    @apply !bg-white !border-gray-400;
     border-width: 2px !important;
   }
 
-  [data-slot="wrapper"]:hover[data-selected="false"] {
-    @apply !border-gray-600 dark:!border-gray-400;
+  .dark [data-slot="wrapper"][data-selected="false"] {
+    @apply !bg-gray-800 !border-gray-500;
+    border-width: 2px !important;
   }
 
-  [data-slot="wrapper"]:hover[data-selected="true"] {
-    @apply !bg-blue-700 !border-blue-700;
-  }
-
-  /* ONLY TARGET CHECKBOX CHECKMARKS - VERY SPECIFIC SELECTORS */
-  [data-slot="wrapper"][data-selected="true"] [data-slot="icon"] svg,
-  [data-slot="wrapper"][data-selected="true"] [data-slot="icon"] svg path,
-  .nextui-checkbox[data-selected="true"] [data-slot="icon"] svg,
-  .nextui-checkbox[data-selected="true"] [data-slot="icon"] svg path,
-  .heroui-checkbox[data-selected="true"] [data-slot="icon"] svg,
-  .heroui-checkbox[data-selected="true"] [data-slot="icon"] svg path {
-    color: #000000 !important;
-    fill: #000000 !important;
-    stroke: #000000 !important;
-  }
-
-  /* FORCE BLACK CHECKMARK FOR PRIMARY COLOR CHECKBOXES */
-  [data-slot="wrapper"][data-selected="true"]:after,
+  /* Checkmark pseudo-elements */
   [data-slot="wrapper"][data-selected="true"]::after,
-  .after\\:text-primary-foreground [data-slot="wrapper"][data-selected="true"]:after,
-  .after\\:text-primary-foreground [data-slot="wrapper"][data-selected="true"]::after {
+  [data-slot="wrapper"][data-selected="true"]:after {
     color: #000000 !important;
   }
 
-  /* TARGET CHECKBOXES WITH PRIMARY COLOR SPECIFICALLY */
-  [data-color="primary"][data-selected="true"] [data-slot="icon"],
-  [data-color="primary"][data-selected="true"] [data-slot="icon"] svg,
-  [data-color="primary"][data-selected="true"] [data-slot="icon"] svg path,
-  [data-color="primary"][data-selected="true"] [data-slot="icon"]:after,
-  [data-color="primary"][data-selected="true"] [data-slot="icon"]::after {
-    color: #000000 !important;
-    fill: #000000 !important;
-    stroke: #000000 !important;
+  .dark [data-slot="wrapper"][data-selected="true"]::after,
+  .dark [data-slot="wrapper"][data-selected="true"]:after {
+    color: #ffffff !important;
   }
 
-  /* OVERRIDE PRIMARY FOREGROUND COLOR FOR CHECKBOXES */
-  .after\\:text-primary-foreground[data-selected="true"] [data-slot="wrapper"]:after,
-  .after\\:text-primary-foreground[data-selected="true"] [data-slot="wrapper"]::after,
-  [class*="after:text-primary-foreground"][data-selected="true"] [data-slot="wrapper"]:after,
-  [class*="after:text-primary-foreground"][data-selected="true"] [data-slot="wrapper"]::after,
-  [class*="after:text-primary-foreground"] [data-slot="wrapper"][data-selected="true"]:after,
-  [class*="after:text-primary-foreground"] [data-slot="wrapper"][data-selected="true"]::after {
-    color: #000000 !important;
-  }
-
-  /* NUCLEAR OPTION FOR PRIMARY FOREGROUND */
-  * [data-slot="wrapper"][data-selected="true"]:after,
-  * [data-slot="wrapper"][data-selected="true"]::after {
-    color: #000000 !important;
-  }
-
-  /* OVERRIDE TAILWIND CLASSES DIRECTLY */
-  .after\\:text-primary-foreground [data-slot="wrapper"]:after,
-  .after\\:text-primary-foreground [data-slot="wrapper"]::after {
-    color: #000000 !important;
-  }
-
-  /* TARGET THE EXACT CHECKBOX FROM PROPERTY FORM */
-  [data-color="primary"][data-size="lg"] [data-slot="wrapper"][data-selected="true"]:after,
-  [data-color="primary"][data-size="lg"] [data-slot="wrapper"][data-selected="true"]::after {
-    color: #000000 !important;
-  }
-
-  /* BRUTE FORCE ALL POSSIBLE AFTER PSEUDO ELEMENTS */
-  [data-slot="wrapper"]:after,
-  [data-slot="wrapper"]::after {
-    color: #000000 !important;
-  }
-
-  /* OVERRIDE CSS VARIABLES FOR PRIMARY FOREGROUND */
-  :root {
-    --nextui-primary-foreground: #000000 !important;
-  }
-
-  /* FORCE BLACK ON ALL CHECKBOX AFTER ELEMENTS */
-  [role="checkbox"] [data-slot="wrapper"]:after,
-  [role="checkbox"] [data-slot="wrapper"]::after,
-  .nextui-checkbox [data-slot="wrapper"]:after,
-  .nextui-checkbox [data-slot="wrapper"]::after {
-    color: #000000 !important;
-  }
-
-  /* OVERRIDE ALL POSSIBLE CSS VARIABLES */
-  * {
-    --nextui-primary-foreground: #000000 !important;
-    --heroui-primary-foreground: #000000 !important;
-    --primary-foreground: #000000 !important;
-  }
-
-  /* TAILWIND UTILITY CLASS OVERRIDE */
-  .after\\:text-primary-foreground::after {
-    color: #000000 !important;
-  }
-
-  /* FORCE ALL AFTER PSEUDO ELEMENTS IN CHECKBOXES TO BE BLACK */
-  [data-slot="wrapper"]::after,
-  [data-slot="wrapper"]:after {
-    color: #000000 !important;
-    --tw-text-opacity: 1 !important;
-  }
-
-  /* ULTIMATE OVERRIDE - TARGET EVERYTHING */
-  *::after,
-  *:after {
-    --nextui-primary-foreground: #000000 !important;
-  }
-
-  /* SPECIFIC OVERRIDE FOR NEXTUI CHECKBOX CHECKMARK */
-  .nextui-checkbox[data-selected="true"] [data-slot="wrapper"]::after {
-    content: "✓" !important;
+  /* Force checkmark visibility for all checkbox types including SVG icons */
+  [role="checkbox"][data-selected="true"] [data-slot="wrapper"]::after,
+  [role="checkbox"][data-selected="true"] [data-slot="wrapper"]:after,
+  .nextui-checkbox[data-selected="true"] [data-slot="wrapper"]::after,
+  .heroui-checkbox[data-selected="true"] [data-slot="wrapper"]::after {
     color: #000000 !important;
     font-weight: bold !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
   }
 
-  /* Alternative approach - target by component class if the above doesn't work */
-  .heroui-checkbox [data-slot="wrapper"] {
-    @apply !border-2;
+  .dark [role="checkbox"][data-selected="true"] [data-slot="wrapper"]::after,
+  .dark [role="checkbox"][data-selected="true"] [data-slot="wrapper"]:after,
+  .dark .nextui-checkbox[data-selected="true"] [data-slot="wrapper"]::after,
+  .dark .heroui-checkbox[data-selected="true"] [data-slot="wrapper"]::after {
+    color: #ffffff !important;
+    font-weight: bold !important;
   }
 
-  .heroui-checkbox [data-slot="wrapper"][data-selected="true"] {
-    @apply !bg-blue-600 !border-blue-600;
+  /* SVG checkmarks explicitly */
+  [data-selected="true"] svg,
+  [role="checkbox"][data-selected="true"] svg {
+    color: #000000 !important;
+    stroke: #000000 !important;
   }
 
-  .heroui-checkbox [data-slot="wrapper"][data-selected="false"] {
-    @apply !bg-white !border-gray-400 dark:!bg-gray-700 dark:!border-gray-500;
+  .dark [data-selected="true"] svg,
+  .dark [role="checkbox"][data-selected="true"] svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
   }
-
-  /* Force checkbox visibility with higher specificity */
-  .heroui-checkbox-group [data-slot="wrapper"],
-  [role="checkbox"] [data-slot="wrapper"] {
-    @apply !border-2 !border-solid;
-  }
-
-  .heroui-checkbox-group [data-slot="wrapper"][data-selected="true"],
-  [role="checkbox"] [data-slot="wrapper"][data-selected="true"] {
-    @apply !bg-blue-600 !border-blue-600;
-  }
-
-  .heroui-checkbox-group [data-slot="wrapper"][data-selected="false"],
-  [role="checkbox"] [data-slot="wrapper"][data-selected="false"] {
-    @apply !bg-white !border-gray-400 dark:!bg-gray-700 dark:!border-gray-500;
-  }
+}
 
   /* ========================================
      SUPER CLEAN INPUTS - NO BORDERS AT ALL
@@ -811,7 +712,6 @@ body, #root {
   .dark [data-testid*="header"] {
     @apply !text-gray-100 !important;
   }
-}
 
   /* Fix padding - remove excessive padding but preserve internal layout */
   [data-slot="input"],

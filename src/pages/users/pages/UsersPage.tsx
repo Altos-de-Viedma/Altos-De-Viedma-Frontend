@@ -39,8 +39,8 @@ export const UsersPage = () => {
   const getDisplayUsers = () => {
     switch (selectedTab) {
       case 'active':
-        // Active users with properties
-        return users?.filter(user => getUserProperties(user.id).length > 0) || [];
+        // All active users (with and without properties)
+        return users || [];
       case 'no_properties':
         // Active users without properties
         return users?.filter(user => getUserProperties(user.id).length === 0) || [];
@@ -112,7 +112,7 @@ export const UsersPage = () => {
             <span className="hidden sm:inline">Activos</span>
             <span className="sm:hidden">Act.</span>
             <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
-              { users?.filter(user => getUserProperties(user.id).length > 0).length || 0 }
+              { users?.length || 0 }
             </span>
           </div>
         } />
