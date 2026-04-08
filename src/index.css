@@ -618,10 +618,10 @@ body, #root {
   }
 
   /* ========================================
-     FIX UGLY INPUT FOCUS BORDERS AND PADDING
+     CLEAN INPUT STYLING - NO UGLY BORDERS
      ======================================== */
 
-  /* Remove internal ugly borders but keep external ones */
+  /* Remove ALL borders and focus effects from inputs */
   input:focus,
   input:focus-visible,
   textarea:focus,
@@ -630,55 +630,59 @@ body, #root {
   [data-slot="input"]:focus-visible {
     outline: none !important;
     box-shadow: none !important;
+    border: none !important;
     --tw-ring-shadow: none !important;
     --tw-ring-offset-shadow: none !important;
   }
 
-  /* DECENT ACTIVE BORDER - around the input box, looks professional */
+  /* Remove borders from input wrappers */
   [data-slot="input-wrapper"]:focus-within,
   .nextui-input-wrapper:focus-within,
   .heroui-input-wrapper:focus-within,
   [data-focus="true"] [data-slot="input-wrapper"],
   .nextui-input[data-focus="true"],
   .heroui-input[data-focus="true"] {
-    @apply !border-2 !border-blue-500 dark:!border-blue-400 !rounded-xl !shadow-sm;
-    transition: all 0.2s ease-in-out !important;
+    border: none !important;
+    box-shadow: none !important;
     background-color: transparent !important;
   }
 
-  /* Normal state - clean visible border */
+  /* Remove borders from normal state */
   [data-slot="input-wrapper"],
   .nextui-input-wrapper,
   .heroui-input-wrapper,
   .nextui-input,
   .heroui-input {
-    @apply !border !border-gray-300 dark:!border-gray-600 !rounded-xl;
-    transition: all 0.2s ease-in-out !important;
+    border: none !important;
     background-color: transparent !important;
   }
 
-  /* Hover state - subtle improvement */
+  /* Remove borders from hover state */
   [data-slot="input-wrapper"]:hover,
   .nextui-input-wrapper:hover,
   .heroui-input-wrapper:hover,
   .nextui-input:hover,
   .heroui-input:hover {
-    @apply !border-gray-400 dark:!border-gray-500 !rounded-xl;
+    border: none !important;
   }
 
-  /* Ensure inputs always have visible borders */
+  /* Remove ALL borders from inputs */
   input,
   textarea,
   [role="textbox"],
   [role="combobox"] {
-    @apply !border !border-gray-300 dark:!border-gray-600 !rounded-xl;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
   }
 
   input:focus,
   textarea:focus,
   [role="textbox"]:focus,
   [role="combobox"]:focus {
-    @apply !border-2 !border-blue-500 dark:!border-blue-400 !rounded-xl !shadow-sm;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
   }
 
   /* ========================================

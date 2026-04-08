@@ -7,12 +7,14 @@ import { useAuthStore } from '../../auth';
 import { IEmergency } from '../interfaces';
 import { formatDate } from '../../package';
 import { useSeenNotifications } from '../../../hooks/useSeenNotifications';
+import { useAllProperties } from '../../property/hooks/useAllProperties';
 
 
 
 export const EmergencyList = () => {
 
   const { emergencies, isLoading, refetch } = useEmergencies();
+  const { properties } = useAllProperties();
   const { user } = useAuthStore( ( state ) => ( { user: state.user } ) );
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [ emergencyToEnd, setEmergencyToEnd ] = useState<IEmergency | null>( null );
@@ -62,6 +64,7 @@ export const EmergencyList = () => {
     { name: "Visto", uid: "seen" },
     { name: "Descripción", uid: "description" },
     { name: "Usuario", uid: "user" },
+    { name: "Propiedad", uid: "property" },
     { name: "Teléfono", uid: "phone" },
     { name: "Opciones", uid: "actions" }
   ];
@@ -71,59 +74,89 @@ export const EmergencyList = () => {
     inactive: "danger"
   };
 
+  // Function to find user's main property or first property
+  const getUserProperty = (userId: string) => {
+    if (!properties) return null;
+
+    const userProperties = properties.filter(property =>
+      property.users?.some(user => user.id === userId)
+    );
+
+    // Return main property if exists, otherwise first property
+    return userProperties.find(property => property.isMain) || userProperties[0] || null;
+  };
+
   const transformedEmergencies = emergencies
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .map( emergency => ( {
-    ...emergency,
-    date: formatDate( emergency.date ),
-    user: (
-      <UserModal user={emergency.user}>
-        {`${ emergency.user.lastName }, ${ emergency.user.name }`}
-      </UserModal>
-    ),
-    phone: generateWhatsAppLink( emergency.user.phone ),
-    status: emergency.emergencyEnded
-      ? <UI.Chip color="success" startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> } variant="flat">Finalizada</UI.Chip>
-      : <UI.Chip color="danger" startContent={ <Icons.IoAlertCircleOutline size={ 18 } /> } variant="flat">Activa</UI.Chip>,
-    seen: emergency.seen
-      ? <UI.Chip color="success" startContent={ <Icons.IoEyeOutline size={ 18 } /> } variant="flat">Visto</UI.Chip>
-      : <UI.Chip color="warning" startContent={ <Icons.IoEyeOffOutline size={ 18 } /> } variant="flat">No visto</UI.Chip>,
-    actions: (
-      <div className="flex space-x-2 items-center">
-        { user?.roles?.includes( 'security' ) && !emergency.seen && (
-          <UI.Button
-            color="secondary"
-            variant="solid"
-            onPress={ () => handleMarkAsSeen( emergency.id ) }
-            isLoading={ isMarkingAsSeen }
-            startContent={ !isMarkingAsSeen && <Icons.IoEyeOutline size={ 18 } /> }
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium"
-          >
-            Marcar como visto
-          </UI.Button>
-        ) }
-        { !emergency.seen && user?.roles?.includes( 'security' ) && (
-          <UI.Chip color="danger" variant="dot">
-            Atención requerida
+    .map( emergency => {
+      const userProperty = getUserProperty(emergency.user.id);
+
+      return {
+        ...emergency,
+        date: formatDate( emergency.date ),
+        user: (
+          <UserModal user={emergency.user}>
+            {`${ emergency.user.lastName }, ${ emergency.user.name }`}
+          </UserModal>
+        ),
+        property: userProperty ? (
+          <div className="flex flex-col">
+            <span className="font-medium">{userProperty.address}</span>
+            {userProperty.isMain && (
+              <UI.Chip size="sm" color="primary" variant="flat" className="mt-1">
+                Principal
+              </UI.Chip>
+            )}
+          </div>
+        ) : (
+          <UI.Chip size="sm" color="warning" variant="flat">
+            Sin propiedad
           </UI.Chip>
-        ) }
-        { ( user?.roles?.includes( 'admin' ) || user?.roles?.includes( 'security' ) || emergency.user.id === user?.id ) && !emergency.emergencyEnded && (
-          <UI.Button
-            color="success"
-            variant="solid"
-            onPress={ () => {
-              setEmergencyToEnd( emergency );
-              onOpen();
-            } }
-            startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> }
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 pulse-animation"
-          >
-            Finalizar emergencia
-          </UI.Button>
-        ) }
-      </div>
-    )
-  } ) );
+        ),
+        phone: generateWhatsAppLink( emergency.user.phone ),
+        status: emergency.emergencyEnded
+          ? <UI.Chip color="success" startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> } variant="flat">Finalizada</UI.Chip>
+          : <UI.Chip color="danger" startContent={ <Icons.IoAlertCircleOutline size={ 18 } /> } variant="flat">Activa</UI.Chip>,
+        seen: emergency.seen
+          ? <UI.Chip color="success" startContent={ <Icons.IoEyeOutline size={ 18 } /> } variant="flat">Visto</UI.Chip>
+          : <UI.Chip color="warning" startContent={ <Icons.IoEyeOffOutline size={ 18 } /> } variant="flat">No visto</UI.Chip>,
+        actions: (
+          <div className="flex space-x-2 items-center">
+            { user?.roles?.includes( 'security' ) && !emergency.seen && (
+              <UI.Button
+                color="secondary"
+                variant="solid"
+                onPress={ () => handleMarkAsSeen( emergency.id ) }
+                isLoading={ isMarkingAsSeen }
+                startContent={ !isMarkingAsSeen && <Icons.IoEyeOutline size={ 18 } /> }
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium"
+              >
+                Marcar como visto
+              </UI.Button>
+            ) }
+            { !emergency.seen && user?.roles?.includes( 'security' ) && (
+              <UI.Chip color="danger" variant="dot">
+                Atención requerida
+              </UI.Chip>
+            ) }
+            { ( user?.roles?.includes( 'admin' ) || user?.roles?.includes( 'security' ) || emergency.user.id === user?.id ) && !emergency.emergencyEnded && (
+              <UI.Button
+                color="success"
+                variant="solid"
+                onPress={ () => {
+                  setEmergencyToEnd( emergency );
+                  onOpen();
+                } }
+                startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> }
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 pulse-animation"
+              >
+                Finalizar emergencia
+              </UI.Button>
+            ) }
+          </div>
+        )
+      };
+    } );
 
   const handleConfirm = () => {
     if ( emergencyToEnd ) {
@@ -197,6 +230,7 @@ export const EmergencyList = () => {
             "seen",
             "description",
             "user",
+            "property",
             "phone",
             "actions"
           ] }
