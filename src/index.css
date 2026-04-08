@@ -618,86 +618,74 @@ body, #root {
   }
 
   /* ========================================
-     CLEAN INPUT STYLING - SHADCN STYLE
+     SUPER CLEAN INPUTS - NO BORDERS AT ALL
      ======================================== */
 
-  /* Clean, visible input styling similar to shadcn/ui */
+  /* Remove ALL borders and create clean minimal inputs */
   input,
   textarea,
   [role="textbox"],
   [role="combobox"],
   [data-slot="input"],
+  [data-slot="input-wrapper"],
   [data-slot="input-wrapper"] input,
-  [data-slot="input-wrapper"] textarea {
-    @apply border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950;
-    @apply rounded-md px-3 py-2 text-sm;
-    @apply transition-colors duration-200;
+  [data-slot="input-wrapper"] textarea,
+  .nextui-input-wrapper,
+  .heroui-input-wrapper,
+  .nextui-input,
+  .heroui-input,
+  .nextui-textarea,
+  .heroui-textarea {
+    border: none !important;
     outline: none !important;
     box-shadow: none !important;
+    @apply bg-gray-50 dark:bg-gray-900 rounded-lg px-3 py-2;
+    transition: background-color 0.2s ease !important;
   }
 
-  /* Focus state - clean blue accent */
+  /* Focus state - just change background */
   input:focus,
   textarea:focus,
   [role="textbox"]:focus,
   [role="combobox"]:focus,
   [data-slot="input"]:focus,
   [data-focus="true"] [data-slot="input-wrapper"],
-  [data-slot="input-wrapper"]:focus-within {
-    @apply border-blue-500 dark:border-blue-400 ring-1 ring-blue-500 dark:ring-blue-400;
-    box-shadow: none !important;
+  [data-slot="input-wrapper"]:focus-within,
+  .nextui-input-wrapper:focus-within,
+  .heroui-input-wrapper:focus-within,
+  .nextui-input[data-focus="true"],
+  .heroui-input[data-focus="true"] {
+    @apply bg-gray-100 dark:bg-gray-800;
+    border: none !important;
     outline: none !important;
+    box-shadow: none !important;
   }
 
-  /* Hover state - subtle */
+  /* Hover state - subtle background change */
   input:hover,
   textarea:hover,
   [role="textbox"]:hover,
   [role="combobox"]:hover,
-  [data-slot="input-wrapper"]:hover {
-    @apply border-gray-300 dark:border-gray-700;
-  }
-
-  /* Input wrapper styling for NextUI/HeroUI */
-  [data-slot="input-wrapper"],
-  .nextui-input-wrapper,
-  .heroui-input-wrapper,
-  .nextui-input,
-  .heroui-input {
-    @apply border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950;
-    @apply rounded-md transition-colors duration-200;
-    box-shadow: none !important;
-  }
-
-  /* Focus state for wrappers */
-  [data-slot="input-wrapper"]:focus-within,
-  .nextui-input-wrapper:focus-within,
-  .heroui-input-wrapper:focus-within,
-  [data-focus="true"] [data-slot="input-wrapper"],
-  .nextui-input[data-focus="true"],
-  .heroui-input[data-focus="true"] {
-    @apply border-blue-500 dark:border-blue-400 ring-1 ring-blue-500 dark:ring-blue-400;
-    box-shadow: none !important;
-  }
-
-  /* Hover state for wrappers */
   [data-slot="input-wrapper"]:hover,
   .nextui-input-wrapper:hover,
   .heroui-input-wrapper:hover,
   .nextui-input:hover,
   .heroui-input:hover {
-    @apply border-gray-300 dark:border-gray-700;
+    @apply bg-gray-100 dark:bg-gray-800;
+    border: none !important;
   }
 
-  /* Remove any internal ugly shadows or effects */
+  /* Remove any internal padding/margin issues */
   [data-slot="input"],
   [data-slot="input-wrapper"] *,
   .nextui-input *,
   .nextui-textarea *,
   .heroui-input *,
   .heroui-textarea * {
+    border: none !important;
+    outline: none !important;
     box-shadow: none !important;
-    text-shadow: none !important;
+    margin: 0 !important;
   }
 
   /* Disabled state */
@@ -706,7 +694,20 @@ body, #root {
   [data-slot="input-wrapper"][data-disabled="true"],
   .nextui-input[data-disabled="true"],
   .heroui-input[data-disabled="true"] {
-    @apply opacity-50 cursor-not-allowed bg-gray-50 dark:bg-gray-900;
+    @apply opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800;
+    border: none !important;
+  }
+
+  /* Nuclear option - remove ALL possible borders */
+  * input,
+  * textarea,
+  * [role="textbox"],
+  * [role="combobox"],
+  * [data-slot="input"],
+  * [data-slot="input-wrapper"] {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
   }
 
   /* ========================================
