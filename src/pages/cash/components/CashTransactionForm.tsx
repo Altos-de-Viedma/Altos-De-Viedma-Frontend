@@ -136,10 +136,12 @@ export const CashTransactionForm = ({ transaction, onSuccess }: Props) => {
                     step="0.01"
                     min="0.01"
                     variant="bordered"
+                    classNames={{
+                      input: "ml-2 mt-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+                      innerWrapper: "items-end pb-1"
+                    }}
                     startContent={
-                      <div className="pointer-events-none flex items-center">
-                        <span className="text-default-400 text-small">$</span>
-                      </div>
+                      <span className="text-default-500 font-medium pb-[2px] pointer-events-none">$</span>
                     }
                     errorMessage={errors.amount?.message}
                     isInvalid={!!errors.amount}
