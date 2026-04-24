@@ -54,3 +54,8 @@ export const updateCashTransaction = async (id: string, transaction: Partial<ICr
 export const deleteCashTransaction = async (id: string): Promise<void> => {
   await altosDeViedmaApi.delete(`/daily-cash-transactions/${id}`);
 };
+
+export const getMonthlyTransactions = async (month: number, year: number): Promise<ICashTransaction[]> => {
+  const { data } = await altosDeViedmaApi.get<ICashTransaction[]>(`/daily-cash-transactions/monthly?month=${month}&year=${year}`);
+  return data;
+};

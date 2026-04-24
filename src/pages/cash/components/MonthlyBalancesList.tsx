@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import { Icons, UI } from '../../../shared';
-import { useMonthlyBalances } from '../hooks';
+import { useMonthlyBalances, useMonthlyTransactions } from '../hooks';
+import { getMonthlyTransactions } from '../services';
 import { formatCurrency } from '../helpers';
+import { exportMonthlyTransactionsToExcel } from '../utils/excelExport';
 
 export const MonthlyBalancesList = () => {
   const { data: monthlyBalances, isLoading } = useMonthlyBalances();
+  const [downloadingMonth, setDownloadingMonth] = useState<string | null>(null);
 
   const getMonthName = (month: number): string => {
     const months = [
@@ -11,6 +15,25 @@ export const MonthlyBalancesList = () => {
       'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
     ];
     return months[month - 1] || '';
+  };
+
+  const handleDownloadMonth = async (month: number, year: number) => {
+    const monthKey = `${year}-${month}`;
+    setDownloadingMonth(monthKey);
+
+    try {
+      // Use the existing service instead of direct fetch
+      const transactions = await getMonthlyTransactions(month, year);
+
+      // Export to Excel
+      exportMonthlyTransactionsToExcel(transactions, month, year);
+
+    } catch (error) {
+      console.error('Error downloading monthly transactions:', error);
+      alert('Error al descargar las transacciones del mes. Por favor, inténtalo de nuevo.');
+    } finally {
+      setDownloadingMonth(null);
+    }
   };
 
   if (isLoading) {
@@ -71,23 +94,43 @@ export const MonthlyBalancesList = () => {
                 </div>
               </div>
 
-              <div className="text-right">
-                <p className={`text-2xl font-bold ${
-                  monthData.balance >= 0
-                    ? 'text-green-600 dark:text-green-400'
-                    : 'text-red-600 dark:text-red-400'
-                }`}>
-                  {monthData.balance >= 0 ? '+' : ''}{formatCurrency(monthData.balance)}
-                </p>
-                <div className="flex items-center gap-1 mt-1">
-                  {monthData.balance >= 0 ? (
-                    <Icons.IoCheckmarkCircleOutline size={16} className="text-green-500" />
-                  ) : (
-                    <Icons.IoCloseCircleOutline size={16} className="text-red-500" />
-                  )}
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    {monthData.balance >= 0 ? 'Positivo' : 'Negativo'}
-                  </span>
+              <div className="flex items-center justify-between">
+                <div className="text-right">
+                  <p className={`text-2xl font-bold ${
+                    monthData.balance >= 0
+                      ? 'text-green-600 dark:text-green-400'
+                      : 'text-red-600 dark:text-red-400'
+                  }`}>
+                    {monthData.balance >= 0 ? '+' : ''}{formatCurrency(monthData.balance)}
+                  </p>
+                  <div className="flex items-center gap-1 mt-1">
+                    {monthData.balance >= 0 ? (
+                      <Icons.IoCheckmarkCircleOutline size={16} className="text-green-500" />
+                    ) : (
+                      <Icons.IoCloseCircleOutline size={16} className="text-red-500" />
+                    )}
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {monthData.balance >= 0 ? 'Positivo' : 'Negativo'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Download Button */}
+                <div className="ml-4">
+                  <UI.Button
+                    variant="flat"
+                    size="sm"
+                    onPress={() => handleDownloadMonth(monthData.month, monthData.year)}
+                    isLoading={downloadingMonth === `${monthData.year}-${monthData.month}`}
+                    startContent={
+                      downloadingMonth === `${monthData.year}-${monthData.month}` ?
+                        undefined :
+                        <Icons.IoDownloadOutline size={16} />
+                    }
+                    className="bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700 min-w-[100px]"
+                  >
+                    {downloadingMonth === `${monthData.year}-${monthData.month}` ? 'Descargando...' : 'Excel'}
+                  </UI.Button>
                 </div>
               </div>
             </div>
@@ -100,7 +143,7 @@ export const MonthlyBalancesList = () => {
           <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
             <Icons.IoInformationCircleOutline size={16} />
             <span>
-              Mostrando {monthlyBalances.length} meses con actividad.
+              Mostrando {monthlyBalances.length} {monthlyBalances.length === 1 ? 'mes' : 'meses'} con actividad.
               Los balances se calculan sumando entradas y restando salidas por mes.
             </span>
           </div>

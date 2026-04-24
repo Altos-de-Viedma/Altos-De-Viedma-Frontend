@@ -259,8 +259,8 @@ export const CashTransactionList = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end justify-between">
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
           <div className="flex-1 max-w-md">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Filtrar por fecha
@@ -321,13 +321,13 @@ export const CashTransactionList = () => {
             </div>
           </div>
 
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center h-10">
             <UI.Button
               variant="flat"
               size="sm"
               onPress={() => setSelectedDate(getArgentinaToday())}
               startContent={<Icons.IoTimeOutline size={16} />}
-              className="bg-primary-50 hover:bg-primary-100 text-primary-700 border border-primary-200 h-10 flex items-center justify-center"
+              className="bg-primary-50 hover:bg-primary-100 dark:bg-primary-900/20 dark:hover:bg-primary-900/40 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-700 h-10 flex items-center justify-center"
             >
               Hoy
             </UI.Button>
@@ -337,7 +337,7 @@ export const CashTransactionList = () => {
               size="sm"
               onPress={() => setSelectedDate('all')}
               startContent={<Icons.IoGridOutline size={16} />}
-              className="bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 h-10 flex items-center justify-center"
+              className="bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 h-10 flex items-center justify-center"
             >
               Todas
             </UI.Button>
