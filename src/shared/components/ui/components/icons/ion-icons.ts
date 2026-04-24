@@ -72,4 +72,10 @@ export {
   IoSunnyOutline,
   IoTimeOutline,
   IoTrashOutline,
+  IoWarningOutline,
+  IoStatsChartOutline,
+  IoReaderOutline,
+  IoBriefcaseOutline,
+  IoCardOutline,
+  IoBusinessOutline,
 } from 'react-icons/io5';

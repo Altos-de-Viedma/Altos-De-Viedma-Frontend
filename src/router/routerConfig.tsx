@@ -13,6 +13,7 @@ const VisitorsPage = lazy(() => import('../pages/visitor/pages/VisitorsPage').th
 const EmergenciesPage = lazy(() => import('../pages/emergency/pages/EmergenciesPage').then(m => ({ default: m.EmergenciesPage })));
 const InvoicePage = lazy(() => import('../pages/invoice/pages/InvoicePage').then(m => ({ default: m.InvoicePage })));
 const CashPage = lazy(() => import('../pages/cash/pages/CashPage').then(m => ({ default: m.CashPage })));
+const EmployeeInsurancePage = lazy(() => import('../pages/employee-insurance/pages/EmployeeInsurancePage').then(m => ({ default: m.EmployeeInsurancePage })));
 const DashboardLayoutPage = lazy(() => import('../pages/dashboard/dashboard-layout/DashboardPage').then(m => ({ default: m.DashboardLayoutPage })));
 
 // Loading component
@@ -111,6 +112,14 @@ export const router = createBrowserRouter( [
         element: (
           <Suspense fallback={<PageLoader />}>
             <CashPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'seguros-empleados',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <EmployeeInsurancePage />
           </Suspense>
         ),
       },
