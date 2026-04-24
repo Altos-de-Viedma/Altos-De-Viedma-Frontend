@@ -1,6 +1,5 @@
 import { Icons, UI } from '../../../shared';
 import { useInsuranceStatistics } from '../hooks';
-import { formatCurrency } from '../helpers';
 
 export const InsuranceStatisticsCards = () => {
   const { data: statistics, isLoading } = useInsuranceStatistics();

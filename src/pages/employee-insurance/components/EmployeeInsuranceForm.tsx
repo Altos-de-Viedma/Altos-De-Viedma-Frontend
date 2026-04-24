@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Icons, UI, SelectModal } from '../../../shared';
-import { useAddEmployeeInsurance, useUpdateEmployeeInsurance } from '../hooks';
+import { useAddEmployeeInsurance, useUpdateEmployeeInsurance, useApproveEmployeeInsurance, useRejectEmployeeInsurance } from '../hooks';
 import { useProperties } from '../../property';
 import { useAuthStore } from '../../auth/store/auth.store';
 import {
@@ -9,7 +9,8 @@ import {
   ICreateEmployeeInsurance,
 
   InsuranceStatus,
-  INSURANCE_STATUS_LABELS
+  INSURANCE_STATUS_LABELS,
+  ApprovalStatus
 } from '../interfaces';
 
 interface EmployeeInsuranceFormProps {
@@ -20,6 +21,8 @@ interface EmployeeInsuranceFormProps {
 export const EmployeeInsuranceForm = ({ insurance, onSuccess }: EmployeeInsuranceFormProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPropertyModalOpen, setIsPropertyModalOpen] = useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState('');
   const isEditing = !!insurance;
 
   const { user } = useAuthStore((state) => ({ user: state.user }));
@@ -27,6 +30,8 @@ export const EmployeeInsuranceForm = ({ insurance, onSuccess }: EmployeeInsuranc
 
   const { mutate: createInsurance, isPending: isCreating } = useAddEmployeeInsurance();
   const { mutate: updateInsurance, isPending: isUpdating } = useUpdateEmployeeInsurance();
+  const { mutate: approveInsurance, isPending: isApproving } = useApproveEmployeeInsurance();
+  const { mutate: rejectInsurance, isPending: isRejecting } = useRejectEmployeeInsurance();
   const { properties } = useProperties();
 
   // Para usuario normal: su primera propiedad
@@ -81,15 +86,15 @@ export const EmployeeInsuranceForm = ({ insurance, onSuccess }: EmployeeInsuranc
     }
 
     // Clean up empty strings for optional fields to avoid backend validation errors
-    const cleanedData = { ...data };
-    
-    if (cleanedData.propertyId === '') delete cleanedData.propertyId;
-    if (cleanedData.insuranceCompany === '') delete cleanedData.insuranceCompany;
-    if (cleanedData.policyNumber === '') delete cleanedData.policyNumber;
-    if (cleanedData.coverageAmount === '' || isNaN(Number(cleanedData.coverageAmount))) delete cleanedData.coverageAmount;
-    if (cleanedData.monthlyPremium === '' || isNaN(Number(cleanedData.monthlyPremium))) delete cleanedData.monthlyPremium;
-    if (cleanedData.startDate === '') delete cleanedData.startDate;
-    if (cleanedData.notes === '') delete cleanedData.notes;
+    const cleanedData: any = { ...data };
+
+    if (cleanedData.propertyId === '') cleanedData.propertyId = undefined;
+    if (cleanedData.insuranceCompany === '') cleanedData.insuranceCompany = undefined;
+    if (cleanedData.policyNumber === '') cleanedData.policyNumber = undefined;
+    if (cleanedData.coverageAmount === '' || isNaN(Number(cleanedData.coverageAmount))) cleanedData.coverageAmount = undefined;
+    if (cleanedData.monthlyPremium === '' || isNaN(Number(cleanedData.monthlyPremium))) cleanedData.monthlyPremium = undefined;
+    if (cleanedData.startDate === '') cleanedData.startDate = undefined;
+    if (cleanedData.notes === '') cleanedData.notes = undefined;
 
     if (isEditing && insurance) {
       updateInsurance(
@@ -118,14 +123,43 @@ export const EmployeeInsuranceForm = ({ insurance, onSuccess }: EmployeeInsuranc
     reset();
   };
 
+  const handleApprove = () => {
+    if (insurance) {
+      approveInsurance({ id: insurance.id }, {
+        onSuccess: () => {
+          onSuccess?.();
+          handleClose();
+        }
+      });
+    }
+  };
+
+  const handleReject = () => {
+    setRejectionReason('');
+    setIsRejectModalOpen(true);
+  };
+
+  const confirmReject = () => {
+    if (insurance && rejectionReason.trim()) {
+      rejectInsurance({ id: insurance.id, rejectionReason: rejectionReason.trim() }, {
+        onSuccess: () => {
+          setIsRejectModalOpen(false);
+          onSuccess?.();
+          handleClose();
+        }
+      });
+    }
+  };
+
   return (
     <>
       <UI.Button
         onPress={() => setIsOpen(true)}
-        color={isEditing ? "warning" : "primary"}
+        color={isEditing ? "default" : "primary"}
+        variant={isEditing ? "light" : "solid"}
         startContent={isEditing ? <Icons.IoPencilOutline size={16} /> : <Icons.IoAddOutline size={16} />}
         size="sm"
-        className={isEditing ? "" : "bg-primary-600 hover:bg-primary-700 text-white font-medium"}
+        className={isEditing ? "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200" : "font-medium"}
       >
         {isEditing ? 'Editar' : 'Nuevo Seguro'}
       </UI.Button>
@@ -139,7 +173,7 @@ export const EmployeeInsuranceForm = ({ insurance, onSuccess }: EmployeeInsuranc
         isDismissable={false}
       >
         <UI.ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <UI.ModalHeader className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
@@ -307,7 +341,7 @@ export const EmployeeInsuranceForm = ({ insurance, onSuccess }: EmployeeInsuranc
                       defaultSelectedKeys={[InsuranceStatus.ACTIVE]}
                     >
                       {Object.entries(INSURANCE_STATUS_LABELS).map(([key, label]) => (
-                        <UI.SelectItem key={key} value={key}>
+                        <UI.SelectItem key={key}>
                           {label}
                         </UI.SelectItem>
                       ))}
@@ -374,14 +408,109 @@ export const EmployeeInsuranceForm = ({ insurance, onSuccess }: EmployeeInsuranc
                 >
                   Cancelar
                 </UI.Button>
+                {isAdmin && isEditing && insurance && (
+                  <>
+                    {insurance.approvalStatus !== ApprovalStatus.REJECTED && (
+                      <UI.Button
+                        color="danger"
+                        variant="solid"
+                        onPress={handleReject}
+                        isLoading={isRejecting}
+                        startContent={!isRejecting ? <Icons.IoCloseOutline size={20} /> : undefined}
+                        className="font-medium text-white shadow-md"
+                      >
+                        Rechazar
+                      </UI.Button>
+                    )}
+                    {insurance.approvalStatus !== ApprovalStatus.APPROVED && (
+                      <UI.Button
+                        color="success"
+                        variant="solid"
+                        onPress={handleApprove}
+                        isLoading={isApproving}
+                        startContent={!isApproving ? <Icons.IoCheckmarkOutline size={20} /> : undefined}
+                        className="font-medium text-white shadow-md"
+                      >
+                        Aprobar
+                      </UI.Button>
+                    )}
+                  </>
+                )}
                 <UI.Button
                   color="primary"
-                  onPress={handleSubmit(onSubmit)}
+                  onPress={() => handleSubmit(onSubmit)()}
                   isLoading={isCreating || isUpdating}
                   startContent={!(isCreating || isUpdating) ? <Icons.IoSaveOutline size={20} /> : undefined}
                   className="bg-primary-600 hover:bg-primary-700 text-white font-medium"
                 >
                   {isEditing ? 'Actualizar' : 'Crear'}
+                </UI.Button>
+              </UI.ModalFooter>
+            </>
+          )}
+        </UI.ModalContent>
+      </UI.Modal>
+
+      {/* Rejection Reason Modal */}
+      <UI.Modal
+        isOpen={isRejectModalOpen}
+        onOpenChange={setIsRejectModalOpen}
+        backdrop="blur"
+        placement="center"
+      >
+        <UI.ModalContent>
+          {() => (
+            <>
+              <UI.ModalHeader className="flex justify-center">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full">
+                    <Icons.IoCloseOutline size={24} className="text-red-600 dark:text-red-400" />
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Rechazar Seguro</h2>
+                </div>
+              </UI.ModalHeader>
+              <UI.ModalBody>
+                <div className="flex flex-col space-y-4">
+                  <p className="text-base text-gray-700 dark:text-gray-300 text-center">
+                    Por favor, indique la razón por la cual rechaza este seguro.
+                  </p>
+                  <UI.Textarea
+                    label="Razón del rechazo"
+                    placeholder="Ingrese la razón del rechazo..."
+                    value={rejectionReason}
+                    onValueChange={setRejectionReason}
+                    minRows={3}
+                    maxRows={5}
+                    isRequired
+                    variant="bordered"
+                    classNames={{
+                      input: "resize-none",
+                      inputWrapper: "border-gray-300 dark:border-gray-600"
+                    }}
+                  />
+                </div>
+              </UI.ModalBody>
+              <UI.ModalFooter className="flex justify-center gap-3">
+                <UI.Button
+                  color="default"
+                  variant="light"
+                  onPress={() => setIsRejectModalOpen(false)}
+                  isDisabled={isRejecting}
+                  startContent={<Icons.IoArrowBackOutline size={20} />}
+                  className="font-medium"
+                >
+                  Cancelar
+                </UI.Button>
+                <UI.Button
+                  color="danger"
+                  variant="solid"
+                  onPress={confirmReject}
+                  isLoading={isRejecting}
+                  isDisabled={!rejectionReason.trim()}
+                  startContent={!isRejecting ? <Icons.IoCloseOutline size={20} /> : undefined}
+                  className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                >
+                  Confirmar Rechazo
                 </UI.Button>
               </UI.ModalFooter>
             </>

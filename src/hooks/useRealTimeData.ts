@@ -20,7 +20,6 @@ export const useRealTimeData = (options: UseRealTimeDataOptions = {}) => {
   // Connection management - DISABLED
   const connectWebSocket = useCallback(async () => {
     // WebSocket disabled - do nothing
-    console.log('🚫 WebSocket disabled - no real-time updates');
   }, []);
 
   const disconnectWebSocket = useCallback(() => {
@@ -31,7 +30,6 @@ export const useRealTimeData = (options: UseRealTimeDataOptions = {}) => {
   // Real-time event handlers - ALL DISABLED
   useEffect(() => {
     // WebSocket completely disabled - no event listeners needed
-    console.log('🚫 Real-time data updates disabled');
     return () => {
       // No cleanup needed
     };

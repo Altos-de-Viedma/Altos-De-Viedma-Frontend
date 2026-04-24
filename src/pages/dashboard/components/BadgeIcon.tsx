@@ -6,12 +6,14 @@ import { useEmergencies } from '../../emergency';
 import { usePackages } from '../../package';
 import { useVisitors } from '../../visitor';
 import { useInvoices } from '../../invoice';
+import { useEmployeeInsurances, useExpiredInsurances } from '../../employee-insurance/hooks';
+import { ApprovalStatus } from '../../employee-insurance/interfaces';
 import { useRealTimeData } from '../../../hooks/useRealTimeData';
 import { useSeenNotifications } from '../../../hooks/useSeenNotifications';
 
 interface Props {
   Icon: ElementType;
-  type?: 'emergencies' | 'packages' | 'visitors' | 'invoices' | 'cash';
+  type?: 'emergencies' | 'packages' | 'visitors' | 'invoices' | 'cash' | 'insurance';
   onBadgeCountChange?: (count: number) => void;
 }
 
@@ -20,6 +22,8 @@ export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
   const { packages, refetch: refetchPackages } = usePackages();
   const { visitors, refetch: refetchVisitors } = useVisitors();
   const { invoices, refetch: refetchInvoices } = useInvoices();
+  const { data: insurances, refetch: refetchInsurances } = useEmployeeInsurances();
+  const { data: expiredInsurances, refetch: refetchExpiredInsurances } = useExpiredInsurances();
   const [previousCount, setPreviousCount] = useState(0);
   const [hasNewItems, setHasNewItems] = useState(false);
   const { isNotificationSeen } = useSeenNotifications();
@@ -37,10 +41,14 @@ export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
       if (type === 'packages') refetchPackages();
       if (type === 'visitors') refetchVisitors();
       if (type === 'invoices') refetchInvoices();
+      if (type === 'insurance') {
+        refetchInsurances();
+        refetchExpiredInsurances();
+      }
     }, 30000); // Reduced from 5s to 30s since we have real-time updates
 
     return () => clearInterval(interval);
-  }, [type, refetchEmergencies, refetchPackages, refetchVisitors, refetchInvoices]);
+  }, [type, refetchEmergencies, refetchPackages, refetchVisitors, refetchInvoices, refetchInsurances, refetchExpiredInsurances]);
 
   const getBadgeContent = () => {
     if (!type) return 0;
@@ -59,6 +67,10 @@ export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
         break;
       case 'invoices':
         activeItems = (invoices || []).filter(i => i.state === 'in_progress');
+        break;
+      case 'insurance':
+        // Only count pending approvals
+        activeItems = (insurances || []).filter(i => i.approvalStatus === ApprovalStatus.PENDING);
         break;
       default:
         return 0;

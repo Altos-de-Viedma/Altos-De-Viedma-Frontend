@@ -64,10 +64,10 @@ export const EmployeeInsurancePage = () => {
                 <InsuranceStatisticsCards />
 
                 {/* Alerts Section */}
-                {(expiredInsurances?.length > 0 || expiringSoonInsurances?.length > 0) && (
+                {((expiredInsurances?.length || 0) > 0 || (expiringSoonInsurances?.length || 0) > 0) && (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Expired Insurances Alert */}
-                    {expiredInsurances?.length > 0 && (
+                    {(expiredInsurances?.length || 0) > 0 && (
                       <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
                         <div className="flex items-start space-x-4">
                           <div className="p-3 bg-red-100 dark:bg-red-900/40 rounded-lg">
@@ -75,17 +75,17 @@ export const EmployeeInsurancePage = () => {
                           </div>
                           <div className="flex-1">
                             <h3 className="text-lg font-semibold text-red-900 dark:text-red-100 mb-2">
-                              Seguros Vencidos ({expiredInsurances.length})
+                              Seguros Vencidos ({expiredInsurances?.length || 0})
                             </h3>
                             <div className="space-y-2">
-                              {expiredInsurances.slice(0, 3).map((insurance) => (
+                              {expiredInsurances?.slice(0, 3).map((insurance) => (
                                 <div key={insurance.id} className="text-sm text-red-700 dark:text-red-300">
                                   <span className="font-medium">{insurance.employeeName}</span> - {insurance.insuranceCompany}
                                 </div>
                               ))}
-                              {expiredInsurances.length > 3 && (
+                              {(expiredInsurances?.length || 0) > 3 && (
                                 <div className="text-sm text-red-600 dark:text-red-400">
-                                  Y {expiredInsurances.length - 3} más...
+                                  Y {(expiredInsurances?.length || 0) - 3} más...
                                 </div>
                               )}
                             </div>
@@ -95,7 +95,7 @@ export const EmployeeInsurancePage = () => {
                     )}
 
                     {/* Expiring Soon Alert */}
-                    {expiringSoonInsurances?.length > 0 && (
+                    {(expiringSoonInsurances?.length || 0) > 0 && (
                       <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-6 border border-yellow-200 dark:border-yellow-800">
                         <div className="flex items-start space-x-4">
                           <div className="p-3 bg-yellow-100 dark:bg-yellow-900/40 rounded-lg">
@@ -103,17 +103,17 @@ export const EmployeeInsurancePage = () => {
                           </div>
                           <div className="flex-1">
                             <h3 className="text-lg font-semibold text-yellow-900 dark:text-yellow-100 mb-2">
-                              Próximos a Vencer ({expiringSoonInsurances.length})
+                              Próximos a Vencer ({expiringSoonInsurances?.length || 0})
                             </h3>
                             <div className="space-y-2">
-                              {expiringSoonInsurances.slice(0, 3).map((insurance) => (
+                              {expiringSoonInsurances?.slice(0, 3).map((insurance) => (
                                 <div key={insurance.id} className="text-sm text-yellow-700 dark:text-yellow-300">
                                   <span className="font-medium">{insurance.employeeName}</span> - {insurance.insuranceCompany}
                                 </div>
                               ))}
-                              {expiringSoonInsurances.length > 3 && (
+                              {(expiringSoonInsurances?.length || 0) > 3 && (
                                 <div className="text-sm text-yellow-600 dark:text-yellow-400">
-                                  Y {expiringSoonInsurances.length - 3} más...
+                                  Y {(expiringSoonInsurances?.length || 0) - 3} más...
                                 </div>
                               )}
                             </div>

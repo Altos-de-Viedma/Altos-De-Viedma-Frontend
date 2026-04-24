@@ -3,7 +3,10 @@ import { toast } from 'react-toastify';
 import {
   createEmployeeInsurance,
   updateEmployeeInsurance,
-  deleteEmployeeInsurance
+  deleteEmployeeInsurance,
+  approveEmployeeInsurance,
+  rejectEmployeeInsurance,
+  restoreEmployeeInsurance
 } from '../services';
 import { ICreateEmployeeInsurance } from '../interfaces';
 
@@ -61,6 +64,60 @@ export const useDeleteEmployeeInsurance = () => {
     },
     onError: (error: any) => {
       const message = error?.response?.data?.message || 'Error al eliminar el seguro de empleado';
+      toast.error(message);
+    },
+  });
+};
+
+export const useApproveEmployeeInsurance = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, notes }: { id: string; notes?: string }) =>
+      approveEmployeeInsurance(id, { notes }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['employee-insurances'] });
+      queryClient.invalidateQueries({ queryKey: ['insurance-statistics'] });
+      toast.success('Seguro de empleado aprobado exitosamente');
+    },
+    onError: (error: any) => {
+      const message = error?.response?.data?.message || 'Error al aprobar el seguro de empleado';
+      toast.error(message);
+    },
+  });
+};
+
+export const useRejectEmployeeInsurance = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, rejectionReason }: { id: string; rejectionReason: string }) =>
+      rejectEmployeeInsurance(id, { rejectionReason }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['employee-insurances'] });
+      queryClient.invalidateQueries({ queryKey: ['insurance-statistics'] });
+      toast.success('Seguro de empleado rechazado');
+    },
+    onError: (error: any) => {
+      const message = error?.response?.data?.message || 'Error al rechazar el seguro de empleado';
+      toast.error(message);
+    },
+  });
+};
+
+export const useRestoreEmployeeInsurance = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => restoreEmployeeInsurance(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['employee-insurances'] });
+      queryClient.invalidateQueries({ queryKey: ['deleted-employee-insurances'] });
+      queryClient.invalidateQueries({ queryKey: ['insurance-statistics'] });
+      toast.success('Seguro de empleado reactivado exitosamente');
+    },
+    onError: (error: any) => {
+      const message = error?.response?.data?.message || 'Error al reactivar el seguro de empleado';
       toast.error(message);
     },
   });

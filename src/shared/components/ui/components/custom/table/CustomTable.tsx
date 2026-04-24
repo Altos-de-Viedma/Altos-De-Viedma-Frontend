@@ -484,7 +484,7 @@ export const CustomTable = ({
                 "w-auto min-w-[60px] sm:min-w-[80px] xl:min-w-[100px]"
               }`}
             >
-              <div className="flex items-center">
+              <div className={`flex items-center ${column.uid === "actions" || column.uid === "profilePicture" ? "justify-center" : ""}`}>
                 <span className="truncate">{column.name}</span>
               </div>
             </TableColumn>

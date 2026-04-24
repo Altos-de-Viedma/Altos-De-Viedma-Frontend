@@ -4,14 +4,19 @@ import {
   getEmployeeInsurance,
   getInsuranceStatistics,
   getExpiredInsurances,
-  getExpiringSoonInsurances
+  getExpiringSoonInsurances,
+  getDeletedInsurances
 } from '../services';
 
 export const useEmployeeInsurances = () => {
   return useQuery({
     queryKey: ['employee-insurances'],
     queryFn: getEmployeeInsurances,
-    staleTime: 30000, // 30 seconds
+    staleTime: 0, // Always consider data stale for real-time updates
+    refetchInterval: 5000, // Refetch every 5 seconds
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
   });
 };
 
@@ -44,6 +49,14 @@ export const useExpiringSoonInsurances = (days: number = 30) => {
   return useQuery({
     queryKey: ['expiring-soon-insurances', days],
     queryFn: () => getExpiringSoonInsurances(days),
+    staleTime: 60000,
+  });
+};
+
+export const useDeletedInsurances = () => {
+  return useQuery({
+    queryKey: ['deleted-employee-insurances'],
+    queryFn: getDeletedInsurances,
     staleTime: 60000,
   });
 };

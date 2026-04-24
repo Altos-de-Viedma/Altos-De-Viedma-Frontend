@@ -5,6 +5,7 @@ interface SeenNotifications {
   packages: string[];
   visitors: string[];
   invoices: string[];
+  insurance: string[];
 }
 
 const STORAGE_KEY = 'altos-de-videma-seen-notifications';
@@ -14,7 +15,8 @@ const getInitialSeenNotifications = (): SeenNotifications => {
     emergencies: [],
     packages: [],
     visitors: [],
-    invoices: []
+    invoices: [],
+    insurance: []
   };
 
   try {
@@ -69,7 +71,8 @@ export const useSeenNotifications = () => {
       emergencies: [],
       packages: [],
       visitors: [],
-      invoices: []
+      invoices: [],
+      insurance: []
     });
   };
 
