@@ -47,11 +47,11 @@ export const exportMonthlyTransactionsToExcel = (
 
   // Add summary rows
   excelData.push(
-    {},
-    { '#': '', 'Fecha de Transacción': 'RESUMEN DEL MES', 'Fecha/Hora de Creación': '', 'Descripción': '', 'Monto': '', 'Tipo': '', 'Categoría': '', 'Monto Formateado': '' },
-    { '#': '', 'Fecha de Transacción': 'Total Entradas:', 'Fecha/Hora de Creación': '', 'Descripción': '', 'Monto': totalEntries, 'Tipo': '', 'Categoría': '', 'Monto Formateado': formatCurrency(totalEntries) },
-    { '#': '', 'Fecha de Transacción': 'Total Salidas:', 'Fecha/Hora de Creación': '', 'Descripción': '', 'Monto': totalExits, 'Tipo': '', 'Categoría': '', 'Monto Formateado': formatCurrency(totalExits) },
-    { '#': '', 'Fecha de Transacción': 'Balance Neto:', 'Fecha/Hora de Creación': '', 'Descripción': '', 'Monto': netTotal, 'Tipo': '', 'Categoría': '', 'Monto Formateado': formatCurrency(netTotal) }
+    { '#': 0, 'Fecha de Transacción': '', 'Fecha/Hora de Creación': '', 'Descripción': '', 'Monto': 0, 'Tipo': '', 'Categoría': '', 'Monto Formateado': '' },
+    { '#': 0, 'Fecha de Transacción': 'RESUMEN DEL MES', 'Fecha/Hora de Creación': '', 'Descripción': '', 'Monto': 0, 'Tipo': '', 'Categoría': '', 'Monto Formateado': '' },
+    { '#': 0, 'Fecha de Transacción': 'Total Entradas:', 'Fecha/Hora de Creación': '', 'Descripción': '', 'Monto': totalEntries, 'Tipo': '', 'Categoría': '', 'Monto Formateado': formatCurrency(totalEntries) },
+    { '#': 0, 'Fecha de Transacción': 'Total Salidas:', 'Fecha/Hora de Creación': '', 'Descripción': '', 'Monto': totalExits, 'Tipo': '', 'Categoría': '', 'Monto Formateado': formatCurrency(totalExits) },
+    { '#': 0, 'Fecha de Transacción': 'Balance Neto:', 'Fecha/Hora de Creación': '', 'Descripción': '', 'Monto': netTotal, 'Tipo': '', 'Categoría': '', 'Monto Formateado': formatCurrency(netTotal) }
   );
 
   // Create workbook and worksheet

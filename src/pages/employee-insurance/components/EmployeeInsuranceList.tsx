@@ -6,12 +6,10 @@ import { useAuthStore } from '../../auth/store/auth.store';
 import { useProperties } from '../../property';
 import {
   IEmployeeInsurance,
-  INSURANCE_STATUS_LABELS,
   APPROVAL_STATUS_LABELS,
-  InsuranceStatus,
   ApprovalStatus
 } from '../interfaces';
-import { formatCurrency, formatDate, isExpired, isExpiringSoon, getDaysUntilExpiration } from '../helpers';
+import { formatDate, isExpired, isExpiringSoon, getDaysUntilExpiration } from '../helpers';
 
 export const EmployeeInsuranceList = () => {
   const { data: insurances, isLoading, refetch } = useEmployeeInsurances();

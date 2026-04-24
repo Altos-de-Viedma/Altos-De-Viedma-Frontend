@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Icons, UI } from '../../../shared';
-import { useMonthlyBalances, useMonthlyTransactions } from '../hooks';
+import { useMonthlyBalances } from '../hooks';
 import { getMonthlyTransactions } from '../services';
 import { formatCurrency } from '../helpers';
 import { exportMonthlyTransactionsToExcel } from '../utils/excelExport';
@@ -25,8 +25,16 @@ export const MonthlyBalancesList = () => {
       // Use the existing service instead of direct fetch
       const transactions = await getMonthlyTransactions(month, year);
 
-      // Export to Excel
-      exportMonthlyTransactionsToExcel(transactions, month, year);
+      // Export to Excel - convert dates to strings and handle undefined fields
+      const transactionsForExport = transactions.map(t => ({
+        ...t,
+        transactionDate: typeof t.transactionDate === 'string' ? t.transactionDate : new Date(t.transactionDate).toISOString().split('T')[0],
+        createdAt: typeof t.createdAt === 'string' ? t.createdAt : new Date(t.createdAt).toISOString(),
+        updatedAt: typeof t.updatedAt === 'string' ? t.updatedAt : new Date(t.updatedAt).toISOString(),
+        description: t.description || ''
+      }));
+
+      exportMonthlyTransactionsToExcel(transactionsForExport, month, year);
 
     } catch (error) {
       console.error('Error downloading monthly transactions:', error);

@@ -23,7 +23,7 @@ export const BadgeIcon = ({ Icon, type, onBadgeCountChange }: Props) => {
   const { visitors, refetch: refetchVisitors } = useVisitors();
   const { invoices, refetch: refetchInvoices } = useInvoices();
   const { data: insurances, refetch: refetchInsurances } = useEmployeeInsurances();
-  const { data: expiredInsurances, refetch: refetchExpiredInsurances } = useExpiredInsurances();
+  const { refetch: refetchExpiredInsurances } = useExpiredInsurances();
   const [previousCount, setPreviousCount] = useState(0);
   const [hasNewItems, setHasNewItems] = useState(false);
   const { isNotificationSeen } = useSeenNotifications();
