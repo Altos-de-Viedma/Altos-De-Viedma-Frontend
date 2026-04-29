@@ -23,4 +23,9 @@ export interface IInvoice {
       phone: string;
     }[];
   };
+  selectedProperties?: {
+    id: string;
+    address: string;
+    isMain: boolean;
+  }[];
 }

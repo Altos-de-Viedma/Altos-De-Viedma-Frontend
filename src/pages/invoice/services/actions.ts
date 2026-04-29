@@ -57,7 +57,7 @@ export const updateInvoice = async (id: string, invoice: { title?: string; descr
   return data;
 };
 
-export const confirmInvoice = async (id: string): Promise<IInvoice> => {
-  const { data } = await altosDeViedmaApi.patch<IInvoice>(`/invoice/confirm/${id}`);
+export const confirmInvoice = async (id: string, confirmData: { amount: number; propertyIds: string[] }): Promise<IInvoice> => {
+  const { data } = await altosDeViedmaApi.patch<IInvoice>(`/invoice/confirm/${id}`, confirmData);
   return data;
 };

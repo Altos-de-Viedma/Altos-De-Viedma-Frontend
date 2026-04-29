@@ -3,14 +3,12 @@ import { useState, useEffect, useMemo } from 'react';
 import { CustomTable, Icons, StatusColorMap, UI, useDisclosure, IconContainer } from '../../../shared';
 import { InvoiceForm } from './InvoiceForm';
 import { InvoiceSearch } from './InvoiceSearch';
+import { PropertySelector } from './PropertySelector';
 import { useInvoices, useConfirmInvoice } from '../hooks';
 import { useAuthStore } from '../../auth';
 import { IInvoice } from '../interfaces/IInvoice';
 import { formatDate } from '../helper';
 import { useSeenNotifications } from '../../../hooks/useSeenNotifications';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createCashTransaction } from '../../cash/services';
-import { TransactionType, TransactionCategory } from '../../cash/interfaces/ICashTransaction';
 
 export const InvoiceList = () => {
   const { invoices, isLoading, refetch } = useInvoices();
@@ -20,22 +18,11 @@ export const InvoiceList = () => {
   const [selectedTab, setSelectedTab] = useState("in_progress");
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [expenseAmount, setExpenseAmount] = useState<string>('');
+  const [selectedPropertyIds, setSelectedPropertyIds] = useState<string[]>([]);
   const confirmInvoiceMutation = useConfirmInvoice();
   const { markAsSeen } = useSeenNotifications();
-  const queryClient = useQueryClient();
 
-  const createCashTransactionMutation = useMutation({
-    mutationFn: createCashTransaction,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cash-transactions'] });
-      queryClient.invalidateQueries({ queryKey: ['cash-daily-summary'] });
-      queryClient.invalidateQueries({ queryKey: ['cash-current-day'] });
-      queryClient.invalidateQueries({ queryKey: ['cash-total-balance'] });
-      queryClient.invalidateQueries({ queryKey: ['cash-transactions-by-date'] });
-    }
-  });
-
-  const isConfirmingInvoice = confirmInvoiceMutation.isPending || createCashTransactionMutation.isPending;
+  const isConfirmingInvoice = confirmInvoiceMutation.isPending;
 
   // Filtrar expensas por usuario y búsqueda
   const filteredInvoices = useMemo(() => {
@@ -74,22 +61,15 @@ export const InvoiceList = () => {
 
   // Handle confirming invoice - integrate with notification system and create cash transaction
   const handleConfirmInvoice = async () => {
-    if (invoiceToConfirm && expenseAmount.trim()) {
+    if (invoiceToConfirm && expenseAmount.trim() && selectedPropertyIds.length > 0) {
       try {
-        // Confirm invoice in the backend
-        await confirmInvoiceMutation.confirmInvoiceMutation({ id: invoiceToConfirm.id, invoice: invoiceToConfirm });
-
-        // Create cash transaction for the expense
-        const propertyAddress = invoiceToConfirm.property?.address || 'Propiedad desconocida';
-        const ownerName = invoiceToConfirm.property?.users?.[0]
-          ? `${invoiceToConfirm.property.users[0].name} ${invoiceToConfirm.property.users[0].lastName}`
-          : 'Propietario desconocido';
-
-        await createCashTransactionMutation.mutateAsync({
-          amount: parseFloat(expenseAmount),
-          type: TransactionType.ENTRY,
-          category: TransactionCategory.OTHER_INCOME,
-          description: `Expensas de ${propertyAddress} ${ownerName} entrada`
+        // Confirm invoice in the backend with selected properties
+        await confirmInvoiceMutation.confirmInvoiceMutation({
+          id: invoiceToConfirm.id,
+          confirmData: {
+            amount: parseFloat(expenseAmount),
+            propertyIds: selectedPropertyIds
+          }
         });
 
         // Also mark as seen in the notification system
@@ -97,8 +77,9 @@ export const InvoiceList = () => {
         onClose();
         setInvoiceToConfirm(null);
         setExpenseAmount('');
+        setSelectedPropertyIds([]);
       } catch (error) {
-        console.error('Error confirming invoice or creating cash transaction:', error);
+        console.error('Error confirming invoice:', error);
       }
     }
   };
@@ -152,7 +133,29 @@ export const InvoiceList = () => {
       .map(invoice => ({
         ...invoice,
         date: formatDate(invoice.date),
-        property: invoice.property ? (invoice.property.isMain ? `🏠 ${invoice.property.address}` : invoice.property.address) : 'N/A',
+        property: (() => {
+          // For confirmed invoices, show selected properties if available
+          if (invoice.state === 'confirmed' && invoice.selectedProperties && invoice.selectedProperties.length > 0) {
+            return (
+              <div className="flex flex-wrap gap-1">
+                {invoice.selectedProperties.map((property) => (
+                  <UI.Chip
+                    key={property.id}
+                    size="sm"
+                    variant="flat"
+                    color="primary"
+                    startContent={property.isMain ? <Icons.IoHomeOutline size={12} /> : <Icons.IoBusinessOutline size={12} />}
+                    className="text-xs"
+                  >
+                    {property.address}
+                  </UI.Chip>
+                ))}
+              </div>
+            );
+          }
+          // For pending invoices or confirmed without selected properties, show original property
+          return invoice.property ? (invoice.property.isMain ? `🏠 ${invoice.property.address}` : invoice.property.address) : 'N/A';
+        })(),
         phone: (invoice.property?.users && invoice.property.users.length > 0)
           ? invoice.property.users.map((user: any) => user.phone).filter((phone: any) => phone).join(', ') || 'Sin teléfono'
           : 'Sin propietarios',
@@ -181,6 +184,7 @@ export const InvoiceList = () => {
                 variant="solid"
                 onPress={() => {
                   setInvoiceToConfirm(invoice);
+                  setSelectedPropertyIds([]); // Reset selection
                   onOpen();
                 }}
                 startContent={<Icons.IoCheckmarkOutline size={18} />}
@@ -294,28 +298,45 @@ export const InvoiceList = () => {
                 <h2 className="text-xl font-bold">{invoiceToConfirm?.title}</h2>
                 <p className="text-gray-600 dark:text-gray-400 mb-4">{invoiceToConfirm?.description}</p>
 
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Monto pagado de la expensa *
-                  </label>
-                  <UI.Input
-                    type="number"
-                    placeholder="Ingrese el monto..."
-                    value={expenseAmount}
-                    onValueChange={setExpenseAmount}
-                    startContent={
-                      <div className="pointer-events-none flex items-center">
-                        <span className="text-default-400 text-small">$</span>
-                      </div>
-                    }
-                    classNames={{
-                      input: "text-right",
-                      inputWrapper: "border border-gray-300 dark:border-gray-600"
-                    }}
-                    isRequired
-                  />
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Monto pagado de la expensa *
+                    </label>
+                    <UI.Input
+                      type="number"
+                      placeholder="Ingrese el monto..."
+                      value={expenseAmount}
+                      onValueChange={setExpenseAmount}
+                      startContent={
+                        <div className="pointer-events-none flex items-center">
+                          <span className="text-default-400 text-small">$</span>
+                        </div>
+                      }
+                      classNames={{
+                        input: "text-right",
+                        inputWrapper: "border border-gray-300 dark:border-gray-600"
+                      }}
+                      isRequired
+                    />
+                  </div>
+
+                  {invoiceToConfirm?.user && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Propiedades del propietario *
+                      </label>
+                      <PropertySelector
+                        ownerName={`${invoiceToConfirm.user.name} ${invoiceToConfirm.user.lastName}`}
+                        selectedPropertyIds={selectedPropertyIds}
+                        onSelectionChange={setSelectedPropertyIds}
+                        isLoading={isConfirmingInvoice}
+                      />
+                    </div>
+                  )}
+
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Este monto se registrará automáticamente en la caja diaria como entrada
+                    Este monto se registrará automáticamente en la caja diaria como entrada para las propiedades seleccionadas
                   </p>
                 </div>
               </div>
@@ -327,6 +348,7 @@ export const InvoiceList = () => {
                 onPress={() => {
                   onClose();
                   setExpenseAmount('');
+                  setSelectedPropertyIds([]);
                 }}
                 isDisabled={isConfirmingInvoice}
                 startContent={<Icons.IoArrowBackOutline size={24} />}
@@ -338,7 +360,11 @@ export const InvoiceList = () => {
                 variant="solid"
                 onPress={handleConfirm}
                 isLoading={isConfirmingInvoice}
-                isDisabled={!expenseAmount.trim() || parseFloat(expenseAmount) <= 0}
+                isDisabled={
+                  !expenseAmount.trim() ||
+                  parseFloat(expenseAmount) <= 0 ||
+                  selectedPropertyIds.length === 0
+                }
                 startContent={!isConfirmingInvoice && <Icons.IoCheckmarkOutline size={24} />}
                 className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
               >

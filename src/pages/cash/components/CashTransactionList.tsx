@@ -190,6 +190,7 @@ export const CashTransactionList = () => {
   const columns = [
     { name: "Fecha/Hora", uid: "datetime" },
     { name: "Descripción", uid: "description" },
+    { name: "Propiedades", uid: "properties" },
     { name: "Monto", uid: "amount" },
     { name: "Tipo", uid: "type" },
     { name: "Categoría", uid: "category" }
@@ -214,6 +215,24 @@ export const CashTransactionList = () => {
     ),
     category: TRANSACTION_CATEGORY_LABELS[transaction.category],
     description: transaction.description || '-',
+    properties: transaction.properties && transaction.properties.length > 0 ? (
+      <div className="flex flex-wrap gap-1">
+        {transaction.properties.map((property) => (
+          <UI.Chip
+            key={property.id}
+            size="sm"
+            variant="flat"
+            color="primary"
+            startContent={property.isMain ? <Icons.IoHomeOutline size={12} /> : <Icons.IoBusinessOutline size={12} />}
+            className="text-xs"
+          >
+            {property.address}
+          </UI.Chip>
+        ))}
+      </div>
+    ) : (
+      <span className="text-gray-400 text-sm">Sin propiedades</span>
+    ),
     amount: (
       <div className="text-right">
         <span className={`font-mono font-bold text-lg ${
@@ -225,7 +244,7 @@ export const CashTransactionList = () => {
     )
   }));
 
-  const visibleColumns = ["datetime", "description", "amount", "type", "category"];
+  const visibleColumns = ["datetime", "description", "properties", "amount", "type", "category"];
 
   return (
     <div className="flex w-full flex-col space-y-6">

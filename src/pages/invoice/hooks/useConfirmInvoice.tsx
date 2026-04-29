@@ -5,21 +5,34 @@ import axios from 'axios';
 import { confirmInvoice } from '../services/actions';
 import { useAuthStore } from '../../auth';
 
+interface ConfirmInvoiceParams {
+  id: string;
+  confirmData: {
+    amount: number;
+    propertyIds: string[];
+  };
+}
+
 export const useConfirmInvoice = () => {
   const queryClient = useQueryClient();
   const { token } = useAuthStore();
 
   const { mutateAsync: confirmInvoiceMutation, isPending } = useMutation({
-    mutationFn: ({ id }: { id: string; invoice: any }) => confirmInvoice(id),
-    onSuccess: async (data: any, variables: { id: string; invoice: any }) => {
+    mutationFn: ({ id, confirmData }: ConfirmInvoiceParams) => confirmInvoice(id, confirmData),
+    onSuccess: async (data: any, variables: ConfirmInvoiceParams) => {
       // Invalidar queries (esto ya triggerea el refetch automáticamente)
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       queryClient.invalidateQueries({ queryKey: ['invoice'] });
+      queryClient.invalidateQueries({ queryKey: ['cash-transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['cash-daily-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['cash-current-day'] });
+      queryClient.invalidateQueries({ queryKey: ['cash-total-balance'] });
+      queryClient.invalidateQueries({ queryKey: ['cash-transactions-by-date'] });
 
       // Send notification webhook
       try {
-        // Get first property owner's phone number from the frontend invoice data
-        const propertyOwners = variables.invoice.property?.users || [];
+        // Get first property owner's phone number from the backend response
+        const propertyOwners = data.property?.users || [];
         const firstOwnerPhone = propertyOwners.find((user: any) => user.phone)?.phone || "";
 
         console.log('🔥🔥🔥 INVOICE - FIRST OWNER PHONE:', firstOwnerPhone);
@@ -53,6 +66,7 @@ export const useConfirmInvoice = () => {
 📝 ${data.title || 'Expensa'}
 📅 Fecha de aprobación: ${new Date().toLocaleDateString('es-AR')}
 🏠 Propiedad: ${data.property?.address || 'N/A'}
+💵 Monto: $${variables.confirmData.amount.toLocaleString('es-AR')}
 
 La expensa fue revisada y aprobada por el personal administrativo.
 

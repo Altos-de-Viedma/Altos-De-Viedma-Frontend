@@ -35,6 +35,12 @@ export interface ICashTransaction {
     name: string;
     lastName: string;
   };
+  properties?: {
+    id: string;
+    address: string;
+    description: string;
+    isMain: boolean;
+  }[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -44,6 +50,7 @@ export interface ICreateCashTransaction {
   type: TransactionType;
   category: TransactionCategory;
   description?: string;
+  propertyIds?: string[];
 }
 
 export interface IDailySummary {
