@@ -2,9 +2,17 @@ import { useState } from 'react';
 import { GenericPage, Icons, UI } from '../../../shared';
 import { InvoiceList } from '../components/InvoiceList';
 import { MonthlyPropertyStatus } from '../components/MonthlyPropertyStatus';
+import { PropertyStatusBoard } from '../../monthly-payments/components/PropertyStatusBoard';
+import { useMonthlyPaymentsByMonth } from '../../monthly-payments/hooks/useMonthlyPayments';
+import { getCurrentMonth } from '../../monthly-payments/helpers';
 
 export const InvoicePage = () => {
   const [activeTab, setActiveTab] = useState('invoices');
+  const currentDate = getCurrentMonth();
+  const [selectedYear, setSelectedYear] = useState(currentDate.year);
+  const [selectedMonth, setSelectedMonth] = useState(currentDate.month);
+
+  const { data: payments, isLoading } = useMonthlyPaymentsByMonth(selectedYear, selectedMonth);
 
   return (
     <GenericPage
@@ -47,6 +55,16 @@ export const InvoicePage = () => {
                   </div>
                 }
               />
+              <UI.Tab
+                key="status"
+                title={
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <Icons.IoGridOutline size={18} className="sm:w-5 sm:h-5" />
+                    <span className="hidden sm:inline">Estado de Pagos</span>
+                    <span className="sm:hidden">Pagos</span>
+                  </div>
+                }
+              />
             </UI.Tabs>
           </div>
 
@@ -54,6 +72,52 @@ export const InvoicePage = () => {
           <div className="w-full">
             {activeTab === 'invoices' && <InvoiceList />}
             {activeTab === 'monthly' && <MonthlyPropertyStatus />}
+            {activeTab === 'status' && (
+              <div className="space-y-4">
+                {/* Month/Year Selector for Status Tab */}
+                <div className="flex justify-center gap-4">
+                  <UI.Select
+                    label="Año"
+                    selectedKeys={[selectedYear.toString()]}
+                    onSelectionChange={(keys) => setSelectedYear(parseInt(Array.from(keys)[0] as string))}
+                    className="w-24"
+                    size="sm"
+                  >
+                    {Array.from({ length: 5 }, (_, i) => {
+                      const year = new Date().getFullYear() - 2 + i;
+                      return (
+                        <UI.SelectItem key={year.toString()}>
+                          {year}
+                        </UI.SelectItem>
+                      );
+                    })}
+                  </UI.Select>
+
+                  <UI.Select
+                    label="Mes"
+                    selectedKeys={[selectedMonth.toString()]}
+                    onSelectionChange={(keys) => setSelectedMonth(parseInt(Array.from(keys)[0] as string))}
+                    className="w-32"
+                    size="sm"
+                  >
+                    {['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].map((monthName, index) => (
+                      <UI.SelectItem key={(index + 1).toString()}>
+                        {monthName}
+                      </UI.SelectItem>
+                    ))}
+                  </UI.Select>
+                </div>
+
+                {/* Property Status Board */}
+                <PropertyStatusBoard
+                  payments={payments || []}
+                  year={selectedYear}
+                  month={selectedMonth}
+                  isLoading={isLoading}
+                />
+              </div>
+            )}
           </div>
         </div>
       }

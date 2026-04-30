@@ -93,6 +93,16 @@ export const NavBarComponent = () => {
             >
               <span className="hidden lg:inline">Emergencias</span>
             </UI.Button>
+
+            <UI.Button
+              variant="light"
+              size="sm"
+              startContent={<Icons.IoCalendarOutline size={16} />}
+              onPress={() => handleNavigate('/pagos-mensuales')}
+              className="text-foreground/70 hover:text-foreground responsive-text-xs min-w-unit-8 px-2 lg:px-3"
+            >
+              <span className="hidden lg:inline">Pagos</span>
+            </UI.Button>
           </div>
         </UI.NavbarItem>
       </UI.NavbarContent>
@@ -176,6 +186,15 @@ export const NavBarComponent = () => {
                     onPress={() => handleNavigate('/emergencias')}
                   >
                     Emergencias
+                  </UI.DropdownItem>
+
+                  <UI.DropdownItem
+                    key="monthly-payments"
+                    startContent={<Icons.IoCalendarOutline size={18} />}
+                    className="text-foreground md:hidden"
+                    onPress={() => handleNavigate('/pagos-mensuales')}
+                  >
+                    Pagos Mensuales
                   </UI.DropdownItem>
 
                   <UI.DropdownItem
