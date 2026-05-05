@@ -109,26 +109,16 @@ export const MassMessagingPage: React.FC = () => {
         <div className="mb-8">
           <Card>
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between w-full">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
-                    <Icons.IoChatbubblesOutline className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <h1 className="text-2xl font-bold">Mensajes Masivos</h1>
-                    <p className="text-foreground/60">
-                      Envía mensajes a múltiples propietarios de forma simultánea
-                    </p>
-                  </div>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
+                  <Icons.IoChatbubblesOutline className="w-6 h-6 text-primary" />
                 </div>
-                <Button
-                  variant="flat"
-                  startContent={<Icons.IoRefreshOutline className="w-4 h-4" />}
-                  onPress={handleRefresh}
-                  isDisabled={isSending || isActive}
-                >
-                  Actualizar
-                </Button>
+                <div>
+                  <h1 className="text-2xl font-bold">Mensajes Masivos</h1>
+                  <p className="text-foreground/60">
+                    Envía mensajes a múltiples propietarios de forma simultánea
+                  </p>
+                </div>
               </div>
             </CardHeader>
           </Card>
