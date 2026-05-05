@@ -16,21 +16,16 @@ interface SendingProgressProps {
     total: number;
     currentRecipient: string;
   };
-  results?: {
-    successful: number;
-    failed: number;
-  };
 }
 
 export const SendingProgress: React.FC<SendingProgressProps> = ({
   isActive,
-  progress,
-  results
+  progress
 }) => {
   const percentage = progress.total > 0 ? (progress.sent / progress.total) * 100 : 0;
-  const isCompleted = progress.sent === progress.total && progress.total > 0;
 
-  if (!isActive && !results) {
+  // Only show when actively sending
+  if (!isActive) {
     return null;
   }
 
@@ -39,9 +34,7 @@ export const SendingProgress: React.FC<SendingProgressProps> = ({
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
           <Icons.IoSendOutline className="w-5 h-5 text-primary" />
-          <h3 className="text-lg font-semibold">
-            {isCompleted ? 'Envío Completado' : 'Enviando Mensajes'}
-          </h3>
+          <h3 className="text-lg font-semibold">Enviando Mensajes</h3>
         </div>
       </CardHeader>
 
@@ -59,14 +52,14 @@ export const SendingProgress: React.FC<SendingProgressProps> = ({
             </div>
             <Progress
               value={percentage}
-              color={isCompleted ? "success" : "primary"}
+              color="primary"
               className="w-full"
               size="md"
             />
           </div>
 
           {/* Current Status */}
-          {isActive && progress.currentRecipient && (
+          {progress.currentRecipient && (
             <div className="flex items-center gap-2 p-3 bg-primary-50 dark:bg-primary-900/20 rounded-lg">
               <Icons.IoTimeOutline className="w-4 h-4 text-primary animate-spin" />
               <span className="text-sm">
@@ -75,44 +68,11 @@ export const SendingProgress: React.FC<SendingProgressProps> = ({
             </div>
           )}
 
-          {/* Results Summary */}
-          {results && (
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center gap-2 p-3 bg-success-50 dark:bg-success-900/20 rounded-lg">
-                <Icons.IoCheckmarkCircleOutline className="w-5 h-5 text-success" />
-                <div>
-                  <p className="text-sm font-medium text-success">Exitosos</p>
-                  <p className="text-lg font-bold text-success">{results.successful}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 p-3 bg-danger-50 dark:bg-danger-900/20 rounded-lg">
-                <Icons.IoCloseCircleOutline className="w-5 h-5 text-danger" />
-                <div>
-                  <p className="text-sm font-medium text-danger">Fallidos</p>
-                  <p className="text-lg font-bold text-danger">{results.failed}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Status Chips */}
+          {/* Status Chip */}
           <div className="flex gap-2 flex-wrap">
-            {isActive && (
-              <Chip color="primary" variant="flat" startContent={<Icons.IoTimeOutline className="w-3 h-3" />}>
-                Enviando...
-              </Chip>
-            )}
-            {isCompleted && (
-              <Chip color="success" variant="flat" startContent={<Icons.IoCheckmarkCircleOutline className="w-3 h-3" />}>
-                Completado
-              </Chip>
-            )}
-            {results && results.failed > 0 && (
-              <Chip color="warning" variant="flat" startContent={<Icons.IoCloseCircleOutline className="w-3 h-3" />}>
-                Algunos fallos
-              </Chip>
-            )}
+            <Chip color="primary" variant="flat" startContent={<Icons.IoTimeOutline className="w-3 h-3" />}>
+              Enviando...
+            </Chip>
           </div>
         </div>
       </CardBody>

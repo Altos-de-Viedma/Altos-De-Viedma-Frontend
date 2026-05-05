@@ -14,9 +14,9 @@ import { MassMessageFormData } from '../validators';
 
 export const MassMessagingPage: React.FC = () => {
   const [selectedOwnerIds, setSelectedOwnerIds] = useState<string[]>([]);
-  const [lastResults, setLastResults] = useState<{ successful: number; failed: number } | undefined>(undefined);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [pendingMessage, setPendingMessage] = useState<string>('');
+  const [messageFormKey, setMessageFormKey] = useState(0); // Key to force form reset
 
   // Fetch owners data
   const { data: owners = [], isLoading: ownersLoading, error: ownersError, refetch } = useOwners();
@@ -24,15 +24,17 @@ export const MassMessagingPage: React.FC = () => {
   // Send messages hook
   const { sendMassMessages, isLoading: isSending, isActive, progress, reset } = useSendMassMessages({
     onSuccess: (results) => {
-      setLastResults(results);
       setSelectedOwnerIds([]); // Clear selection after successful send
       setIsConfirmModalOpen(false);
       setPendingMessage('');
+      setMessageFormKey(prev => prev + 1); // Force form reset by changing key
+      toast.success(`Mensajes enviados correctamente a ${results.successful} propietarios`);
     },
     onError: (error) => {
       console.error('Error sending mass messages:', error);
       setIsConfirmModalOpen(false);
       setPendingMessage('');
+      toast.error('Error al enviar mensajes');
     }
   });
 
@@ -72,7 +74,7 @@ export const MassMessagingPage: React.FC = () => {
   const handleRefresh = () => {
     refetch();
     setSelectedOwnerIds([]);
-    setLastResults(undefined);
+    setMessageFormKey(prev => prev + 1); // Reset form
     reset();
   };
 
@@ -147,6 +149,7 @@ export const MassMessagingPage: React.FC = () => {
           {/* Right Column - Message Form and Progress */}
           <div className="space-y-6">
             <MessageForm
+              key={messageFormKey} // Force reset when key changes
               selectedOwnersCount={selectedOwnerIds.length}
               onSendMessage={handleSendMessage}
               isLoading={isSending}
@@ -156,7 +159,6 @@ export const MassMessagingPage: React.FC = () => {
             <SendingProgress
               isActive={isActive}
               progress={progress}
-              results={lastResults}
             />
           </div>
         </div>

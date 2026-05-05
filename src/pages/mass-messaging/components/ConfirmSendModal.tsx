@@ -33,6 +33,19 @@ export const ConfirmSendModal: React.FC<ConfirmSendModalProps> = ({
 }) => {
   const messagePreview = message.length > 100 ? `${message.substring(0, 100)}...` : message;
 
+  // Function to replace variables with sample data for preview
+  const getPersonalizedPreview = (messageTemplate: string, owner: IOwnerContact): string => {
+    let personalizedMessage = messageTemplate;
+    personalizedMessage = personalizedMessage.replace(/\{\{nombre_propietario\}\}/g, `${owner.name} ${owner.lastName}`);
+    personalizedMessage = personalizedMessage.replace(/\{\{nombre\}\}/g, owner.name);
+    personalizedMessage = personalizedMessage.replace(/\{\{apellido\}\}/g, owner.lastName);
+    return personalizedMessage;
+  };
+
+  // Check if message contains variables
+  const hasVariables = /\{\{(nombre_propietario|nombre|apellido)\}\}/.test(message);
+  const sampleOwner = selectedOwners[0]; // Use first owner for preview
+
   return (
     <Modal
       isOpen={isOpen}
@@ -86,18 +99,46 @@ export const ConfirmSendModal: React.FC<ConfirmSendModalProps> = ({
                 <Icons.IoChatbubblesOutline className="w-4 h-4 text-foreground/60" />
                 <span className="text-sm font-medium text-foreground/80">Vista previa del mensaje:</span>
               </div>
+
+              {/* Mensaje original/template */}
               <Card className="bg-content2/50">
                 <CardBody className="p-4">
-                  <p className="text-sm text-foreground/80 italic">
-                    "{messagePreview}"
-                  </p>
-                  {message.length > 100 && (
-                    <p className="text-xs text-foreground/50 mt-2">
-                      Mensaje completo: {message.length} caracteres
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-foreground/60 uppercase tracking-wide">
+                      Plantilla del mensaje:
                     </p>
-                  )}
+                    <p className="text-sm text-foreground/80 italic">
+                      "{messagePreview}"
+                    </p>
+                    {message.length > 100 && (
+                      <p className="text-xs text-foreground/50">
+                        Mensaje completo: {message.length} caracteres
+                      </p>
+                    )}
+                  </div>
                 </CardBody>
               </Card>
+
+              {/* Vista previa personalizada si hay variables */}
+              {hasVariables && sampleOwner && (
+                <Card className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800">
+                  <CardBody className="p-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Icons.IoPersonOutline className="w-4 h-4 text-primary-600" />
+                        <p className="text-xs font-medium text-primary-700 dark:text-primary-300 uppercase tracking-wide">
+                          Ejemplo personalizado para {sampleOwner.name} {sampleOwner.lastName}:
+                        </p>
+                      </div>
+                      <p className="text-sm text-primary-800 dark:text-primary-200 font-medium">
+                        "{getPersonalizedPreview(message, sampleOwner).length > 100
+                          ? `${getPersonalizedPreview(message, sampleOwner).substring(0, 100)}...`
+                          : getPersonalizedPreview(message, sampleOwner)}"
+                      </p>
+                    </div>
+                  </CardBody>
+                </Card>
+              )}
             </div>
 
             {/* Lista de destinatarios (primeros 5) */}
@@ -149,6 +190,9 @@ export const ConfirmSendModal: React.FC<ConfirmSendModalProps> = ({
                       <li>• Los mensajes se enviarán uno por uno con un intervalo de 2 segundos</li>
                       <li>• El proceso puede tardar varios minutos en completarse</li>
                       <li>• No podrás cancelar el envío una vez iniciado</li>
+                      {hasVariables && (
+                        <li>• Las variables se reemplazarán automáticamente para cada propietario</li>
+                      )}
                     </ul>
                   </div>
                 </div>

@@ -7,6 +7,20 @@ export class MassMessagingService {
   private static readonly API_KEY = '782A3BE06AAC-47C5-AE61-4985CB15631E';
 
   /**
+   * Replaces variables in message template with owner data
+   */
+  private static replaceMessageVariables(messageTemplate: string, owner: IOwnerContact): string {
+    let personalizedMessage = messageTemplate;
+
+    // Replace variables with owner data
+    personalizedMessage = personalizedMessage.replace(/\{\{nombre_propietario\}\}/g, `${owner.name} ${owner.lastName}`);
+    personalizedMessage = personalizedMessage.replace(/\{\{nombre\}\}/g, owner.name);
+    personalizedMessage = personalizedMessage.replace(/\{\{apellido\}\}/g, owner.lastName);
+
+    return personalizedMessage;
+  }
+
+  /**
    * Formats phone number to WhatsApp format (54911...)
    */
   private static formatPhoneNumber(phone: string): string {
@@ -103,7 +117,7 @@ export class MassMessagingService {
    * Sends messages to multiple recipients with delay between sends
    */
   static async sendMassMessages(
-    message: string,
+    messageTemplate: string,
     recipients: IOwnerContact[],
     token: string,
     onProgress?: (sent: number, total: number, currentRecipient: string) => void,
@@ -119,7 +133,10 @@ export class MassMessagingService {
       try {
         onProgress?.(i, recipients.length, `${recipient.name} ${recipient.lastName}`);
 
-        const result = await this.sendMessage(message, recipient.phone, token);
+        // Personalize message for each recipient
+        const personalizedMessage = this.replaceMessageVariables(messageTemplate, recipient);
+
+        const result = await this.sendMessage(personalizedMessage, recipient.phone, token);
 
         if (result.success) {
           successful++;

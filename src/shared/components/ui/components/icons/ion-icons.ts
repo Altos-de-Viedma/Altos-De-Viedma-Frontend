@@ -20,6 +20,7 @@ export {
   IoChevronUpOutline,
   IoCloseCircleOutline,
   IoCloseOutline,
+  IoCodeOutline,
   IoCopyOutline,
   IoCreateOutline,
   IoCubeOutline,
