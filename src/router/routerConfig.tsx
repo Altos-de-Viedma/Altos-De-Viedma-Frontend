@@ -15,6 +15,7 @@ const InvoicePage = lazy(() => import('../pages/invoice/pages/InvoicePage').then
 const CashPage = lazy(() => import('../pages/cash/pages/CashPage').then(m => ({ default: m.CashPage })));
 const MonthlyPaymentsPage = lazy(() => import('../pages/monthly-payments/MonthlyPaymentsPage').then(m => ({ default: m.MonthlyPaymentsPage })));
 const EmployeeInsurancePage = lazy(() => import('../pages/employee-insurance/pages/EmployeeInsurancePage').then(m => ({ default: m.EmployeeInsurancePage })));
+const MassMessagingPage = lazy(() => import('../pages/mass-messaging/pages/MassMessagingPage').then(m => ({ default: m.MassMessagingPage })));
 const DashboardLayoutPage = lazy(() => import('../pages/dashboard/dashboard-layout/DashboardPage').then(m => ({ default: m.DashboardLayoutPage })));
 
 // Loading component
@@ -103,25 +104,31 @@ export const router = createBrowserRouter( [
       {
         path: 'facturas',
         element: (
-          <Suspense fallback={<PageLoader />}>
-            <InvoicePage />
-          </Suspense>
+          <ProtectedRoute userStatus="authorized" role="user" redirectTo="/home" excludeRoles={['security']}>
+            <Suspense fallback={<PageLoader />}>
+              <InvoicePage />
+            </Suspense>
+          </ProtectedRoute>
         ),
       },
       {
         path: 'caja',
         element: (
-          <Suspense fallback={<PageLoader />}>
-            <CashPage />
-          </Suspense>
+          <ProtectedRoute userStatus="authorized" role="user" redirectTo="/home" excludeRoles={['security']}>
+            <Suspense fallback={<PageLoader />}>
+              <CashPage />
+            </Suspense>
+          </ProtectedRoute>
         ),
       },
       {
         path: 'pagos-mensuales',
         element: (
-          <Suspense fallback={<PageLoader />}>
-            <MonthlyPaymentsPage />
-          </Suspense>
+          <ProtectedRoute userStatus="authorized" role="user" redirectTo="/home" excludeRoles={['security']}>
+            <Suspense fallback={<PageLoader />}>
+              <MonthlyPaymentsPage />
+            </Suspense>
+          </ProtectedRoute>
         ),
       },
       {
@@ -138,6 +145,16 @@ export const router = createBrowserRouter( [
           <ProtectedRoute userStatus="authorized" role="admin" redirectTo="/home">
             <Suspense fallback={<PageLoader />}>
               <UsersPage />
+            </Suspense>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'mensajes-masivos',
+        element: (
+          <ProtectedRoute userStatus="authorized" role="admin" redirectTo="/home">
+            <Suspense fallback={<PageLoader />}>
+              <MassMessagingPage />
             </Suspense>
           </ProtectedRoute>
         ),

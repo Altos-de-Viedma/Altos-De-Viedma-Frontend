@@ -29,3 +29,4 @@ export * from './package/pages/PackagesPage';
 export * from './property/pages/PropertiesPage';
 export * from './users/pages/UsersPage';
 export * from './visitor/pages/VisitorsPage';
+export * from './mass-messaging';

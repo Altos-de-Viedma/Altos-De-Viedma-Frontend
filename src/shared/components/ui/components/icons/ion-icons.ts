@@ -78,4 +78,6 @@ export {
   IoBriefcaseOutline,
   IoCardOutline,
   IoBusinessOutline,
+  IoChatbubblesOutline,
+  IoSendOutline,
 } from 'react-icons/io5';

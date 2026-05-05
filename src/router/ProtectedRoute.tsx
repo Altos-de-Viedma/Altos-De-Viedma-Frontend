@@ -9,13 +9,17 @@ interface ProtectedRouteProps {
   userStatus: AuthStatus;
   role: string;
   redirectTo?: string;
+  excludeRoles?: string[];
 }
 
-export const ProtectedRoute = ( { children, userStatus, role, redirectTo = "/" }: ProtectedRouteProps ) => {
+export const ProtectedRoute = ( { children, userStatus, role, redirectTo = "/", excludeRoles = [] }: ProtectedRouteProps ) => {
 
   const { status, user } = useAuthStore();
-  
-  if ( status !== userStatus || !user?.roles.includes( role ) ) {
+
+  // Check if user has any excluded roles
+  const hasExcludedRole = excludeRoles.length > 0 && user?.roles?.some(userRole => excludeRoles.includes(userRole));
+
+  if ( status !== userStatus || !user?.roles.includes( role ) || hasExcludedRole ) {
     return <Navigate to={ redirectTo } />;
   }
 

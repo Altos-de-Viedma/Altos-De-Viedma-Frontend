@@ -222,6 +222,8 @@ export const MonthlyPaymentsList = () => {
                 onSelectionChange={(keys) => setSelectedYear(parseInt(Array.from(keys)[0] as string))}
                 className="w-24"
                 size="sm"
+                placeholder="Año"
+                defaultSelectedKeys={[selectedYear.toString()]}
               >
                 {Array.from({ length: 5 }, (_, i) => {
                   const year = new Date().getFullYear() - 2 + i;
@@ -239,6 +241,8 @@ export const MonthlyPaymentsList = () => {
                 onSelectionChange={(keys) => setSelectedMonth(parseInt(Array.from(keys)[0] as string))}
                 className="w-32"
                 size="sm"
+                placeholder="Mes"
+                defaultSelectedKeys={[selectedMonth.toString()]}
               >
                 {MONTH_NAMES.map((monthName, index) => (
                   <UI.SelectItem key={(index + 1).toString()}>
