@@ -28,20 +28,37 @@ export const MonthlyPaymentsList = () => {
 
   const isAdmin = user?.roles?.includes('admin');
 
-  // Filter payments by search term
+  // Filter and sort payments
   const filteredPayments = useMemo(() => {
     if (!payments) return [];
 
-    if (!searchTerm.trim()) return payments;
+    let result = [...payments];
 
-    const searchLower = searchTerm.toLowerCase().trim();
-    return payments.filter(payment =>
-      payment.property.address.toLowerCase().includes(searchLower) ||
-      payment.property.users?.some(user =>
-        user.name.toLowerCase().includes(searchLower) ||
-        user.lastName.toLowerCase().includes(searchLower)
-      )
-    );
+    if (searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase().trim();
+      result = result.filter(payment =>
+        payment.property.address.toLowerCase().includes(searchLower) ||
+        payment.property.users?.some(user =>
+          user.name.toLowerCase().includes(searchLower) ||
+          user.lastName.toLowerCase().includes(searchLower)
+        )
+      );
+    }
+
+    return result.sort((a, b) => {
+      // Natural alphanumeric sort by address
+      const addressCompare = a.property.address.localeCompare(
+        b.property.address,
+        undefined,
+        { numeric: true, sensitivity: 'base' }
+      );
+      if (addressCompare !== 0) return addressCompare;
+
+      // Secondary sort: by payment date (newest first)
+      const dateA = a.paymentDate ? new Date(a.paymentDate).getTime() : 0;
+      const dateB = b.paymentDate ? new Date(b.paymentDate).getTime() : 0;
+      return dateB - dateA;
+    });
   }, [payments, searchTerm]);
 
   const handleStatusUpdate = async (paymentId: string, newStatus: PaymentStatus) => {

@@ -17,12 +17,25 @@ export const PropertyStatusBoard = ({
   isLoading
 }: PropertyStatusBoardProps) => {
 
-  // Sort properties alphabetically by address and prepare data
+  // Sort properties by address (natural alphanumeric) and then by payment date, and prepare data
   const sortedProperties = useMemo(() => {
     if (!payments) return [];
 
     return [...payments]
-      .sort((a, b) => a.property.address.localeCompare(b.property.address))
+      .sort((a, b) => {
+        // Natural alphanumeric sort by address
+        const addressCompare = a.property.address.localeCompare(
+          b.property.address,
+          undefined,
+          { numeric: true, sensitivity: 'base' }
+        );
+        if (addressCompare !== 0) return addressCompare;
+
+        // Secondary sort: by payment date (newest first)
+        const dateA = a.paymentDate ? new Date(a.paymentDate).getTime() : 0;
+        const dateB = b.paymentDate ? new Date(b.paymentDate).getTime() : 0;
+        return dateB - dateA;
+      })
       .map(payment => ({
         ...payment,
         isPaid: payment.status === PaymentStatus.PAID,

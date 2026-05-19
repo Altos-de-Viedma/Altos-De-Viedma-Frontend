@@ -85,11 +85,21 @@ export const MonthlyPropertyStatus = () => {
         }
       });
 
-      // Convert to array and sort alphabetically
+      // Convert to array and sort by address (natural alphanumeric) and then by invoice date
       const propertiesArray = Array.from(propertyStatusMap.values()).sort((a, b) => {
         if (a.isMain && !b.isMain) return -1;
         if (!a.isMain && b.isMain) return 1;
-        return a.address.localeCompare(b.address);
+        
+        const addressCompare = a.address.localeCompare(
+          b.address,
+          undefined,
+          { numeric: true, sensitivity: 'base' }
+        );
+        if (addressCompare !== 0) return addressCompare;
+
+        const dateA = a.invoice?.date ? new Date(a.invoice.date).getTime() : 0;
+        const dateB = b.invoice?.date ? new Date(b.invoice.date).getTime() : 0;
+        return dateB - dateA;
       });
 
       const submittedCount = propertiesArray.filter(p => p.hasSubmitted).length;
@@ -164,10 +174,20 @@ export const MonthlyPropertyStatus = () => {
         if (a.status === 'not_submitted' && b.status === 'pending') return 1;
       }
 
-      // Within same status, sort alphabetically by address
+      // Within same status, sort by address (natural alphanumeric) and then by invoice date
       if (a.isMain && !b.isMain) return -1;
       if (!a.isMain && b.isMain) return 1;
-      return a.address.localeCompare(b.address);
+      
+      const addressCompare = a.address.localeCompare(
+        b.address,
+        undefined,
+        { numeric: true, sensitivity: 'base' }
+      );
+      if (addressCompare !== 0) return addressCompare;
+
+      const dateA = a.invoice?.date ? new Date(a.invoice.date).getTime() : 0;
+      const dateB = b.invoice?.date ? new Date(b.invoice.date).getTime() : 0;
+      return dateB - dateA;
     })
     .map(property => ({
     ...property,
