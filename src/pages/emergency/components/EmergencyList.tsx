@@ -63,9 +63,9 @@ export const EmergencyList = () => {
     { name: "Fecha", uid: "date" },
     { name: "Visto", uid: "seen" },
     { name: "Descripción", uid: "description" },
-    { name: "Usuario", uid: "user" },
-    { name: "Propiedad", uid: "property" },
-    { name: "Teléfono", uid: "phone" },
+    { name: "Usuario", uid: "user", sortable: true, sortKey: "ownerFullNames" },
+    { name: "Propiedad", uid: "property", sortable: true, sortKey: "originalAddress" },
+    { name: "Teléfono", uid: "phone", sortable: true, sortKey: "emergencyPhone" },
     { name: "Opciones", uid: "actions" }
   ];
 
@@ -99,6 +99,7 @@ export const EmergencyList = () => {
             {`${ emergency.user.lastName }, ${ emergency.user.name }`}
           </UserModal>
         ),
+        ownerFullNames: `${ emergency.user.lastName }, ${ emergency.user.name }`,
         property: userProperty ? (
           <div className="flex flex-col">
             <span className="font-medium">{userProperty.address}</span>
@@ -113,7 +114,9 @@ export const EmergencyList = () => {
             Sin propiedad
           </UI.Chip>
         ),
+        originalAddress: userProperty ? userProperty.address : "",
         phone: generateWhatsAppLink( emergency.user.phone ),
+        emergencyPhone: emergency.user.phone,
         status: emergency.emergencyEnded
           ? <UI.Chip color="success" startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> } variant="flat">Finalizada</UI.Chip>
           : <UI.Chip color="danger" startContent={ <Icons.IoAlertCircleOutline size={ 18 } /> } variant="flat">Activa</UI.Chip>,

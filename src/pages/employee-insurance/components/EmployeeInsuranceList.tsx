@@ -212,7 +212,7 @@ export const EmployeeInsuranceList = () => {
 
   const columns = [
     { name: "Empleado", uid: "employee" },
-    { name: "Propiedad", uid: "property" },
+    { name: "Propiedad", uid: "property", sortable: true, sortKey: "originalAddress" },
     { name: "Compañía", uid: "company" },
     { name: "Vencimiento", uid: "expiration" },
     { name: "Aprobación", uid: "approval" },
@@ -232,6 +232,7 @@ export const EmployeeInsuranceList = () => {
         <p className="text-bold text-xs text-default-400">{insurance.employeeDocument}</p>
       </div>
     ),
+    originalAddress: property ? property.address : "",
     property: (
       <div className="flex flex-col">
         {property ? (

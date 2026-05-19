@@ -171,7 +171,9 @@ export const MonthlyPropertyStatus = () => {
     })
     .map(property => ({
     ...property,
+    originalAddress: property.address,
     address: property.isMain ? `🏠 ${property.address}` : property.address,
+    ownerFullNames: property.owners.join(', '),
     owners: property.owners.join(', ') || 'Sin propietarios',
     uploadDate: property.invoice ?
       new Date(property.invoice.date).toLocaleDateString('es-AR', {
@@ -212,8 +214,8 @@ export const MonthlyPropertyStatus = () => {
   })) : [];
 
   const columns = [
-    { name: "Propiedad", uid: "address" },
-    { name: "Propietarios", uid: "owners" },
+    { name: "Propiedad", uid: "address", sortable: true, sortKey: "originalAddress" },
+    { name: "Propietarios", uid: "owners", sortable: true, sortKey: "ownerFullNames" },
     { name: "Fecha Subida", uid: "uploadDate" },
     { name: "Estado", uid: "status" },
     { name: "Expensa", uid: "actions" }

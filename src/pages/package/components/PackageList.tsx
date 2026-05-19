@@ -50,9 +50,9 @@ export const PackageList = () => {
     { name: "Fecha de creación", uid: "date" },
     { name: "Fecha estimada de recepción", uid: "arrivalDate" },
     { name: "Descripción", uid: "description" },
-    { name: "Propietario", uid: "user" },
-    { name: "Propiedad", uid: "property" },
-    { name: "Teléfono", uid: "phone" },
+    { name: "Propietario", uid: "user", sortable: true, sortKey: "ownerFullNames" },
+    { name: "Propiedad", uid: "property", sortable: true, sortKey: "originalAddress" },
+    { name: "Teléfono", uid: "phone", sortable: true, sortKey: "packagePhone" },
     { name: "Opciones", uid: "actions" }
   ];
 
@@ -83,8 +83,11 @@ export const PackageList = () => {
         {`${ pkg.user.lastName }, ${ pkg.user.name }`}
       </UserModal>
     ),
+    ownerFullNames: `${ pkg.user.lastName }, ${ pkg.user.name }`,
     phone: generateWhatsAppLink( pkg.user.phone ),
+    packagePhone: pkg.user.phone,
     property: pkg.property.isMain ? `🏠 ${ pkg.property.address }` : pkg.property.address,
+    originalAddress: pkg.property.address,
     receivedStatus: pkg.received
       ? <UI.Chip color="success" startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> } variant="flat">Recibido</UI.Chip>
       : <UI.Chip color="secondary" startContent={ <Icons.IoAlertCircleOutline size={ 18 } /> } variant="flat">No recibido</UI.Chip>,

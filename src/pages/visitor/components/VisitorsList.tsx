@@ -48,15 +48,15 @@ export const VisitorsList = () => {
 
   const columns = [
     { name: "Foto", uid: "profilePicture" },
-    { name: "Nombre completo", uid: "fullName" },
+    { name: "Nombre completo", uid: "fullName", sortable: true },
     { name: "Ingreso", uid: "date" },
     { name: "Fecha de salida estimada", uid: "dateAndTimeOfVisit" },
     { name: "D.N.I.", uid: "dni" },
-    { name: "Teléfono", uid: "phone" },
+    { name: "Teléfono", uid: "phone", sortable: true, sortKey: "visitorPhone" },
     { name: "Descripción", uid: "description" },
     { name: "Patente", uid: "vehiclePlate" },
-    { name: "Propiedad", uid: "property" },
-    { name: "Propietario", uid: "propertyOwner" },
+    { name: "Propiedad", uid: "property", sortable: true, sortKey: "originalAddress" },
+    { name: "Propietario", uid: "propertyOwner", sortable: true, sortKey: "ownerFullNames" },
     { name: "Estado", uid: "visitCompleted" },
     { name: "Opciones", uid: "actions" }
   ];
@@ -91,6 +91,7 @@ export const VisitorsList = () => {
       profilePicture: <UI.Avatar className="w-10 h-10 text-tiny" src={ visitor.profilePicture } />,
       dateAndTimeOfVisit: formatDate( visitor.dateAndTimeOfVisit ),
       property: normalizedProperty.isMain ? `🏠 ${ normalizedProperty.address }` : normalizedProperty.address,
+      originalAddress: normalizedProperty.address,
       propertyOwner: (
         <div className="flex flex-wrap gap-1">
           {normalizedProperty.users.map((owner) => (
@@ -107,7 +108,9 @@ export const VisitorsList = () => {
           ))}
         </div>
       ),
+      ownerFullNames: normalizedProperty.users.map(owner => `${owner.lastName}, ${owner.name}`).join(' '),
       phone: generateWhatsAppLink( visitor.phone ),
+      visitorPhone: visitor.phone,
       visitCompleted: visitor.visitCompleted
         ? <UI.Chip color="success" startContent={ <Icons.IoCheckmarkOutline size={ 18 } /> } variant="flat">Finalizada</UI.Chip>
         : <UI.Chip color="secondary" startContent={ <Icons.IoAlertCircleOutline size={ 18 } /> } variant="flat">En curso</UI.Chip>,

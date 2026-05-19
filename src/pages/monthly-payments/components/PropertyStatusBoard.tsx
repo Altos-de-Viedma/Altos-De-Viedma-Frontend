@@ -142,13 +142,7 @@ export const PropertyStatusBoard = ({
 
               {/* Right side: Payment info */}
               <div className="flex items-center gap-6 flex-shrink-0">
-                {/* Amount */}
-                <div className="text-right">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Monto</div>
-                  <div className="font-mono font-semibold text-gray-900 dark:text-gray-100">
-                    ${payment.amountDue.toLocaleString()}
-                  </div>
-                </div>
+
 
                 {/* Payment Date */}
                 <div className="text-right min-w-[120px]">

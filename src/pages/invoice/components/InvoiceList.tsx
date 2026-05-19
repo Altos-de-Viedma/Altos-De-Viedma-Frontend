@@ -106,8 +106,8 @@ export const InvoiceList = () => {
     { name: "Título", uid: "title" },
     { name: "Estado", uid: "state" },
     { name: "Fecha", uid: "date" },
-    { name: "Propiedad", uid: "property" },
-    { name: "Teléfono notificación", uid: "phone" },
+    { name: "Propiedad", uid: "property", sortable: true, sortKey: "originalAddress" },
+    { name: "Teléfono notificación", uid: "phone", sortable: true, sortKey: "ownerPhone" },
     { name: "URL", uid: "invoiceUrl" },
     { name: "Opciones", uid: "actions" }
   ];
@@ -156,9 +156,13 @@ export const InvoiceList = () => {
           // For pending invoices or confirmed without selected properties, show original property
           return invoice.property ? (invoice.property.isMain ? `🏠 ${invoice.property.address}` : invoice.property.address) : 'N/A';
         })(),
+        originalAddress: invoice.property ? invoice.property.address : "",
         phone: (invoice.property?.users && invoice.property.users.length > 0)
           ? invoice.property.users.map((user: any) => user.phone).filter((phone: any) => phone).join(', ') || 'Sin teléfono'
           : 'Sin propietarios',
+        ownerPhone: (invoice.property?.users && invoice.property.users.length > 0)
+          ? invoice.property.users.map((user: any) => user.phone).filter((phone: any) => phone).join(', ')
+          : "",
         state: invoice.state === 'confirmed'
           ? <UI.Chip color="success" startContent={<Icons.IoCheckmarkOutline size={18} />} variant="flat">Aprobada</UI.Chip>
           : <UI.Chip color="warning" startContent={<Icons.IoTimeOutline size={18} />} variant="flat">Pendiente de Aprobación</UI.Chip>,

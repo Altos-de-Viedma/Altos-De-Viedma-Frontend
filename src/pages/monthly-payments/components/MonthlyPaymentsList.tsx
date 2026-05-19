@@ -67,8 +67,8 @@ export const MonthlyPaymentsList = () => {
   }
 
   const columns = [
-    { name: "Propiedad", uid: "property" },
-    { name: "Propietarios", uid: "owners" },
+    { name: "Propiedad", uid: "property", sortable: true, sortKey: "originalAddress" },
+    { name: "Propietarios", uid: "owners", sortable: true, sortKey: "ownerFullNames" },
     { name: "Monto a Pagar", uid: "amountDue" },
     { name: "Monto Pagado", uid: "amountPaid" },
     { name: "Estado", uid: "status" },
@@ -84,6 +84,7 @@ export const MonthlyPaymentsList = () => {
         <span className="font-medium">{payment.property.address}</span>
       </div>
     ),
+    originalAddress: payment.property.address,
     owners: payment.property.users && payment.property.users.length > 0 ? (
       <div className="flex flex-col gap-1">
         {payment.property.users.map((owner, index) => (
@@ -96,6 +97,7 @@ export const MonthlyPaymentsList = () => {
     ) : (
       <span className="text-gray-400 text-sm">Sin propietarios</span>
     ),
+    ownerFullNames: payment.property.users?.map(owner => `${owner.lastName}, ${owner.name}`).join(' ') || "",
     amountDue: (
       <span className="font-mono font-semibold text-gray-900 dark:text-gray-100">
         {formatCurrency(payment.amountDue)}

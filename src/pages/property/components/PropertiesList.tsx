@@ -38,10 +38,10 @@ export const PropertiesList = () => {
 
   const columns = [
     { name: "Principal", uid: "isMain" },
-    { name: "Dirección", uid: "address" },
+    { name: "Dirección", uid: "address", sortable: true, sortKey: "originalAddress" },
     { name: "Descripción", uid: "description" },
-    { name: "Propietarios", uid: "owners" },
-    { name: "Teléfonos", uid: "phones" },
+    { name: "Propietarios", uid: "owners", sortable: true, sortKey: "ownerFullNames" },
+    { name: "Teléfonos", uid: "phones", sortable: true, sortKey: "ownerPhones" },
     ...(user?.roles?.includes('admin') ? [{ name: "Opciones", uid: "actions" }] : [])
   ];
 
@@ -116,6 +116,8 @@ export const PropertiesList = () => {
       ownerLastNames: property.users.map(user => user.lastName).join(' '),
       ownerUsernames: property.users.map(user => user.username).join(' '),
       ownerFullNames: property.users.map(user => `${user.lastName}, ${user.name}`).join(' '),
+      ownerPhones: property.users.map(user => user.phone).join(', '),
+      originalAddress: property.address,
       ...(user?.roles?.includes('admin') && { actions: <PropertyForm id={property.id} /> })
     }));
 

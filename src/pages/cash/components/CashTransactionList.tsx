@@ -190,7 +190,7 @@ export const CashTransactionList = () => {
   const columns = [
     { name: "Fecha/Hora", uid: "datetime" },
     { name: "Descripción", uid: "description" },
-    { name: "Propiedades", uid: "properties" },
+    { name: "Propiedades", uid: "properties", sortable: true, sortKey: "originalAddress" },
     { name: "Monto", uid: "amount" },
     { name: "Tipo", uid: "type" },
     { name: "Categoría", uid: "category" }
@@ -233,6 +233,9 @@ export const CashTransactionList = () => {
     ) : (
       <span className="text-gray-400 text-sm">Sin propiedades</span>
     ),
+    originalAddress: transaction.properties && transaction.properties.length > 0
+      ? transaction.properties.map((p: any) => p.address).join(', ')
+      : "",
     amount: (
       <div className="text-right">
         <span className={`font-mono font-bold text-lg ${

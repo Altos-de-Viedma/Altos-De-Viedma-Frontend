@@ -15,7 +15,8 @@ import {
   TableHeader,
   TableRow,
   Button,
-  Spinner
+  Spinner,
+  SortDescriptor
 } from "@heroui/react";
 import {
   IoChevronDownOutline,
@@ -48,9 +49,11 @@ export interface CustomTableProps {
   showAllRows?: boolean; // New prop to show all rows without pagination
 }
 
-interface Column {
+export interface Column {
   name: string;
   uid: string;
+  sortable?: boolean;
+  sortKey?: string;
 }
 
 export const CustomTable = ({
@@ -78,6 +81,10 @@ export const CustomTable = ({
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
   const [page, setPage] = useState(1);
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+    column: "",
+    direction: "ascending",
+  });
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -108,8 +115,30 @@ export const CustomTable = ({
       );
     }
 
+    if (sortDescriptor.column) {
+      const column = columns.find(c => c.uid === sortDescriptor.column);
+      const sortKey = column?.sortKey || sortDescriptor.column;
+
+      filteredData.sort((a, b) => {
+        let first = a[sortKey as string];
+        let second = b[sortKey as string];
+
+        first = first !== undefined && first !== null ? first : "";
+        second = second !== undefined && second !== null ? second : "";
+
+        let cmp = 0;
+        if (typeof first === "string" && typeof second === "string") {
+          cmp = first.localeCompare(second, undefined, { numeric: true, sensitivity: 'base' });
+        } else {
+          cmp = first < second ? -1 : first > second ? 1 : 0;
+        }
+
+        return sortDescriptor.direction === "descending" ? -cmp : cmp;
+      });
+    }
+
     return filteredData;
-  }, [data, filterValue, statusFilter, hasSearchFilter, statusColorMap]);
+  }, [data, filterValue, statusFilter, hasSearchFilter, statusColorMap, sortDescriptor, columns]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -448,7 +477,8 @@ export const CustomTable = ({
             "last:pr-2 sm:last:pr-3 lg:last:pr-4 xl:last:pr-5",
             "whitespace-nowrap",
             "responsive-text-xs sm:responsive-text-sm",
-            "text-left"
+            "text-left",
+            "[&>div]:inline-flex [&>div]:flex-row [&>div]:items-center [&>div]:gap-2"
           ].join(" "),
           td: [
             "border-b border-gray-100 dark:border-gray-700",
@@ -466,13 +496,15 @@ export const CustomTable = ({
         topContentPlacement="outside"
         onSelectionChange={setSelectedKeys}
         isStriped={isStriped}
+        sortDescriptor={sortDescriptor}
+        onSortChange={setSortDescriptor}
       >
         <TableHeader columns={headerColumns}>
           {(column) => (
             <TableColumn
               key={column.uid}
               align={column.uid === "profilePicture" || column.uid === "actions" ? "center" : "start"}
-              allowsSorting={false}
+              allowsSorting={column.sortable}
               className={`text-foreground font-medium hover:text-foreground transition-colors ${
                 column.uid === "description" ? "w-auto min-w-[200px] sm:min-w-[300px] lg:min-w-[400px] xl:min-w-[500px]" :
                 column.uid === "actions" ? "w-auto min-w-[120px] sm:min-w-[150px] lg:min-w-[200px] xl:min-w-[250px]" :
@@ -484,9 +516,13 @@ export const CustomTable = ({
                 "w-auto min-w-[60px] sm:min-w-[80px] xl:min-w-[100px]"
               }`}
             >
-              <div className={`flex items-center ${column.uid === "actions" || column.uid === "profilePicture" ? "justify-center" : ""}`}>
-                <span className="truncate">{column.name}</span>
-              </div>
+              {column.uid === "actions" || column.uid === "profilePicture" ? (
+                <div className="flex items-center justify-center w-full">
+                  <span className="truncate">{column.name}</span>
+                </div>
+              ) : (
+                column.name
+              )}
             </TableColumn>
           )}
         </TableHeader>
