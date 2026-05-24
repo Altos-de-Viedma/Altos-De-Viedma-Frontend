@@ -1,42 +1,46 @@
-# Multi-stage build for optimized image size
-# Stage 1: Build the application
+# ============================================
+# Stage 1: Build
+# ============================================
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files first for better layer caching
-COPY package.json yarn.lock .npmrc ./
+# Copy package files
+COPY package.json package-lock.json ./
 
-# Install dependencies (skip scripts to avoid npm audit issues)
-RUN yarn install --frozen-lockfile --ignore-scripts
+# Install ALL dependencies (dev + prod) needed for build
+# --ignore-scripts avoids postinstall audit that breaks CI
+RUN npm install --legacy-peer-deps --ignore-scripts
 
 # Copy source code
 COPY . .
 
-# Build arguments and environment variables
+# Build args for environment variables baked into the build
 ARG VITE_BACKEND_BASE_URL=__VITE_BACKEND_BASE_URL__
 ENV VITE_BACKEND_BASE_URL=$VITE_BACKEND_BASE_URL
-ENV NODE_ENV=production
 
-# Build the application
-RUN yarn build
+# Build the production bundle
+RUN npx vite build
 
-# Stage 2: Production image with nginx
-FROM nginx:alpine AS production
+# ============================================
+# Stage 2: Production (serve with vite preview)
+# ============================================
+FROM node:20-alpine AS production
 
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+WORKDIR /app
 
-# Copy built application from builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Only install vite (needed for `vite preview`)
+RUN npm install --no-save vite@5
 
-# Copy and setup entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
+# Copy the built dist from builder
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/vite.config.ts ./vite.config.ts
+COPY --from=builder /app/package.json ./package.json
 
-# Expose port 4186
+# Default port
+ENV PORT=4186
+
 EXPOSE 4186
 
-# Use entrypoint script and start nginx
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["nginx", "-g", "daemon off;"]
+# Log and serve
+CMD echo "🚀 Frontend running on port $PORT" && npx vite preview --host 0.0.0.0 --port $PORT
