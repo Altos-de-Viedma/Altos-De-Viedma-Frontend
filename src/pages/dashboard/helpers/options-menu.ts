@@ -9,5 +9,6 @@ export const cardOptions = [
   { title: 'Seguros Empleados', Icon: Icons.IoReaderOutline, route: '/seguros-empleados', type: 'insurance' as const },
   { title: 'Propiedades', Icon: Icons.IoHomeOutline, route: '/propiedades' },
   { title: 'Usuarios', Icon: Icons.IoIdCardOutline, route: '/usuarios' },
-  { title: 'Mensajes Masivos', Icon: Icons.IoChatbubblesOutline, route: '/mensajes-masivos' }
+  { title: 'Mensajes Masivos', Icon: Icons.IoChatbubblesOutline, route: '/mensajes-masivos' },
+  { title: 'Carga Masiva', Icon: Icons.IoCloudUploadOutline, route: '/carga-masiva' }
 ];

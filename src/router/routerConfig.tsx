@@ -17,6 +17,7 @@ const MonthlyPaymentsPage = lazy(() => import('../pages/monthly-payments/Monthly
 const EmployeeInsurancePage = lazy(() => import('../pages/employee-insurance/pages/EmployeeInsurancePage').then(m => ({ default: m.EmployeeInsurancePage })));
 const MassMessagingPage = lazy(() => import('../pages/mass-messaging/pages/MassMessagingPage').then(m => ({ default: m.MassMessagingPage })));
 const DashboardLayoutPage = lazy(() => import('../pages/dashboard/dashboard-layout/DashboardPage').then(m => ({ default: m.DashboardLayoutPage })));
+const BulkInvoicePage = lazy(() => import('../pages/bulk-invoice/pages/BulkInvoicePage').then(m => ({ default: m.BulkInvoicePage })));
 
 // Loading component
 const PageLoader = () => (
@@ -155,6 +156,16 @@ export const router = createBrowserRouter( [
           <ProtectedRoute userStatus="authorized" role="admin" redirectTo="/home">
             <Suspense fallback={<PageLoader />}>
               <MassMessagingPage />
+            </Suspense>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'carga-masiva',
+        element: (
+          <ProtectedRoute userStatus="authorized" role="admin" redirectTo="/home">
+            <Suspense fallback={<PageLoader />}>
+              <BulkInvoicePage />
             </Suspense>
           </ProtectedRoute>
         ),
