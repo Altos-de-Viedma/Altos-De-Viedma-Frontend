@@ -81,4 +81,7 @@ export {
   IoBusinessOutline,
   IoChatbubblesOutline,
   IoSendOutline,
+  IoCloudUploadOutline,
+  IoCheckmarkCircle,
+  IoCloseCircle,
 } from 'react-icons/io5';
