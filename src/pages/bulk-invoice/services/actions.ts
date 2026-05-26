@@ -20,6 +20,10 @@ export interface BulkInvoiceResult {
 }
 
 export const bulkCreateInvoices = async (items: BulkInvoiceItem[]): Promise<{ results: BulkInvoiceResult[] }> => {
-  const { data } = await altosDeViedmaApi.post<{ results: BulkInvoiceResult[] }>('/invoice/bulk', { items });
+  const { data } = await altosDeViedmaApi.post<{ results: BulkInvoiceResult[] }>(
+    '/invoice/bulk', 
+    { items },
+    { timeout: 120000 } // Override default 10s timeout for bulk operations (can take 1-2s per item)
+  );
   return data;
 };

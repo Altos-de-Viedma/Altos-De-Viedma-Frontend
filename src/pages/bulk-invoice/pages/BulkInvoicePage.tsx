@@ -68,24 +68,64 @@ export const BulkInvoicePage = () => {
     setIsProcessing(false);
   };
 
+  const [processingIndex, setProcessingIndex] = useState<number>(-1);
+  const [processingName, setProcessingName] = useState<string>('');
+
   const handleSubmit = async () => {
     setIsSending(true);
-    try {
-      const itemsToSend: BulkInvoiceItem[] = parsedItems.map(({ originalPhone, ...rest }) => rest);
-      const response = await bulkCreateInvoices(itemsToSend);
-      setResults(response.results);
-      setStep('results');
+    const finalResults: BulkInvoiceResult[] = [];
+    let successCount = 0;
+    let failCount = 0;
 
-      const successCount = response.results.filter(r => r.success).length;
-      const failCount = response.results.filter(r => !r.success).length;
+    const itemsToSend: BulkInvoiceItem[] = parsedItems.map(({ originalPhone, ...rest }) => rest);
 
-      if (failCount === 0) {
-        toast.success(`✅ ${successCount} expensas creadas exitosamente`);
-      } else {
-        toast.warning(`${successCount} exitosas, ${failCount} con errores`);
+    for (let i = 0; i < itemsToSend.length; i++) {
+      const item = itemsToSend[i];
+      setProcessingIndex(i);
+      setProcessingName(item.name);
+      
+      try {
+        const response = await bulkCreateInvoices([item]);
+        if (response.results && response.results.length > 0) {
+          const res = response.results[0];
+          finalResults.push(res);
+          if (res.success) successCount++; else failCount++;
+        } else {
+          throw new Error('Respuesta vacía del servidor');
+        }
+      } catch (error: any) {
+        let errorMessage = 'Error desconocido';
+        if (error?.response?.data?.message) {
+          if (Array.isArray(error.response.data.message)) {
+            errorMessage = error.response.data.message.join(', ');
+          } else if (typeof error.response.data.message === 'string') {
+            errorMessage = error.response.data.message;
+          }
+        } else if (error?.message) {
+          errorMessage = error.message;
+        } else if (typeof error === 'string') {
+          errorMessage = error;
+        }
+        
+        finalResults.push({
+          phone: item.phone,
+          name: item.name,
+          success: false,
+          error: errorMessage
+        });
+        failCount++;
       }
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || 'Error al crear las expensas');
+    }
+
+    setResults(finalResults);
+    setStep('results');
+    setProcessingIndex(-1);
+    setProcessingName('');
+
+    if (failCount === 0) {
+      toast.success(`✅ ${successCount} expensas creadas exitosamente`);
+    } else {
+      toast.warning(`${successCount} exitosas, ${failCount} con errores`);
     }
     setIsSending(false);
   };
@@ -155,12 +195,32 @@ export const BulkInvoicePage = () => {
             disabled={isSending}
             className="px-6 py-2.5 bg-success-500 hover:bg-success-600 disabled:bg-default-300 text-white rounded-xl font-medium transition-all duration-200 flex items-center gap-2 shadow-lg shadow-success-500/25 disabled:shadow-none"
           >
-            <Icons.IoCheckmarkCircleOutline className="text-lg" />
-            {isSending ? 'Creando...' : `Crear ${parsedItems.length} Expensas`}
+            {!isSending && <Icons.IoCheckmarkCircleOutline className="text-lg" />}
+            {isSending ? 'Procesando...' : `Crear ${parsedItems.length} Expensas`}
           </button>
         </div>
       </div>
 
+      {isSending && processingIndex >= 0 && (
+        <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-xl p-6 flex flex-col gap-4 shadow-inner">
+          <div className="flex justify-between items-center">
+            <span className="font-semibold text-primary-600 dark:text-primary-400">Procesando registros... ({processingIndex + 1}/${parsedItems.length})</span>
+            <span className="text-sm font-bold text-primary-700 dark:text-primary-300">{Math.round(((processingIndex + 1) / parsedItems.length) * 100)}%</span>
+          </div>
+          <div className="w-full bg-default-200 rounded-full h-3 overflow-hidden">
+            <div 
+              className="bg-primary-500 h-3 rounded-full transition-all duration-300 ease-out" 
+              style={{ width: `${((processingIndex + 1) / parsedItems.length) * 100}%` }}
+            ></div>
+          </div>
+          <p className="text-sm text-foreground/80 flex items-center gap-2">
+            <Icons.IoRefreshOutline className="animate-spin text-primary-500 text-lg" />
+            Guardando expensa de: <strong className="text-primary-600 dark:text-primary-400">{processingName}</strong>
+          </p>
+        </div>
+      )}
+
+      {!isSending && (
       <div className="overflow-x-auto rounded-xl border border-default-200">
         <table className="w-full text-sm">
           <thead>
@@ -206,6 +266,7 @@ export const BulkInvoicePage = () => {
           </tfoot>
         </table>
       </div>
+      )}
     </div>
   );
 
