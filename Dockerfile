@@ -30,7 +30,7 @@ FROM node:20-alpine AS production
 WORKDIR /app
 
 # Only install vite (needed for `vite preview`) and its react plugin (needed by vite.config.ts)
-RUN npm install --no-save vite@5 @vitejs/plugin-react
+RUN npm install --no-save vite@5 @vitejs/plugin-react@4
 
 # Copy the built dist from builder
 COPY --from=builder /app/dist ./dist
