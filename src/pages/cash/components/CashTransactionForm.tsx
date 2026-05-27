@@ -130,19 +130,15 @@ export const CashTransactionForm = ({ transaction, onSuccess }: Props) => {
               <UI.ModalBody className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <UI.Input
-                    label="Monto"
+                    label="Monto ($)"
                     placeholder="0.00"
                     type="number"
                     step="0.01"
                     min="0.01"
                     variant="bordered"
                     classNames={{
-                      input: "ml-1 text-base [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
-                      innerWrapper: "items-end pb-1.5"
+                      input: "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     }}
-                    startContent={
-                      <span className="text-default-500 font-medium pb-0.5 pointer-events-none">$</span>
-                    }
                     errorMessage={errors.amount?.message}
                     isInvalid={!!errors.amount}
                     {...register('amount', { valueAsNumber: true })}
