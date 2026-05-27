@@ -8,6 +8,9 @@ export default defineConfig( {
     'process.env': {},
     'process.env.NODE_ENV': JSON.stringify( process.env.NODE_ENV || 'development' )
   },
+  preview: {
+    allowedHosts: true
+  },
   build: {
     rollupOptions: {
       output: {
