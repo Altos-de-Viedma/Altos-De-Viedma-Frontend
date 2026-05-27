@@ -4,11 +4,15 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestCo
 import { useAuthStore } from '../pages/auth/store';
 import { AuthService } from '../pages/auth/services';
 
-const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+const ENV_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+// Fallback to production URL if the build argument wasn't passed correctly during docker build
+const BASE_URL = (ENV_URL && ENV_URL !== '__VITE_BACKEND_BASE_URL__') 
+  ? ENV_URL 
+  : 'https://v1.altosdeviedma.com/api';
 
-// Validate BASE_URL
+// Log instead of throwing to prevent white screen of death
 if (!BASE_URL || !BASE_URL.startsWith('http')) {
-  throw new Error('Invalid or missing VITE_BACKEND_BASE_URL');
+  console.error('Invalid or missing VITE_BACKEND_BASE_URL:', BASE_URL);
 }
 
 let navigate: NavigateFunction | null = null;
