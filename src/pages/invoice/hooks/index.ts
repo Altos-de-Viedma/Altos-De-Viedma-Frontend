@@ -4,3 +4,6 @@ export * from './useInvoice';
 export * from './useAddInvoice';
 export * from './useUpdateInvoice';
 export * from './useConfirmInvoice';
+export * from './useDeletedInvoices';
+export * from './useRestoreInvoice';
+export * from './useDeleteInvoice';

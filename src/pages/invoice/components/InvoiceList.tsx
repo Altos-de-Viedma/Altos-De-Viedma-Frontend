@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 
-import { CustomTable, Icons, StatusColorMap, UI, useDisclosure, IconContainer } from '../../../shared';
+import { CustomTable, Icons, StatusColorMap, UI, useDisclosure, IconContainer, ConfirmDelete } from '../../../shared';
 import { InvoiceForm } from './InvoiceForm';
 import { InvoiceSearch } from './InvoiceSearch';
 import { PropertySelector } from './PropertySelector';
-import { useInvoices, useConfirmInvoice } from '../hooks';
+import { useInvoices, useConfirmInvoice, useDeletedInvoices, useDeleteInvoice, useRestoreInvoice } from '../hooks';
 import { useAuthStore } from '../../auth';
 import { IInvoice } from '../interfaces/IInvoice';
 import { formatDate } from '../helper';
@@ -21,6 +21,9 @@ export const InvoiceList = () => {
   const [selectedPropertyIds, setSelectedPropertyIds] = useState<string[]>([]);
   const confirmInvoiceMutation = useConfirmInvoice();
   const { markAsSeen } = useSeenNotifications();
+  const { invoices: deletedInvoicesRaw, isLoading: isLoadingDeleted } = useDeletedInvoices();
+  const { deleteInv } = useDeleteInvoice();
+  const { restore } = useRestoreInvoice();
 
   const isConfirmingInvoice = confirmInvoiceMutation.isPending;
 
@@ -59,6 +62,19 @@ export const InvoiceList = () => {
     );
   }, [invoices, searchTerm, user]);
 
+  const filteredDeletedInvoices = useMemo(() => {
+    if (!deletedInvoicesRaw) return [];
+    if (!searchTerm.trim()) return deletedInvoicesRaw;
+    
+    const searchLower = searchTerm.toLowerCase().trim();
+    return deletedInvoicesRaw.filter(invoice =>
+      invoice.title.toLowerCase().includes(searchLower) ||
+      invoice.description?.toLowerCase().includes(searchLower) ||
+      invoice.user.name.toLowerCase().includes(searchLower) ||
+      invoice.user.lastName.toLowerCase().includes(searchLower)
+    );
+  }, [deletedInvoicesRaw, searchTerm]);
+
   // Handle confirming invoice - integrate with notification system and create cash transaction
   const handleConfirmInvoice = async () => {
     if (invoiceToConfirm && expenseAmount.trim() && selectedPropertyIds.length > 0) {
@@ -92,7 +108,7 @@ export const InvoiceList = () => {
     return () => clearInterval(interval);
   }, [refetch]);
 
-  if (isLoading) {
+  if (isLoading || (selectedTab === 'deleted' && isLoadingDeleted)) {
     return (
       <div className="center-flex py-12">
         <UI.Spinner size="lg" color="primary" />
@@ -121,6 +137,9 @@ export const InvoiceList = () => {
         break;
       case "confirmed":
         filtered = filteredInvoices.filter(invoice => invoice.state === 'confirmed');
+        break;
+      case "deleted":
+        filtered = filteredDeletedInvoices;
         break;
       case "all":
       default:
@@ -182,23 +201,49 @@ export const InvoiceList = () => {
         ),
         actions: (
           <div className="flex space-x-2 items-center">
-            {user?.roles?.includes('admin') && invoice.state === 'in_progress' && (
-              <UI.Button
-                color="success"
-                variant="solid"
-                onPress={() => {
-                  setInvoiceToConfirm(invoice);
-                  setSelectedPropertyIds([]); // Reset selection
-                  onOpen();
-                }}
-                startContent={<Icons.IoCheckmarkOutline size={18} />}
-                className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
-              >
-                Aprobar Expensa
-              </UI.Button>
-            )}
-            {user?.roles?.includes('admin') && (
-              <InvoiceForm id={invoice.id} />
+            {selectedTab === 'deleted' ? (
+              user?.roles?.includes('admin') && (
+                <UI.Button
+                  color="warning"
+                  variant="solid"
+                  onPress={() => restore(invoice.id)}
+                  startContent={<Icons.IoReloadOutline size={18} />}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                >
+                  Restaurar
+                </UI.Button>
+              )
+            ) : (
+              <>
+                {user?.roles?.includes('admin') && invoice.state === 'in_progress' && (
+                  <UI.Button
+                    color="success"
+                    variant="solid"
+                    onPress={() => {
+                      setInvoiceToConfirm(invoice);
+                      setSelectedPropertyIds([]); // Reset selection
+                      onOpen();
+                    }}
+                    startContent={<Icons.IoCheckmarkOutline size={18} />}
+                    className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                  >
+                    Aprobar Expensa
+                  </UI.Button>
+                )}
+                {user?.roles?.includes('admin') && (
+                  <div className="flex space-x-2 items-center">
+                    <InvoiceForm id={invoice.id} />
+                    <ConfirmDelete
+                      id={invoice.id}
+                      title="Eliminar Expensa"
+                      description={`¿Estás seguro de que deseas eliminar la expensa "${invoice.title}"?`}
+                      successMessage="Expensa eliminada exitosamente"
+                      errorMessage="Hubo un error al eliminar la expensa"
+                      onDelete={() => deleteInv(invoice.id)}
+                    />
+                  </div>
+                )}
+              </>
             )}
           </div>
         )
@@ -273,6 +318,18 @@ export const InvoiceList = () => {
                 </span>
               </div>
             } />
+            {user?.roles?.includes('admin') && (
+              <UI.Tab key="deleted" title={
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Icons.IoTrashOutline size={18} className="sm:w-5 sm:h-5 text-red-500" />
+                  <span className="hidden sm:inline text-red-500">Borradas</span>
+                  <span className="sm:hidden text-red-500">Borr.</span>
+                  <span className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 px-2 py-0.5 rounded-full responsive-text-xs font-semibold">
+                    {getFilteredInvoices("deleted").length}
+                  </span>
+                </div>
+              } />
+            )}
           </UI.Tabs>
         </div>
 
@@ -283,7 +340,7 @@ export const InvoiceList = () => {
             statusColorMap={statusColorMap}
             initialVisibleColumns={visibleColumns}
             addButtonComponent={addButtonComponent}
-            title={selectedTab === 'in_progress' ? "expensas pendientes de aprobar" : "expensas aprobadas"}
+            title={selectedTab === 'in_progress' ? "expensas pendientes de aprobar" : selectedTab === 'deleted' ? "expensas borradas" : "expensas aprobadas"}
             className="w-full"
           />
         </div>

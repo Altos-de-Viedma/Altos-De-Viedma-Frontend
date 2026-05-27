@@ -59,3 +59,13 @@ export const getMonthlyTransactions = async (month: number, year: number): Promi
   const { data } = await altosDeViedmaApi.get<ICashTransaction[]>(`/daily-cash-transactions/monthly?month=${month}&year=${year}`);
   return data;
 };
+
+export const getDeletedCashTransactions = async (): Promise<ICashTransaction[]> => {
+  const { data } = await altosDeViedmaApi.get<ICashTransaction[]>('/daily-cash-transactions/deleted');
+  return data;
+};
+
+export const restoreCashTransaction = async (id: string): Promise<ICashTransaction> => {
+  const { data } = await altosDeViedmaApi.patch<ICashTransaction>(`/daily-cash-transactions/${id}/restore`);
+  return data;
+};

@@ -61,3 +61,17 @@ export const confirmInvoice = async (id: string, confirmData: { amount: number; 
   const { data } = await altosDeViedmaApi.patch<IInvoice>(`/invoice/confirm/${id}`, confirmData);
   return data;
 };
+
+export const getDeletedInvoices = async (): Promise<IInvoice[]> => {
+  const { data } = await altosDeViedmaApi.get<IInvoice[]>('/invoice/deleted');
+  return data;
+};
+
+export const restoreInvoice = async (id: string): Promise<IInvoice> => {
+  const { data } = await altosDeViedmaApi.patch<IInvoice>(`/invoice/${id}/restore`);
+  return data;
+};
+
+export const deleteInvoice = async (id: string): Promise<void> => {
+  await altosDeViedmaApi.delete(`/invoice/${id}`);
+};

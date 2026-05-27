@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
 
-import { CustomTable, Icons, UI } from '../../../shared';
+import { CustomTable, Icons, UI, ConfirmDelete } from '../../../shared';
 import { CashTransactionForm } from './CashTransactionForm';
-import { useDailySummary } from '../hooks';
+import { useDailySummary, useDeletedCashTransactions, useDeleteCashTransaction, useRestoreCashTransaction } from '../hooks';
 import { useAuthStore } from '../../auth';
 import {
   TransactionType,
@@ -137,8 +137,13 @@ export const CashTransactionList = () => {
 
   const [selectedDate, setSelectedDate] = useState<string>(getArgentinaToday()); // Default to today
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [showDeleted, setShowDeleted] = useState(false);
 
   const isAdmin = user?.roles?.includes('admin');
+
+  const { transactions: deletedTransactions, isLoading: isLoadingDeleted } = useDeletedCashTransactions();
+  const { deleteTransaction } = useDeleteCashTransaction();
+  const { restore } = useRestoreCashTransaction();
 
   // Flatten all transactions from all days
   const allTransactions = useMemo(() => {
@@ -153,15 +158,24 @@ export const CashTransactionList = () => {
     );
   }, [dailySummary]);
 
-  // Filter transactions by selected date
+  // Filter transactions by selected date or show deleted
   const filteredTransactions = useMemo(() => {
+    if (showDeleted) {
+      if (!deletedTransactions) return [];
+      if (selectedDate === 'all') return deletedTransactions;
+      return deletedTransactions.filter(transaction => {
+        const transactionDate = new Date(transaction.transactionDate).toISOString().split('T')[0];
+        return transactionDate === selectedDate;
+      });
+    }
+
     if (selectedDate === 'all') return allTransactions;
 
     return allTransactions.filter(transaction => {
       const transactionDate = new Date(transaction.transactionDate).toISOString().split('T')[0];
       return transactionDate === selectedDate;
     });
-  }, [allTransactions, selectedDate]);
+  }, [allTransactions, deletedTransactions, selectedDate, showDeleted]);
 
   // Calculate totals
   const totals = useMemo(() => {
@@ -179,7 +193,7 @@ export const CashTransactionList = () => {
   }, [filteredTransactions]);
 
 
-  if (isLoading) {
+  if (isLoading || (showDeleted && isLoadingDeleted)) {
     return (
       <div className="center-flex py-12">
         <UI.Spinner size="lg" color="primary" />
@@ -193,7 +207,8 @@ export const CashTransactionList = () => {
     { name: "Propiedades", uid: "properties", sortable: true, sortKey: "originalAddress" },
     { name: "Monto", uid: "amount" },
     { name: "Tipo", uid: "type" },
-    { name: "Categoría", uid: "category" }
+    { name: "Categoría", uid: "category" },
+    { name: "Acciones", uid: "actions" }
   ];
 
   const tableData = filteredTransactions.map(transaction => ({
@@ -244,10 +259,42 @@ export const CashTransactionList = () => {
           {transaction.type === TransactionType.ENTRY ? '+' : '-'}{formatCurrency(Number(transaction.amount))}
         </span>
       </div>
+    ),
+    actions: (
+      <div className="flex space-x-2 items-center">
+        {showDeleted ? (
+          isAdmin && (
+            <UI.Button
+              color="warning"
+              variant="solid"
+              size="sm"
+              onPress={() => restore(transaction.id)}
+              startContent={<Icons.IoReloadOutline size={16} />}
+              className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+            >
+              Restaurar
+            </UI.Button>
+          )
+        ) : (
+          isAdmin && (
+            <>
+              <CashTransactionForm transaction={transaction as any} onSuccess={() => refetch()} />
+              <ConfirmDelete
+                id={transaction.id}
+                title="Eliminar Transacción"
+                description="¿Estás seguro de que deseas eliminar esta transacción de caja?"
+                successMessage="Transacción eliminada exitosamente"
+                errorMessage="Hubo un error al eliminar la transacción"
+                onDelete={() => deleteTransaction(transaction.id)}
+              />
+            </>
+          )
+        )}
+      </div>
     )
   }));
 
-  const visibleColumns = ["datetime", "description", "properties", "amount", "type", "category"];
+  const visibleColumns = isAdmin ? ["datetime", "description", "properties", "amount", "type", "category", "actions"] : ["datetime", "description", "properties", "amount", "type", "category"];
 
   return (
     <div className="flex w-full flex-col space-y-6">
@@ -258,7 +305,7 @@ export const CashTransactionList = () => {
             <div className="flex items-center justify-center gap-3 mb-2">
               <Icons.IoCalendarOutline size={32} className="text-blue-600 dark:text-blue-400" />
               <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                {selectedDate === 'all' ? 'Todas las Transacciones' : (() => {
+                {selectedDate === 'all' ? (showDeleted ? 'Todas las Transacciones Borradas' : 'Todas las Transacciones') : (() => {
                   const [year, month, day] = selectedDate.split('-').map(Number);
                   const displayDate = new Date(year, month - 1, day);
                   return displayDate.toLocaleDateString('es-AR', {
@@ -367,6 +414,18 @@ export const CashTransactionList = () => {
         </div>
 
         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+          {isAdmin && (
+            <UI.Button
+              size="sm"
+              variant={showDeleted ? "solid" : "flat"}
+              color="danger"
+              onPress={() => setShowDeleted(!showDeleted)}
+              startContent={<Icons.IoTrashOutline size={16} />}
+              className="mr-4"
+            >
+              {showDeleted ? "Ocultar Borradas" : "Ver Borradas"}
+            </UI.Button>
+          )}
           <Icons.IoCashOutline size={16} />
           <span>
             {selectedDate === 'all' ?
@@ -392,8 +451,8 @@ export const CashTransactionList = () => {
           data={tableData}
           columns={columns}
           initialVisibleColumns={visibleColumns}
-          addButtonComponent={isAdmin ? <CashTransactionForm onSuccess={() => refetch()} /> : undefined}
-          title="Transacciones de Caja"
+          addButtonComponent={isAdmin && !showDeleted ? <CashTransactionForm onSuccess={() => refetch()} /> : undefined}
+          title={showDeleted ? "Transacciones Borradas" : "Transacciones de Caja"}
           className="w-full shadow-lg border border-gray-200 dark:border-gray-700"
           showAllRows={true}
         />
