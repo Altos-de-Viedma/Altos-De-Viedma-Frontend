@@ -233,6 +233,7 @@ export const UsersForm = ( { id }: Props ) => {
                         <div className="flex flex-wrap gap-1">
                           {watch('roles').map(role => {
                             const roleLabels = {
+                              superadmin: 'Super Administrador',
                               admin: 'Administrador',
                               user: 'Propietario',
                               security: 'Seguridad'
@@ -259,6 +260,11 @@ export const UsersForm = ( { id }: Props ) => {
                   onClose={onRoleModalClose}
                   title="Seleccionar Roles"
                   options={[
+                    {
+                      key: "superadmin",
+                      label: "Super Administrador",
+                      description: "Acceso y control total del sistema, incluyendo borrado y edición avanzada"
+                    },
                     {
                       key: "admin",
                       label: "Administrador",

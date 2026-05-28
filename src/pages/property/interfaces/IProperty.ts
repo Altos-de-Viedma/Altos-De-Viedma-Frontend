@@ -8,4 +8,7 @@ export interface IProperty {
   description: string;
   isMain:      boolean;
   users:       IUser[];
+  monthlyExpenseAmount?: number;
+  accumulatedDebt?: number;
+  lastPaymentDate?: string | null;
 }

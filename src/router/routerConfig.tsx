@@ -163,7 +163,7 @@ export const router = createBrowserRouter( [
       {
         path: 'carga-masiva',
         element: (
-          <ProtectedRoute userStatus="authorized" role="admin" redirectTo="/home">
+          <ProtectedRoute userStatus="authorized" role="superadmin" redirectTo="/home">
             <Suspense fallback={<PageLoader />}>
               <BulkInvoicePage />
             </Suspense>

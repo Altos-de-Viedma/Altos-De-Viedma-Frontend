@@ -202,7 +202,7 @@ export const InvoiceList = () => {
         actions: (
           <div className="flex space-x-2 items-center">
             {selectedTab === 'deleted' ? (
-              user?.roles?.includes('admin') && (
+              user?.roles?.includes('superadmin') && (
                 <UI.Button
                   color="warning"
                   variant="solid"
@@ -230,7 +230,7 @@ export const InvoiceList = () => {
                     Aprobar Expensa
                   </UI.Button>
                 )}
-                {user?.roles?.includes('admin') && (
+                {user?.roles?.includes('superadmin') && (
                   <div className="flex space-x-2 items-center">
                     <InvoiceForm id={invoice.id} />
                     <ConfirmDelete
@@ -318,7 +318,7 @@ export const InvoiceList = () => {
                 </span>
               </div>
             } />
-            {user?.roles?.includes('admin') && (
+            {user?.roles?.includes('superadmin') && (
               <UI.Tab key="deleted" title={
                 <div className="flex items-center gap-2 sm:gap-3">
                   <Icons.IoTrashOutline size={18} className="sm:w-5 sm:h-5 text-red-500" />

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { GenericPage, Icons, UI } from '../../../shared';
 import { InvoiceList } from '../components/InvoiceList';
+import { LiquidacionesList } from '../components/LiquidacionesList';
 import { MonthlyPropertyStatus } from '../components/MonthlyPropertyStatus';
 import { PropertyStatusBoard } from '../../monthly-payments/components/PropertyStatusBoard';
 import { useMonthlyPaymentsByMonth } from '../../monthly-payments/hooks/useMonthlyPayments';
@@ -65,6 +66,16 @@ export const InvoicePage = () => {
                   </div>
                 }
               />
+              <UI.Tab
+                key="liquidaciones"
+                title={
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <Icons.IoCalculatorOutline size={18} className="sm:w-5 sm:h-5" />
+                    <span className="hidden sm:inline">Liquidaciones</span>
+                    <span className="sm:hidden">Liq.</span>
+                  </div>
+                }
+              />
             </UI.Tabs>
           </div>
 
@@ -118,6 +129,7 @@ export const InvoicePage = () => {
                 />
               </div>
             )}
+            {activeTab === 'liquidaciones' && <LiquidacionesList />}
           </div>
         </div>
       }

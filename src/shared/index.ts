@@ -7,3 +7,4 @@ export * from './components/navbar/Navbar';
 export * from './components/ui';
 export * from './custom-components';
 export * from './helpers';
+export * as Formatters from './utils/formatters';

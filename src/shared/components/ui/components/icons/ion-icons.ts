@@ -8,6 +8,7 @@ export {
   IoBookmarksOutline,
   IoBookOutline,
   IoBulbOutline,
+  IoCalculatorOutline,
   IoCalendarOutline,
   IoCallOutline,
   IoCameraOutline,

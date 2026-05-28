@@ -140,6 +140,7 @@ export const CashTransactionList = () => {
   const [showDeleted, setShowDeleted] = useState(false);
 
   const isAdmin = user?.roles?.includes('admin');
+  const isSuperadmin = user?.roles?.includes('superadmin');
 
   const { transactions: deletedTransactions, isLoading: isLoadingDeleted } = useDeletedCashTransactions();
   const { deleteTransaction } = useDeleteCashTransaction();
@@ -263,7 +264,7 @@ export const CashTransactionList = () => {
     actions: (
       <div className="flex space-x-2 items-center">
         {showDeleted ? (
-          isAdmin && (
+          isSuperadmin && (
             <UI.Button
               color="warning"
               variant="solid"
@@ -276,7 +277,7 @@ export const CashTransactionList = () => {
             </UI.Button>
           )
         ) : (
-          isAdmin && (
+          isSuperadmin && (
             <>
               <CashTransactionForm transaction={transaction as any} onSuccess={() => refetch()} />
               <ConfirmDelete
@@ -294,7 +295,7 @@ export const CashTransactionList = () => {
     )
   }));
 
-  const visibleColumns = isAdmin ? ["datetime", "description", "properties", "amount", "type", "category", "actions"] : ["datetime", "description", "properties", "amount", "type", "category"];
+  const visibleColumns = isSuperadmin ? ["datetime", "description", "properties", "amount", "type", "category", "actions"] : ["datetime", "description", "properties", "amount", "type", "category"];
 
   return (
     <div className="flex w-full flex-col space-y-6">
@@ -414,7 +415,7 @@ export const CashTransactionList = () => {
         </div>
 
         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-          {isAdmin && (
+          {isSuperadmin && (
             <UI.Button
               size="sm"
               variant={showDeleted ? "solid" : "flat"}
